@@ -1,0 +1,32 @@
+Last known prime on phone:
+    Last known prime is the 25th prime number: 97
+Biggest gap between primes on phone:
+    Found a gap of 25th prime to 24th prime:
+    97-89: 8.
+Note that when using the phone, the main.py program will print an additional line for every 100 primes it stores in its list.
+
+
+
+Test cases in either case:
+    no 2 times yes 48 should print:
+        2^4 * 3^1
+    no 3 times yes 103 should print:
+        103 is the 27th prime.
+        Higher prime: 28th prime: 107
+    no 3 times yes 102 should print:
+        Higher prime: 27th prime: 103
+    no 3 times yes 104 should print:
+        Higher prime: 28th prime: 107
+    no 3 times yes 1160 should print:
+        Higher prime: 192th prime: 1163
+    no 3 times yes 201 should print:
+        Higher prime: 47th prime: 211
+    no 3 times yes 211 should print:
+        211 is the 47th prime.
+        Higher prime: 48th prime: 223
+    no 5 times 27 should print:
+        27th prime is 103.
+    no 5 times 28 should print:
+        28th prime is 107.
+    no 5 times 168 should print:
+        168th prime is 997.

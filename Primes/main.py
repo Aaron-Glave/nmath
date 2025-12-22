@@ -48,6 +48,8 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
         Note that all known primes are created in memory,
           so the list is r-created for every iterator you create."""
     memory_list = ALL_PRIMES_UNDER_100.copy()
+    found_first_greater = False
+    #remember_first_greater = first_greater
     nth_prime = 1
     for prime in memory_list:
         yield nth_prime, prime
@@ -73,11 +75,14 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
             yield nth_prime, guess
             if first_greater and not under_or_at_limit(nth_prime, upto):
                 #Set first_greater to False because the next prime we will yield should be the first greater prime.
-                first_greater = False
+                found_first_greater = True
+            #elif not under_or_at_limit(nth_prime, upto):
+                #pass
             #Only increment the nth_prime value AFTER printing the current nth_prime you figured out.
             nth_prime += 1
 
-        if not under_or_at_limit(guess, upto) and not first_greater and memory_list[-1] >= guess:
+        if not under_or_at_limit(guess, upto) and not found_first_greater and (
+                not first_greater or memory_list[-1] >= guess):
             #if not first_greater:
             #    if memory_list[-1] >= guess:
             return
