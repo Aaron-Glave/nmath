@@ -1,0 +1,12 @@
+Rather than a list use
+2. Append and Read Mode ("a+"):
+This mode also appends to the end of the file or creates it if it doesn't exist. Additionally, it allows you to read from the file. When opened in "a+" mode, the file pointer is initially at the end of the file. To read from the beginning, you need to use seek(0).
+Code example:
+
+with open("my_file.txt", "a+") as file:
+    file.write("New data added.\n")
+    
+    # To read from the beginning of the file after appending
+    file.seek(0) 
+    content = file.read()
+    print(content)
