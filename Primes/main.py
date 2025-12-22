@@ -2,12 +2,15 @@
 #pylint: disable=C0301
 import sys
 from io import TextIOWrapper
+from pathlib import Path
 from typing import Optional, Tuple, List, Generator
 import warnings
+#pylint: disable=C0413,E0401
+sys.path.append(str(Path(__file__).parent.resolve()))
 
-#pylint: disable=E0401
 from phone_banned import PhoneBanned
-#pylint: enable=E0401
+sys.path.pop()
+#pylint: enable=C0413,E0401
 
 sys.set_int_max_str_digits(100000)
 
@@ -62,9 +65,8 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
                 isprime = False
                 break
         if isprime:
-            if print_specific:
-                if print_specific == nth_prime:
-                    print(str(nth_prime) + " prime is", guess)
+            if print_specific == nth_prime:
+                print(str(nth_prime) + " prime is", guess)
             memory_list.append(guess)
             if len(memory_list) % 100 == 0:
                 print(len(memory_list), "th prime is ", guess, sep='')
@@ -75,10 +77,10 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
             #Only increment the nth_prime value AFTER printing the current nth_prime you figured out.
             nth_prime += 1
 
-        if not under_or_at_limit(guess, upto):
-            if not first_greater:
-                if memory_list[-1] >= guess:
-                    return
+        if not under_or_at_limit(guess, upto) and not first_greater and memory_list[-1] >= guess:
+            #if not first_greater:
+            #    if memory_list[-1] >= guess:
+            return
         guess += 2
 
 #A FUNCTION TO ITERATE THROUGH A FILE INSTEAD OF A LIST. NOTE: DON'T RUN THIS ON YOUR PHONE! TEST THIS TO MAKE SURE IT WORKS!
@@ -357,7 +359,7 @@ def print_factors(factors: List[Tuple[int, int]]):
     for found_factor in factors:
         factor_count += 1
         ending = " * "
-        if factor_count >= len(factors):
+        if factor_count == len(factors):
             ending = "\n"
         print(found_factor[0], found_factor[1], sep="^", end=ending)
 
@@ -446,7 +448,7 @@ if __name__ == '__main__':
     print("Huge number:", A)
     print("Slightly smaller:", SLIGHTLY_SMALLER_A)
     B = A // SLIGHTLY_SMALLER_A
-    print(B, "was calculated by dividing that huge number too by a slightly smaller but still huge number.")
+    print(B, "was calculated by dividing that huge number by a slightly smaller but still huge number.")
     print("It's factors are", end=" ")
     print_factors(factor(B))
     print(-15, "'s factors are", sep="", end=" ")
