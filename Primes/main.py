@@ -18,7 +18,7 @@ sys.set_int_max_str_digits(100000)
 SPRIMELIST = "sprimelist.txt"
 
 #Set this to False on your phone!
-SHOULD_WRITE = True
+SHOULD_WRITE = False
 
 ALL_PRIMES_UNDER_100 = [
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
