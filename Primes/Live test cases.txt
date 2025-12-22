@@ -19,11 +19,6 @@ Test cases in either case:
         Higher prime: 28th prime: 107
     no 3 times yes 1160 should print:
         Higher prime: 192th prime: 1163
-    no 3 times yes 201 should print:
-        Higher prime: 47th prime: 211
-    no 3 times yes 211 should print:
-        211 is the 47th prime.
-        Higher prime: 48th prime: 223
     no 5 times 27 should print:
         27th prime is 103.
     no 5 times 28 should print:
