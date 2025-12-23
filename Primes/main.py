@@ -358,15 +358,24 @@ def factor(to_factor: int) -> List[Tuple[int, int]]:
     return factors
 
 
-def print_factors(factors: List[Tuple[int, int]]):
+def factors_as_string(factors: List[Tuple[int, int]]):
     """Given a list of factors for a number (often printed by the factor(...) function, nicely prints the number represented as a product of its factors)."""
     factor_count = 0
+    strs_to_return = []
     for found_factor in factors:
         factor_count += 1
-        ending = " * "
         if factor_count == len(factors):
-            ending = "\n"
-        print(found_factor[0], found_factor[1], sep="^", end=ending)
+            ending = ""
+        else:
+            ending = " * "
+        strs_to_return.append(
+            str(found_factor[0]))
+        strs_to_return.append('^')
+        strs_to_return.append(
+            str(found_factor[1]))
+        strs_to_return.append(ending)
+        #print(found_factor[0], found_factor[1], sep="^", end=ending)
+    return "".join(strs_to_return)
 
 def say_gap_message(gap_to_print: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int]):
     """Prints info about the gap passed
@@ -455,15 +464,15 @@ if __name__ == '__main__':
     B = A // SLIGHTLY_SMALLER_A
     print(B, "was calculated by dividing that huge number by a slightly smaller but still huge number.")
     print("It's factors are", end=" ")
-    print_factors(factor(B))
+    print(factors_as_string(factor(B)))
     print(-15, "'s factors are", sep="", end=" ")
-    print_factors(factor(-15))
+    print(factors_as_string(factor(-15)))
     print(36, "'s factors are", sep="", end=" ")
-    print_factors(factor(36))
+    print(factors_as_string(factor(36)))
     print(63, "'s factors are", sep="", end=" ")
-    print_factors(factor(63))
+    print(factors_as_string(factor(63)))
     print(147, "'s factors are", sep="", end=" ")
-    print_factors(factor(147))
+    print(factors_as_string(factor(147)))
 
     print("I will ask you a series of questions about what you want to do.")
     print("Say Yes if you want to do the thing I asked you about.")
@@ -475,7 +484,10 @@ if __name__ == '__main__':
     elif input("Factor a number? ").lower() == "yes":
         if SHOULD_WRITE:
             print("Warning: On CPU mode you only know the prime numbers in " + SPRIMELIST)
-        print_factors(factor(get_int()))
+        _S = factors_as_string(
+                factor(get_int())
+            )
+        print(_S)
     elif input("Do you want to find a prime greater than a target number N?\nSay Yes if so, then I'll ask you for your target number. ").lower() == "yes":
         print_next_prime_greater(get_int())
     elif input("Do you want to know the biggest gap between prime numbers you know? ").lower() == "yes":
