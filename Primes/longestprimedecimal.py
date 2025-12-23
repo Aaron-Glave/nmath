@@ -2,7 +2,6 @@
 
 import os
 import sys
-from fractions import Fraction
 
 #pylint:disable=C0413
 print("Current path:", os.path.abspath(os.path.curdir))
