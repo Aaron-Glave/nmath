@@ -5,9 +5,11 @@ from io import TextIOWrapper
 from pathlib import Path
 from typing import Optional, Tuple, List, Generator
 import warnings
-#pylint: disable=C0413,E0401
+#pylint: disable=C0413
+#maybe ,E0401
 sys.path.append(str(Path(__file__).parent.resolve()))
-
+#Set this to False on your phone!
+SHOULD_WRITE = True
 from phone_banned import PhoneBanned
 sys.path.pop()
 #pylint: enable=C0413,E0401
@@ -17,8 +19,7 @@ sys.set_int_max_str_digits(100000)
 #NOTE: Every line in this file is an integer referring to which prime number is listed, followed by a space, followed by a prime number, followed by a newline character.
 SPRIMELIST = "sprimelist.txt"
 
-#Set this to False on your phone!
-SHOULD_WRITE = True
+
 
 ALL_PRIMES_UNDER_100 = [
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,

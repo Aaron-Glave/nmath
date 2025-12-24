@@ -3,10 +3,15 @@ from fractions import Fraction
 from typing import Optional, List, Tuple
 import sys
 from pathlib import Path
+
+#pylint:disable=C0413
 path_to_add = Path(__file__).resolve().parent
-print(path_to_add)
+#print(path_to_add)
 sys.path.append(str(Path(__file__).parent.resolve()))
 import hugeNumber
+
+#pylint:enable=C0413
+
 sys.path.pop()
 
 hugeNumber.huge_number()
@@ -15,7 +20,7 @@ hugeNumber.huge_number()
 #pylint:disable=C0301
 #Look at https://math.stackexchange.com/questions/2845984/how-to-calculate-a-repeating-decimal-for-any-fraction
 #pylint:enable=C0301
-#pylint:disable=R0902
+#pylint:disable=too-many-instance-attributes
 class DecimalDigit:
     """Represent a single digit of a long decimal number"""
     digit: int = 0
@@ -87,8 +92,8 @@ class DecimalRepresentationOfFrac:
             #Special case for repeating single digits?
             if self.start_repeat is not None:
                 ##CHECK this:
-                # 1. Your second repeating digit's index is 1 after the first repeating digit's index
-                # 2. They each represent the same digit
+                #1. Your second repeating digit's index is 1 after the first repeating digit's index
+                #2. They each represent the same digit
                 if self.end_repeat - self.start_repeat == 1:
                     if self.digits[self.end_repeat].digit == self.digits[self.start_repeat].digit:
                         #We already know we're repeating!
