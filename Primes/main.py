@@ -255,7 +255,8 @@ def correct_prime_guess(upto: Optional[int] = None, *,
 
 
 def get_last_prime() -> Tuple[int, int]:
-    """Returns the biggest prime number in the list."""
+    """Returns the biggest prime number in the list.
+    It's a tuple: (nth_prime, prime)"""
     biggest_prime = (len(ALL_PRIMES_UNDER_100), ALL_PRIMES_UNDER_100[-1])
     if SHOULD_WRITE:
         sprimelist = open(SPRIMELIST, encoding='ascii')
