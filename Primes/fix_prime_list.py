@@ -1,12 +1,13 @@
 """"The goal of this program is to re-write your prime list,
  to guarantee that it's in proper order."""
-#TODO FINISH ME
 import sys
 from collections import deque
 import os
 
 import main
 
+#File I save the fixed sprimelist.txt file to.
+#Check it before you rename it to main.SPRIMELIST
 FIXED_ISH_NAME = "fix_ish_sprimelist.txt"
 
 
@@ -19,13 +20,13 @@ def write_backupfile():
     set_prime_nums = deque()
 
     with open(FIXED_ISH_NAME, "w", encoding='ascii') as f:
-        for nth_prime, prime in main.yield_and_write_primes(upto=main.get_last_prime()[1], list_all=True):
+        for nth_prime, prime in main.yield_and_write_primes(
+                upto=main.get_last_prime()[1], list_all=True):
             if nth_prime <= 25:
                 continue
 
-
             #Now we know we're reading lines from the file.
-            input_line_number += 1 #We're gonna start at line 1.
+            input_line_number += 1  #We're gonna start at line 1.
             repeated_prime = False
             for found_already in set_prime_nums:
                 if prime == found_already[1]:
