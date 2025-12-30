@@ -40,7 +40,7 @@ def write_backupfile():
             if len(set_prime_nums) >= 25:
                 set_prime_nums.popleft()
             set_prime_nums.append((nth_prime, prime))
-            f.write(f"{nth_prime}: {prime}\n")
+            f.write(f"{nth_prime} {prime}\n")
             output_line_number += 1
             if output_line_number % 10000 == 0:
                 print(f"Written {output_line_number} lines")

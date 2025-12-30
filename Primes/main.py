@@ -98,6 +98,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                            target_n: Optional[int] = None,
                            comments: Optional[dict[str, str]] = None) -> Generator[tuple[int, int], None, None]:
     """Returns list of tuples [(1-based prime index, prime number)].
+    I typically call those nth_prime, prime.
     Note that unless you specify list_all to be true, I will start yielding newly discovered primes only"""
     save_to: Optional[TextIOWrapper] = None
     try:
