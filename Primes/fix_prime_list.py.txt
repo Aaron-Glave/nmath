@@ -1,0 +1,8 @@
+#TODO FINISH ME
+for line in primelist:
+    line_number += 1
+    current_prime_num = line.split(' ')[0]
+    if current_prime_num in set_prime_nums:
+        print(f"Error: Line {set_prime_nums[current_prime_num]} already has number", current_prime_num)
+    else:
+        set_prime_nums[current_prime_num] = line_number
