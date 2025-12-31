@@ -52,7 +52,7 @@ class TestCorrectPrimes(unittest.TestCase):
         self.assertIn('already_there', comments)
         self.assertEqual(comments['already_there'], 'already there')
 
-    @unittest.skipIf(True, "Takes a long time and rarely needed.\nSet the condition to True if you want to run this.")
+    @unittest.skipIf(True, "Takes a long time and rarely needed.\nSet the condition to False if you want to run this.")
     def test_in_order(self):
         """Verifies that your list of prime numbers looks right.
         Use https://t5k.org/nthprime/index.php to check it out."""
