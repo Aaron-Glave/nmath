@@ -54,6 +54,8 @@ class TestCorrectPrimes(unittest.TestCase):
 
     @unittest.skipIf(True, "Takes a long time and rarely needed.\nSet the condition to True if you want to run this.")
     def test_in_order(self):
+        """Verifies that your list of prime numbers looks right.
+        Use https://t5k.org/nthprime/index.php to check it out."""
         main.SHOULD_WRITE = True
         last_p = 0
         last_n = 0
