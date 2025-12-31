@@ -98,6 +98,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                            target_n: Optional[int] = None,
                            comments: Optional[dict[str, str]] = None) -> Generator[tuple[int, int], None, None]:
     """Returns list of tuples [(1-based prime index, prime number)].
+    I typically call those nth_prime, prime.
     Note that unless you specify list_all to be true, I will start yielding newly discovered primes only"""
     save_to: Optional[TextIOWrapper] = None
     try:
@@ -255,12 +256,13 @@ def correct_prime_guess(upto: Optional[int] = None, *,
 
 
 def get_last_prime() -> Tuple[int, int]:
-    """Returns the biggest prime number in the list."""
+    """Returns the biggest prime number in the list.
+    It's a tuple: (nth_prime, prime)"""
     biggest_prime = (len(ALL_PRIMES_UNDER_100), ALL_PRIMES_UNDER_100[-1])
     if SHOULD_WRITE:
-        sprimelist = open(SPRIMELIST, encoding='ascii')
-        for line in sprimelist:
-            biggest_prime = tuple(map(int, line.strip('\n').split(" ")))
+        with open(SPRIMELIST, encoding='ascii') as sprimelist:
+            for line in sprimelist:
+                biggest_prime = tuple(map(int, line.strip('\n').split(" ")))
     return biggest_prime
 
 
