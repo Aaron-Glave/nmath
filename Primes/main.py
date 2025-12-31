@@ -478,7 +478,7 @@ if __name__ == '__main__':
 
     print("I will ask you a series of questions about what you want to do.")
     print("Say Yes if you want to do the thing I asked you about.")
-    if input("Generate text file of first 100 primes? ").lower() == "yes":
+    if input("Generate text file of all primes less than 100? ").lower() == "yes":
         primes_up_to100()
     elif input("Want to know the last known prime I found? ").lower() == "yes":
         last_known_prime = get_last_prime()
