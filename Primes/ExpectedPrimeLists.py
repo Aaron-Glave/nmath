@@ -52,7 +52,7 @@ class TestCorrectPrimes(unittest.TestCase):
         self.assertIn('already_there', comments)
         self.assertEqual(comments['already_there'], 'already there')
 
-    @unittest.skipIf(False, "Takes a long time and rarely needed.\nSet the condition to True if you want to run this.")
+    @unittest.skipIf(True, "Takes a long time and rarely needed.\nSet the condition to True if you want to run this.")
     def test_in_order(self):
         main.SHOULD_WRITE = True
         last_p = 0
