@@ -425,7 +425,7 @@ def largest_gap_1000() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int]:
                 say_gap_message(current_greatest_gap)
             previous_prime = next_prime
         if found100:
-            print("First gap of 100:")
+            print("\nFirst gap of 100:")
             say_gap_message(first_pair100)
     return current_greatest_gap
 
