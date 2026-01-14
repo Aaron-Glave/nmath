@@ -52,8 +52,5 @@ class TestCorrectPrimes(unittest.TestCase):
         self.assertEqual(comments['already_there'], 'already there')
 
 
-
-
-
 if __name__ == '__main__':
     unittest.main()
