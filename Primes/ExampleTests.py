@@ -5,6 +5,7 @@ class SampleTests(unittest.TestCase):
     def test_passes(self):
         self.is_even(2)
 
+    @unittest.expectedFailure
     def test_example_fails(self):
         self.is_even(3)
 
