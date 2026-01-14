@@ -260,10 +260,14 @@ def get_last_prime() -> Tuple[int, int]:
     It's a tuple: (nth_prime, prime)"""
     biggest_prime = (len(ALL_PRIMES_UNDER_100), ALL_PRIMES_UNDER_100[-1])
     if SHOULD_WRITE:
-        with open(SPRIMELIST, encoding='ascii') as sprimelist:
-            for line in sprimelist:
-                biggest_prime = tuple(map(int, line.strip('\n').split(" ")))
-    return biggest_prime
+        try:
+            with open(SPRIMELIST, encoding='ascii') as sprimelist:
+                for line in sprimelist:
+                    biggest_prime = tuple(map(int, line.strip('\n').split(" ")))
+
+        except FileNotFoundError:
+            pass
+        return biggest_prime
 
 
 def primes_up_to100():
@@ -316,10 +320,9 @@ def correct_factor_list(to_factor: int) -> Generator[int]:
     if SHOULD_WRITE:
         yield from ALL_PRIMES_UNDER_100
         try:
-            sprimelist = open(SPRIMELIST, mode="r", encoding='ascii')
-            for line in sprimelist:
-                yield int(list(line.strip('\n').split(' '))[1])
-            sprimelist.close()
+            with open(SPRIMELIST, mode='r', encoding='ascii') as sprimelist:
+                for line in sprimelist:
+                    yield int(list(line.strip('\n').split(' '))[1])
         except FileNotFoundError:
             print("Creating list...")
             sprimelist = open(SPRIMELIST, mode="w", encoding='ascii')
