@@ -21,6 +21,7 @@ class AllPrimesInOrder(unittest.TestCase):
                 print("Tested", line_in_list, "lines so far.")
             last_n = nprime
             last_p = prime
+        print("Tested", line_in_list, "lines and they all looked good.")
 
 
 if __name__ == '__main__':
