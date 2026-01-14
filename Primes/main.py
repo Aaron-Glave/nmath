@@ -29,9 +29,6 @@ ALL_PRIMES_UNDER_100 = [
 ]
 
 
-#We don't even have a function to read the whole file into a list because that would use a TON of memory.
-
-
 def under_or_at_limit(_current_guess: int, upto: Optional[int]) -> bool:
     """Used internally to return True if upto is null OR _current_guess <= upto"""
     if upto is None:
@@ -45,6 +42,7 @@ def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None
         save_to.write(str(prime_to_write[0]) + " " + str(prime_to_write[1]) + '\n')
 
 
+#We don't even have a function to read the whole file into a list because that would use a TON of memory.
 def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int] = None,
                         first_greater: bool = False) -> Generator[tuple[int, int], None, None]:
     """Returns list of tuples [(1-based prime index, prime number)].
@@ -52,7 +50,6 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
           so the list is r-created for every iterator you create."""
     memory_list = ALL_PRIMES_UNDER_100.copy()
     found_first_greater = False
-    #remember_first_greater = first_greater
     nth_prime = 1
     for prime in memory_list:
         yield nth_prime, prime
@@ -76,18 +73,14 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
             if len(memory_list) % 100 == 0:
                 print(len(memory_list), "th prime is ", guess, sep='')
             yield nth_prime, guess
+
             if first_greater and not under_or_at_limit(nth_prime, upto):
-                #Set first_greater to False because the next prime we will yield should be the first greater prime.
                 found_first_greater = True
-            #elif not under_or_at_limit(nth_prime, upto):
-            #pass
             #Only increment the nth_prime value AFTER printing the current nth_prime you figured out.
             nth_prime += 1
 
-        if not under_or_at_limit(guess, upto) and not found_first_greater and (
-                not first_greater or memory_list[-1] >= guess):
-            #if not first_greater:
-            #    if memory_list[-1] >= guess:
+        if (not under_or_at_limit(guess, upto) and not found_first_greater and
+                (not first_greater or memory_list[-1] >= guess)):
             return
         guess += 2
 
@@ -354,7 +347,7 @@ def percent_integers_unknown_factors():
     return probability
 
 
-def factor(to_factor: int, print_guesses = False) -> List[Tuple[int, int]]:
+def factor(to_factor: int) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
     Note that on the PC, this function can only factor integers perfectly divisible by the prime numbers I've discovered so far in the list."""
@@ -376,7 +369,6 @@ def factor(to_factor: int, print_guesses = False) -> List[Tuple[int, int]]:
         return [(0, 1)]
     elif to_factor == 1:
         return [(1, 1)]
-    #work_left = True
     while to_factor > 1:
         for prime in correct_factor_list(to_factor):
             if to_factor % prime == 0:
@@ -385,7 +377,7 @@ def factor(to_factor: int, print_guesses = False) -> List[Tuple[int, int]]:
                 break
         if to_factor <= 1:
             break
-        for nth_prime, prime in correct_prime_guess(to_factor, print_guesses=True):
+        for _, prime in correct_prime_guess(to_factor, print_guesses=True):
             if to_factor % prime == 0:
                 to_factor, number_of_divisions = reduce(to_factor, prime)
                 factors.append((prime, number_of_divisions))
@@ -415,7 +407,6 @@ def factors_as_string(factors: List[Tuple[int, int]]):
         strs_to_return.append(
             str(found_factor[1]))
         strs_to_return.append(ending)
-        #print(found_factor[0], found_factor[1], sep="^", end=ending)
     return "".join(strs_to_return)
 
 
@@ -450,8 +441,6 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
 
     if SHOULD_WRITE:
         nth_prime = 2
-        first_pair100: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int] = (((-1, -1), (-1, -1)),
-                                                                              0)
         primelist = open(SPRIMELIST, mode="r", encoding='ascii')
         previous_prime = tuple(map(int, primelist.readline().strip('\n').split(' ')))
         for line in primelist:
@@ -464,7 +453,10 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
             previous_prime = next_prime
     return current_greatest_gap
 
+
 def say_gap_of_100():
+    """We know there's a gap of 100 primes at some point,
+    but it's not in the strictly increasing list of gaps."""
     found_gap_100: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int] = (
         ((-1, -1), (-1, -1)), 0)
 
@@ -549,7 +541,8 @@ if __name__ == '__main__':
         )
         print(_S)
     elif input(
-            "Do you want to find a prime greater than a target number N?\nSay Yes if so, then I'll ask you for your target number. ").lower() == "yes":
+            "Do you want to find a prime greater than a target number N?\nSay Yes if so, then I'll ask you for your target number. "
+    ).lower() == "yes":
         print_next_prime_greater(get_int())
     else:
         # Guess Nth prime
