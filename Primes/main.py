@@ -534,8 +534,6 @@ if __name__ == '__main__':
         print("Last known prime is the ", last_known_prime[0], "th prime number: ",
               last_known_prime[1], sep="")
     elif input("Factor a number? ").lower() == "yes":
-        if SHOULD_WRITE:
-            print("Warning: On CPU mode you only know the prime numbers in " + SPRIMELIST)
         _S = factors_as_string(
             factor(get_int())
         )
