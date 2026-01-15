@@ -8,20 +8,20 @@ Note that when using the phone, the main.py program will print an additional lin
 
 
 Test cases in either case:
-    no 2 times yes 48 should print:
+    no 1 time yes 48 should print:
         2^4 * 3^1
-    no 3 times yes 103 should print:
+    no 2 times yes 103 should print:
         103 is the 27th prime.
         Higher prime: 28th prime: 107
-    no 3 times yes 102 should print:
+    no 2 times yes 102 should print:
         Higher prime: 27th prime: 103
-    no 3 times yes 104 should print:
+    no 2 times yes 104 should print:
         Higher prime: 28th prime: 107
-    no 3 times yes 1160 should print:
+    no 2 times yes 1160 should print:
         Higher prime: 192th prime: 1163
-    no 5 times 27 should print:
+    no 3 times 27 should print:
         27th prime is 103.
-    no 5 times 28 should print:
+    no 3 times 28 should print:
         28th prime is 107.
-    no 5 times 168 should print:
+    no 3 times 168 should print:
         168th prime is 997.
