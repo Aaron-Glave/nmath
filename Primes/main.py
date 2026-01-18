@@ -3,7 +3,7 @@
 import sys
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Optional, Tuple, List, Generator
+from typing import Optional, Tuple, List, Generator, Callable
 import warnings
 
 #pylint: disable=C0413,E0401
@@ -70,7 +70,7 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
             if print_specific == nth_prime:
                 print(str(nth_prime) + " prime is", guess)
             memory_list.append(guess)
-            if len(memory_list) % 100 == 0:
+            if len(memory_list) % 100 == 0 and print_specific:
                 print(len(memory_list), "th prime is ", guess, sep='')
             yield nth_prime, guess
 
@@ -314,9 +314,17 @@ def gen_primes_up_to(max_prime=2):
     """Returns a list of primes up to max_prime."""
     return list(correct_prime_guess(max_prime, list_all=True))
 
+def memory_factor_list(to_factor: int) -> Generator[int, None, None]:
+    """Returns a correct list of factors of the number to_factor,
+    using memory only."""
+    for mprime in yield_primes_memory(to_factor):
+        yield mprime[1]
+    return None
 
-def correct_factor_list(to_factor: int) -> Generator[int]:
-    """Returns a correct list of factors, whether you SHOULD_WRITE or not."""
+
+def correct_factor_list(to_factor: int) -> Generator[int, None, None]:
+    """Returns a correct list of factors of the number to_factor,
+    whether you SHOULD_WRITE or not."""
     if SHOULD_WRITE:
         yield from ALL_PRIMES_UNDER_100
         try:
@@ -329,9 +337,8 @@ def correct_factor_list(to_factor: int) -> Generator[int]:
             sprimelist.close()
             correct_factor_list(to_factor)
         return None
-    #We know the file exists, so read it.
-    for mprime in yield_primes_memory(to_factor):
-        yield mprime[1]
+    #We know SHOULD_WRITE is False, so yield from memory.
+    yield from memory_factor_list(to_factor)
     return None
 
 def percent_integers_unknown_factors():
@@ -347,7 +354,8 @@ def percent_integers_unknown_factors():
     return probability
 
 
-def factor(to_factor: int) -> List[Tuple[int, int]]:
+def factor(to_factor: int, method: Callable[[int], Generator[
+    tuple[int, int], None, None]] = correct_prime_guess) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
     Note that on the PC, this function can only factor integers perfectly divisible by the prime numbers I've discovered so far in the list."""
@@ -370,7 +378,7 @@ def factor(to_factor: int) -> List[Tuple[int, int]]:
     elif to_factor == 1:
         return [(1, 1)]
     while to_factor > 1:
-        for prime in correct_factor_list(to_factor):
+        for _, prime in method(to_factor):
             if to_factor % prime == 0:
                 to_factor, number_of_divisions = reduce(to_factor, prime)
                 factors.append((prime, number_of_divisions))
