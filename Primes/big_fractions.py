@@ -32,7 +32,6 @@ def mixed_fraction(unsimple_fraction: Fraction) -> str:
         str_to_return += f" {fraction_part}"
     elif abs_fraction[1] != 0:
         str_to_return += f"{fraction_part}"
-
     return str_to_return
 
 
