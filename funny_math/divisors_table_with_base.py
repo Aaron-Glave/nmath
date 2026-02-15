@@ -5,13 +5,10 @@ def print_digits_of_divisions(divisor: int, base: int = 10) -> list[int]:
     """Prints and returns the single digit multiples of the passed base.
     Optional arguments: base: int -> The base of your digit system. The default is 10."""
     multiplications: list[int] = []
-    print(f"Base {base} multiples of {divisor}:", end=":\n")
-    for i in range(0, base + 1):
+    print(f"Base {base} multiples of {divisor}:")
+    for i in range(1, base + 1):
         multiplications.append(divisor * i)
-        if i < base:
-            print(i, multiplications[i], sep=": ")
-        else:
-            print(f"{base} times {divisor} is {multiplications[i]}.")
+        print(i, multiplications[-1], sep=": ")
     return multiplications
 
 
