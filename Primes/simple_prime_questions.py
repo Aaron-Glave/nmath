@@ -1,3 +1,5 @@
+"""Just simple questions you can ask about the primes you know."""
+
 import main
 
 if __name__ == '__main__':
@@ -15,6 +17,7 @@ if __name__ == '__main__':
     ).lower() == "yes":
         main.say_gap_of_100()
     elif input(
-            "Do you want to know the chance a random number isn't fully divisible by the primes you know? ").lower() == "yes":
+            "Do you want to know the chance a random number isn't fully divisible"
+            " by the primes you know? ").lower() == "yes":
         print(main.percent_integers_unknown_factors() * 100,
               "% of numbers aren't divisible by any of the primes you know.", sep='')
