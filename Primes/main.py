@@ -383,12 +383,14 @@ def factor(to_factor: int, method = correct_prime_guess) -> List[Tuple[int, int]
         return [(0, 1)]
     elif to_factor == 1:
         return [(1, 1)]
-    found_square = False
-    while to_factor > 1 and not found_square:
+    done_factoring = False
+    while to_factor > 1 and not done_factoring:
         for _, prime in method(to_factor, list_all=True):
             if to_factor % prime == 0:
                 to_factor, number_of_divisions = reduce(to_factor, prime)
                 factors.append((prime, number_of_divisions))
+                if to_factor == 1:
+                    done_factoring = True
                 break
             #Probably don't need this
             #If we break whenever we find a divisor first and we're checking
@@ -404,10 +406,11 @@ def factor(to_factor: int, method = correct_prime_guess) -> List[Tuple[int, int]
             #            break
             #    #to_factor has 1 (possibly multiplied) prime divisor?
             #    break
-        if to_factor <= 1:
-            break
+
         #Might be redundant!
         for _, prime in correct_prime_guess(to_factor, print_guesses=True):
+            #TEST: Can we skip now?
+            break
             if to_factor % prime == 0:
                 to_factor, number_of_divisions = reduce(to_factor, prime)
                 factors.append((prime, number_of_divisions))
