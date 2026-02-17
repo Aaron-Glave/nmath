@@ -357,7 +357,6 @@ def percent_integers_unknown_factors():
                 probability *= 1 - 1 / prime
     return probability
 
-
 def factor(to_factor: int, method: Callable[[int], Generator[
     tuple[int, int], None, None]] = correct_prime_guess) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
