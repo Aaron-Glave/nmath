@@ -390,19 +390,20 @@ def factor(to_factor: int, method = correct_prime_guess) -> List[Tuple[int, int]
                 to_factor, number_of_divisions = reduce(to_factor, prime)
                 factors.append((prime, number_of_divisions))
                 break
+            #Probably don't need this
             #If we break whenever we find a divisor first and we're checking
             # a number greater than the square root, we know we won't find a divisor.
             # But we have to
-            if prime ** 2 > to_factor:
-                found_square = True
-                print("Found a prime remainder?")
-                for _, testprime in method(to_factor, list_all=True):
-                    if to_factor % testprime == 0:
-                        to_factor, number_of_divisions = reduce(to_factor, testprime)
-                        factors.append((testprime, number_of_divisions))
-                        break
-                #to_factor has 1 (possibly multiplied) prime divisor?
-                break
+            #if prime ** 2 > to_factor:
+            #    found_square = True
+            #    print("Found a prime remainder?")
+            #    for _, testprime in method(to_factor, list_all=True):
+            #        if to_factor % testprime == 0:
+            #            to_factor, number_of_divisions = reduce(to_factor, testprime)
+            #            factors.append((testprime, number_of_divisions))
+            #            break
+            #    #to_factor has 1 (possibly multiplied) prime divisor?
+            #    break
         if to_factor <= 1:
             break
         #Might be redundant!
