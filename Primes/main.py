@@ -393,6 +393,11 @@ def factor(to_factor: int, method: Callable[[int], Generator[
             if prime ** 2 > to_factor:
                 found_square = True
                 print("Found a prime remainder?")
+                for _, testprime in method(to_factor):
+                    if to_factor % testprime == 0:
+                        to_factor, number_of_divisions = reduce(to_factor, testprime)
+                        factors.append((testprime, number_of_divisions))
+                        break
                 #to_factor has 1 (possibly multiplied) prime divisor?
                 break
         if to_factor <= 1:
