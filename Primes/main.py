@@ -3,7 +3,7 @@
 import sys
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Optional, Tuple, List, Generator, Callable
+from typing import Optional, Tuple, List, Generator
 import warnings
 
 #pylint: disable=C0413,E0401
@@ -230,8 +230,9 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     finally:
         if save_to is not None:
             save_to.close()
+#pylint: enable=R0911,R0912,R0913,R0914,R0915
 
-
+#pylint:disable=R0913
 def correct_prime_guess(upto: Optional[int] = None, *,
                         list_all: bool = False,
                         print_guesses: bool = False,
@@ -255,6 +256,7 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             print_specific=print_guesses,
             first_greater=first_greater,
         )
+#pylint:enable=R0913
 
 
 def get_last_prime() -> Tuple[int, int]:
@@ -322,7 +324,6 @@ def memory_factor_list(to_factor: int) -> Generator[int, None, None]:
     using memory only."""
     for mprime in yield_primes_memory(to_factor):
         yield mprime[1]
-    return None
 
 
 def correct_factor_list(to_factor: int) -> Generator[int, None, None]:
@@ -357,11 +358,13 @@ def percent_integers_unknown_factors():
                 probability *= 1 - 1 / prime
     return probability
 
-def factor(to_factor: int, method: Callable[[int], Generator[
-    tuple[int, int], None, None]] = correct_prime_guess) -> List[Tuple[int, int]]:
+#pylint:disable=R0912
+def factor(to_factor: int, method = correct_prime_guess) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
-    Note that on the PC, this function can only factor integers perfectly divisible by the prime numbers I've discovered so far in the list."""
+    The method should be a prime generator with an argument to set the highest prime to guess.
+    Note that on the PC, this function can only factor integers perfectly divisible
+      by the prime numbers I've discovered so far in the list."""
 
     def reduce(number: int, divisor: int) -> Tuple[int, int]:
         """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
@@ -382,7 +385,7 @@ def factor(to_factor: int, method: Callable[[int], Generator[
         return [(1, 1)]
     found_square = False
     while to_factor > 1 and not found_square:
-        for _, prime in method(to_factor):
+        for _, prime in method(to_factor, list_all=True):
             if to_factor % prime == 0:
                 to_factor, number_of_divisions = reduce(to_factor, prime)
                 factors.append((prime, number_of_divisions))
@@ -393,7 +396,7 @@ def factor(to_factor: int, method: Callable[[int], Generator[
             if prime ** 2 > to_factor:
                 found_square = True
                 print("Found a prime remainder?")
-                for _, testprime in method(to_factor):
+                for _, testprime in method(to_factor, list_all=True):
                     if to_factor % testprime == 0:
                         to_factor, number_of_divisions = reduce(to_factor, testprime)
                         factors.append((testprime, number_of_divisions))
@@ -415,6 +418,7 @@ def factor(to_factor: int, method: Callable[[int], Generator[
         warnings.warn(factor_failure, UserWarning)
         return factors
     return factors
+#pylint:enable=R0912
 
 
 def factors_as_string(factors: List[Tuple[int, int]]):
@@ -543,8 +547,10 @@ if __name__ == '__main__':
     print("Huge number:", A)
     print("Slightly smaller:", SLIGHTLY_SMALLER_A)
     B = A // SLIGHTLY_SMALLER_A
-    print(B,
-          "was calculated by dividing that huge number by a slightly smaller but still huge number.")
+    print(
+        B,
+        "was calculated by dividing that huge number by a slightly smaller but still huge number."
+    )
     print("It's factors are", end=" ")
     print(factors_as_string(factor(B)))
     print(-15, "'s factors are", sep="", end=" ")
