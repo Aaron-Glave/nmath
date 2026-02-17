@@ -31,7 +31,7 @@ def write_backupfile():
     cursor = con.cursor()
     input_line_number = 0
     output_line_number = 0
-    #TODO: ITERATE THROUGH THE DATABASE WITH YOUR CURSOR
+    #TODO: ITERATE THROUGH THE DATABASE WITH YOUR CURSORGIT
     #set_prime_nums had the last 30 tuples (nth_prime, prime)
     #set_prime_nums = deque()
 
