@@ -3,27 +3,47 @@
 import sys
 from collections import deque
 import os
+import sqlite3
 
 import main
 
 #File I save the fixed sprimelist.txt file to.
 #Check it before you rename it to main.SPRIMELIST
 FIXED_ISH_NAME = "fix_ish_sprimelist.txt"
+#TODO INTERACT WITH primesDB
+#primesDB is an array of (nth_prime, prime) rows
+FIXED_ISH_DB = "sorted_primes_db.db"
 
+exists_query = f"SELECT 1 FROM primesDB WHERE nth_prime = ? LIMIT 1"
+insert_query = "INSERT INTO primesDB (nth_prime, prime) VALUES (?, ?)"
+clear_query = "DELETE FROM primesDB;"
+select_query = "SELECT * FROM primesDB WHERE nth_prime = ?"
+order_query = "SELECT nth_prime, prime FROM primesDB ORDER BY nth_prime"
 
 def write_backupfile():
     """Writes a copy of the prime list to FIXED_ISH_NAME, skipping prime numbers we've already seen.
-    Dad recommended to use the sort() function instead."""
+       Dad recommended to use the sort() function instead.
+       See https://docs.python.org/3/library/sqlite3.html#sqlite3-howtos
+       Table: primesDB(nth_prime, prime)
+       """
+    con = sqlite3.connect(FIXED_ISH_DB)
+    con.executescript(clear_query)
+    cursor = con.cursor()
     input_line_number = 0
     output_line_number = 0
-    #set_prime_nums has the last 64 tuples (nth_prime, prime)
-    set_prime_nums = deque()
+    #TODO: ITERATE THROUGH THE DATABASE WITH YOUR CURSOR
+    #set_prime_nums had the last 30 tuples (nth_prime, prime)
+    #set_prime_nums = deque()
 
     with open(FIXED_ISH_NAME, "w", encoding='ascii') as f:
         for nth_prime, prime in main.yield_and_write_primes(
                 upto=main.get_last_prime()[1], list_all=True):
-            if nth_prime <= 25:
-                continue
+            #I shouldn't have to memorize the length of the in-memory list of prime numbers!
+            cursor.execute(exists_query, (nth_prime,))
+            if cursor.fetchone() is None:
+                cursor.execute(insert_query, (nth_prime, prime))
+            #if nth_prime <= 25:
+            #    continue
 
             #Now we know we're reading lines from the file.
             input_line_number += 1  #We're gonna start at line 1.
