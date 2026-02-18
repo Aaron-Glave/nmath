@@ -46,7 +46,7 @@ class TestCorrectPrimes(unittest.TestCase):
         self.assertEqual((26, 101), primes[26-1])
         #Re-run the search to check that our file already contains the prime we're looking for
         primes = tuple(correct_prime_guess(
-            big_enough, comments=comments, target_n=26,list_all=True)
+            big_enough, comments=comments, target_n=26, list_all=True)
         )
         print(primes[26-1])
         self.assertEqual((26, 101), primes[26 - 1])
