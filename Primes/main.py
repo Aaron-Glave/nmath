@@ -99,7 +99,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     """Returns list of tuples [(1-based prime index, prime number)].
     I typically call those nth_prime, prime.
     Note that unless you specify list_all to be true,
-    I will start yielding newly discovered primes only"""
+    I will only yield newly discovered primes!"""
     save_to: Optional[TextIOWrapper] = None
     try:
         if not SHOULD_WRITE:
@@ -362,9 +362,7 @@ def percent_integers_unknown_factors():
 def factor(to_factor: int, method = correct_prime_guess) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
-    The method should be a prime generator with an argument to set the highest prime to guess.
-    Note that on the PC, this function can only factor integers perfectly divisible
-      by the prime numbers I've discovered so far in the list."""
+    The method should be a prime generator with an argument to set the highest prime to guess."""
 
     def reduce(number: int, divisor: int) -> Tuple[int, int]:
         """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
