@@ -441,8 +441,9 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
     Note that the gap this function finds CAN appear again in my list beyond the prime numbers I return."""
     previous_prime = (1, ALL_PRIMES_UNDER_100[0])
     next_prime = previous_prime
-    current_greatest_gap: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int] = (((1, 2), (1, 2)),
-                                                                                 0)
+    current_greatest_gap: Tuple[Tuple[
+        Tuple[int, int], Tuple[int, int]
+    ], int] = (((1, 2), (1, 2)), 0)
 
     for i in range(1, len(ALL_PRIMES_UNDER_100)):
         next_prime = (i + 1, ALL_PRIMES_UNDER_100[i])
