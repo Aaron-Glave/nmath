@@ -350,12 +350,12 @@ def percent_integers_unknown_factors():
     """Returns the percentage chance that a number isn't divisible by any of our known primes."""
     probability = 1
     for prime in ALL_PRIMES_UNDER_100:
-        probability *= 1 - 1 / prime
+        probability *= 1 - (1 / prime)
     if SHOULD_WRITE:
         with open(SPRIMELIST, mode='r', encoding='ascii') as sprimelist:
             for line in sprimelist:
                 prime = int(line.strip('\n').split(' ')[1])
-                probability *= 1 - 1 / prime
+                probability *= 1 - (1 / prime)
     return probability
 
 #pylint:disable=R0912
