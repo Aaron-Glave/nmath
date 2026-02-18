@@ -529,8 +529,7 @@ if __name__ == '__main__':
     print("Huge number:", A)
     print("Slightly smaller:", SLIGHTLY_SMALLER_A)
     B = A // SLIGHTLY_SMALLER_A
-    print(
-        B,
+    print(B,
         "was calculated by dividing that huge number by a slightly smaller but still huge number."
     )
     print("It's factors are", end=" ")
