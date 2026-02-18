@@ -3,7 +3,7 @@
 import sys
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Optional, Tuple, List, Generator, Callable
+from typing import Optional, Tuple, List, Generator
 import warnings
 
 #pylint: disable=C0413,E0401
@@ -85,7 +85,8 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
         guess += 2
 
 
-#A FUNCTION TO ITERATE THROUGH A FILE INSTEAD OF A LIST. NOTE: DON'T RUN THIS ON YOUR PHONE! TEST THIS TO MAKE SURE IT WORKS!
+#A FUNCTION TO ITERATE THROUGH A FILE INSTEAD OF A LIST. NOTE: DON'T RUN THIS ON YOUR PHONE!
+# TEST THIS TO MAKE SURE IT WORKS!
 #I don't care that this is a complex function.
 #pylint: disable=R0911,R0912,R0913,R0914,R0915
 def yield_and_write_primes(upto: Optional[int] = None, *,
@@ -97,7 +98,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     tuple[int, int], None, None]:
     """Returns list of tuples [(1-based prime index, prime number)].
     I typically call those nth_prime, prime.
-    Note that unless you specify list_all to be true, I will start yielding newly discovered primes only"""
+    Note that unless you specify list_all to be true,
+    I will start yielding newly discovered primes only"""
     save_to: Optional[TextIOWrapper] = None
     try:
         if not SHOULD_WRITE:
@@ -228,8 +230,9 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     finally:
         if save_to is not None:
             save_to.close()
+#pylint: enable=R0911,R0912,R0913,R0914,R0915
 
-
+#pylint:disable=R0913
 def correct_prime_guess(upto: Optional[int] = None, *,
                         list_all: bool = False,
                         print_guesses: bool = False,
@@ -253,6 +256,7 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             print_specific=print_guesses,
             first_greater=first_greater,
         )
+#pylint:enable=R0913
 
 
 def get_last_prime() -> Tuple[int, int]:
@@ -314,12 +318,12 @@ def gen_primes_up_to(max_prime=2):
     """Returns a list of primes up to max_prime."""
     return list(correct_prime_guess(max_prime, list_all=True))
 
+
 def memory_factor_list(to_factor: int) -> Generator[int, None, None]:
     """Returns a correct list of factors of the number to_factor,
     using memory only."""
     for mprime in yield_primes_memory(to_factor):
         yield mprime[1]
-    return None
 
 
 def correct_factor_list(to_factor: int) -> Generator[int, None, None]:
@@ -341,24 +345,26 @@ def correct_factor_list(to_factor: int) -> Generator[int, None, None]:
     yield from memory_factor_list(to_factor)
     return None
 
+
 def percent_integers_unknown_factors():
     """Returns the percentage chance that a number isn't divisible by any of our known primes."""
     probability = 1
     for prime in ALL_PRIMES_UNDER_100:
-        probability *= 1 - 1/prime
+        probability *= 1 - (1 / prime)
     if SHOULD_WRITE:
         with open(SPRIMELIST, mode='r', encoding='ascii') as sprimelist:
             for line in sprimelist:
                 prime = int(line.strip('\n').split(' ')[1])
-                probability *= 1 - 1/prime
+                probability *= 1 - (1 / prime)
     return probability
 
-
-def factor(to_factor: int, method: Callable[[int], Generator[
-    tuple[int, int], None, None]] = correct_prime_guess) -> List[Tuple[int, int]]:
+#pylint:disable=R0912
+def factor(to_factor: int, method = correct_prime_guess) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
-    Note that on the PC, this function can only factor integers perfectly divisible by the prime numbers I've discovered so far in the list."""
+    The method should be a prime generator with an argument to set the highest prime to guess.
+    Note that on the PC, this function can only factor integers perfectly divisible
+      by the prime numbers I've discovered so far in the list."""
 
     def reduce(number: int, divisor: int) -> Tuple[int, int]:
         """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
@@ -377,18 +383,14 @@ def factor(to_factor: int, method: Callable[[int], Generator[
         return [(0, 1)]
     elif to_factor == 1:
         return [(1, 1)]
-    while to_factor > 1:
-        for _, prime in method(to_factor):
+    done_factoring = False
+    while to_factor > 1 and not done_factoring:
+        for _, prime in method(to_factor, list_all=True):
             if to_factor % prime == 0:
                 to_factor, number_of_divisions = reduce(to_factor, prime)
                 factors.append((prime, number_of_divisions))
-                break
-        if to_factor <= 1:
-            break
-        for _, prime in correct_prime_guess(to_factor, print_guesses=True):
-            if to_factor % prime == 0:
-                to_factor, number_of_divisions = reduce(to_factor, prime)
-                factors.append((prime, number_of_divisions))
+                if to_factor == 1:
+                    done_factoring = True
                 break
 
     if to_factor > 1:
@@ -397,10 +399,12 @@ def factor(to_factor: int, method: Callable[[int], Generator[
         warnings.warn(factor_failure, UserWarning)
         return factors
     return factors
+#pylint:enable=R0912
 
 
 def factors_as_string(factors: List[Tuple[int, int]]):
-    """Given a list of factors for a number (often printed by the factor(...) function, nicely prints the number represented as a product of its factors)."""
+    """Given a list of factors for a number (often found with the factor(...) function),
+    nicely prints the number represented as a product of its factors)."""
     factor_count = 0
     strs_to_return = []
     for found_factor in factors:
@@ -437,7 +441,9 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
     Note that the gap this function finds CAN appear again in my list beyond the prime numbers I return."""
     previous_prime = (1, ALL_PRIMES_UNDER_100[0])
     next_prime = previous_prime
-    current_greatest_gap: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int] = (((1, 2), (1, 2)),0)
+    current_greatest_gap: Tuple[Tuple[
+        Tuple[int, int], Tuple[int, int]
+    ], int] = (((1, 2), (1, 2)), 0)
 
     for i in range(1, len(ALL_PRIMES_UNDER_100)):
         next_prime = (i + 1, ALL_PRIMES_UNDER_100[i])
@@ -478,12 +484,13 @@ def say_gap_of_100():
             gap = next_prime[1] - previous_prime[1]
             if gap == 100:
                 found_gap_100 = ((previous_prime, next_prime),
-                                        next_prime[1] - previous_prime[1])
+                                 next_prime[1] - previous_prime[1])
                 say_gap_message(found_gap_100)
                 return found_gap_100
             previous_prime = next_prime
     print("Either you're using your phone or you don't know enough primes.")
     return found_gap_100
+
 
 def get_int() -> int:
     """Get an integer from the user."""
@@ -523,7 +530,8 @@ if __name__ == '__main__':
     print("Slightly smaller:", SLIGHTLY_SMALLER_A)
     B = A // SLIGHTLY_SMALLER_A
     print(B,
-          "was calculated by dividing that huge number by a slightly smaller but still huge number.")
+        "was calculated by dividing that huge number by a slightly smaller but still huge number."
+    )
     print("It's factors are", end=" ")
     print(factors_as_string(factor(B)))
     print(-15, "'s factors are", sep="", end=" ")

@@ -22,6 +22,8 @@ class AllPrimesInOrder(unittest.TestCase):
             last_n = nprime
             last_p = prime
         print("Tested", line_in_list, "lines and they all looked good.")
+        print(f"Check your highest known prime:",
+              f"The {last_n}nth prime is: {last_p}.", sep="\n")
 
 
 if __name__ == '__main__':

@@ -50,7 +50,7 @@ def write_backupfile():
 if __name__ == "__main__":
     if FIXED_ISH_NAME in os.listdir():
         print(f"Somewhat fixed {FIXED_ISH_NAME} exists.")
-        should_rewrite = input("Do you want to rewrite that file? (y/n) ")
+        should_rewrite = input("Do you want to rewrite that file? (y/n) ").lower()
         if should_rewrite != "y":
             sys.exit()
     write_backupfile()
