@@ -74,7 +74,7 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
             if print_specific == nth_prime:
                 print(str(nth_prime) + " prime is", guess)
             memory_list.append(guess)
-            if len(memory_list) % 100000 == 0 and print_specific:
+            if len(memory_list) % 10000 == 0 and print_specific:
                 print(len(memory_list), "th prime is ", guess, sep='')
             yield nth_prime, guess
 
