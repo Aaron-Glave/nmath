@@ -20,7 +20,7 @@ sys.set_int_max_str_digits(100000)
 SPRIMELIST = "sprimelist.txt"
 
 #Set this to False on your phone!
-SHOULD_WRITE = True
+SHOULD_WRITE = False
 
 ALL_PRIMES_UNDER_100 = [
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
@@ -66,11 +66,14 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
             if guess % prime == 0:
                 isprime = False
                 break
+            if prime*prime > guess:
+                isprime = True
+                break
         if isprime:
             if print_specific == nth_prime:
                 print(str(nth_prime) + " prime is", guess)
             memory_list.append(guess)
-            if len(memory_list) % 100 == 0 and print_specific:
+            if len(memory_list) % 100000 == 0 and print_specific:
                 print(len(memory_list), "th prime is ", guess, sep='')
             yield nth_prime, guess
 
