@@ -90,6 +90,8 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
 #I don't care that this is a complex function.
 #pylint: disable=R0911,R0912,R0913,R0914,R0915
 def yield_and_write_primes(upto: Optional[int] = None, *,
+                           start_at: Optional[int] = None,
+                           save_to: Optional[TextIOWrapper] = None,
                            list_all: bool = False,
                            print_guesses: bool = False,
                            first_greater: bool = False,
@@ -116,6 +118,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
         nth_prime = 1
         for prime in ALL_PRIMES_UNDER_100:
+            if start_at is not None and prime < start_at:
+                continue
             if print_specific:
                 if prime == target_n:
                     print(nth_prime, "prime is", prime)
@@ -141,6 +145,9 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         for line in save_to:
             any_primes_found = True
             nth_prime, prime = map(int, line.strip('\n').split(" "))
+            if start_at is not None and prime < start_at:
+                continue
+
             prime_to_start = prime
 
             #Depending on the arguments, we may or may not yield primes in our file.
@@ -169,6 +176,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         #YOU NEED TO START WHERE YOU LEFT OFF LAST TIME
         #Done scanning the existing file, now we figure out more.
         # NOTE: I WILL TO LOOP THROUGH THE ENTIRE FILE I STORED WHEN I CHECK MY GUESS IS PRIME!
+        # You don't need to worry about start_at anymore!
         if prime_to_start != 0:
             guess = prime_to_start + 2
         calculate_more = True
@@ -191,25 +199,28 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 continue
 
             save_to.seek(0)
-            #At this point we know the guess ISN'T divisible by 2, so we can stop once the prime in our loop > guess/2
-            #We add 1 after shifting to guarantee that half_guess*2 > guess.
-            half_guess = (guess >> 1) + 1
-            greater_than_half = False
+
+            # The Sieve of Eratosthenes:
+            # After testing divisibility by every prime number
+            # less than the SQUARE ROOT of the guess we're testing,
+            # we know for sure that it's prime!
+            square_is_bigger = False
+
             for line in save_to:
                 _no_need, prime = map(int, line.strip('\n').split(" "))
                 if guess % prime == 0:
                     isprime = False
                     break
-                if prime > half_guess:
-                    greater_than_half = True
+                if prime * prime > guess:
+                    square_is_bigger = True
                     break
-            if greater_than_half:
-                greater_than_half = False
+            if square_is_bigger:
+                square_is_bigger = False
                 #We already know the prime in our loop > guess/2, so we know our guess is prime.
                 isprime = True
             if isprime:
                 next_prime = (nth_prime, guess)
-                if print_guesses and nth_prime % 10 == 0:
+                if print_guesses and nth_prime % 2500 == 0:
                     print(nth_prime, "th prime: ", guess, sep="")
                 if print_specific == nth_prime:
                     print(str(nth_prime) + " prime is", guess)
@@ -230,10 +241,13 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     finally:
         if save_to is not None:
             save_to.close()
+
+
 #pylint: enable=R0911,R0912,R0913,R0914,R0915
 
 #pylint:disable=R0913
 def correct_prime_guess(upto: Optional[int] = None, *,
+                        start_at: Optional[int] = None,
                         list_all: bool = False,
                         print_guesses: bool = False,
                         first_greater: bool = False,
@@ -244,6 +258,7 @@ def correct_prime_guess(upto: Optional[int] = None, *,
     if SHOULD_WRITE:
         yield from yield_and_write_primes(
             upto=upto,
+            start_at=start_at,
             list_all=list_all,
             print_guesses=print_guesses,
             first_greater=first_greater,
@@ -256,6 +271,8 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             print_specific=print_guesses,
             first_greater=first_greater,
         )
+
+
 #pylint:enable=R0913
 
 
@@ -358,8 +375,9 @@ def percent_integers_unknown_factors():
                 probability *= 1 - (1 / prime)
     return probability
 
+
 #pylint:disable=R0912
-def factor(to_factor: int, method = correct_prime_guess) -> List[Tuple[int, int]]:
+def factor(to_factor: int, method=correct_prime_guess) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
     The method should be a prime generator with an argument to set the highest prime to guess."""
@@ -397,6 +415,8 @@ def factor(to_factor: int, method = correct_prime_guess) -> List[Tuple[int, int]
         warnings.warn(factor_failure, UserWarning)
         return factors
     return factors
+
+
 #pylint:enable=R0912
 
 
@@ -509,7 +529,8 @@ def print_next_prime_greater(target: int) -> None:
             upto=target,
             first_greater=True,
             list_all=True,
-            print_guesses=True
+            print_guesses=True,
+            start_at=target
     ):
         if prime[1] >= target:
             if prime[1] == target:
@@ -528,8 +549,8 @@ if __name__ == '__main__':
     print("Slightly smaller:", SLIGHTLY_SMALLER_A)
     B = A // SLIGHTLY_SMALLER_A
     print(B,
-        "was calculated by dividing that huge number by a slightly smaller but still huge number."
-    )
+          "was calculated by dividing that huge number by a slightly smaller but still huge number."
+          )
     print("It's factors are", end=" ")
     print(factors_as_string(factor(B)))
     print(-15, "'s factors are", sep="", end=" ")
