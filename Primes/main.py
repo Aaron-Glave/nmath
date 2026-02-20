@@ -66,6 +66,7 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
             if guess % prime == 0:
                 isprime = False
                 break
+            #Use the Sieve of Eratosthenes!
             if prime*prime > guess:
                 isprime = True
                 break
