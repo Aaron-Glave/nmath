@@ -16,7 +16,8 @@ sys.path.pop()
 
 sys.set_int_max_str_digits(100000)
 
-#NOTE: Every line in this file is an integer referring to which prime number is listed, followed by a space, followed by a prime number, followed by a newline character.
+#NOTE: Every line in this file is an integer referring to which prime number is listed,
+# followed by a space, followed by a prime number, followed by a newline character.
 SPRIMELIST = "sprimelist.txt"
 
 #Set this to False on your phone!
@@ -42,7 +43,8 @@ def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None
         save_to.write(str(prime_to_write[0]) + " " + str(prime_to_write[1]) + '\n')
 
 
-#We don't even have a function to read the whole file into a list because that would use a TON of memory.
+#We don't even have a function to read the whole file into a list.
+# That would use a TON of memory.
 def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int] = None,
                         first_greater: bool = False) -> Generator[tuple[int, int], None, None]:
     """Returns list of tuples [(1-based prime index, prime number)].
@@ -80,7 +82,7 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
 
             if first_greater and not under_or_at_limit(nth_prime, upto):
                 found_first_greater = True
-            #Only increment the nth_prime value AFTER printing the current nth_prime you figured out.
+            #Only increment the nth_prime value AFTER printing the current nth_prime.
             nth_prime += 1
 
         if (not under_or_at_limit(guess, upto) and not found_first_greater and
@@ -143,7 +145,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
             elif is_over:  #Stop when we're done listing low prime numbers.
                 return
             yield nth_prime, prime
-            #Doing this every time we yield guarantees that we will always start with nth_prime larger than the length of all_primes_under_100.
+            #Doing this every time we yield guarantees that we will always start with nth_prime
+            # larger than the length of all_primes_under_100.
             nth_prime += 1
 
         save_to.seek(0)
