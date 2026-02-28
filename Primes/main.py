@@ -67,7 +67,7 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
                 isprime = False
                 break
             #Use the Sieve of Eratosthenes!
-            if prime*prime > guess:
+            if prime * prime > guess:
                 isprime = True
                 break
         if isprime:
@@ -105,12 +105,23 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     """Returns list of tuples [(1-based prime index, prime number)].
     I typically call those nth_prime, prime.
     Note that unless you specify list_all to be true,
-    I will only yield newly discovered primes!"""
+    I will only yield newly discovered primes!
+    If you do and you don't specify your target,
+      only known primes will be yielded."""
     save_to: Optional[TextIOWrapper] = None
+    # You are only trying to read through the list when:
+    # You want to look through your existing list
+    # You didn't specify that you're looking for a particular prime.
+    # - This weird logic is because when we're looking for a specific prime,
+    #   we don't know whether we already know our target until we start reading through our list.
+    read_only = list_all and upto is not None and target_n is None
     try:
         if not SHOULD_WRITE:
             raise PhoneBanned()
-        save_to = open(SPRIMELIST, mode="a+", encoding='ascii')
+        if read_only:
+            save_to = open(SPRIMELIST, mode="r", encoding="ascii")
+        else:
+            save_to = open(SPRIMELIST, mode="a+", encoding='ascii')
         print_specific = False
         if first_greater:
             print_specific = True
@@ -122,8 +133,6 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
         nth_prime = 1
         for prime in ALL_PRIMES_UNDER_100:
-            if start_at is not None and prime < start_at:
-                continue
             if print_specific:
                 if prime == target_n:
                     print(nth_prime, "prime is", prime)
@@ -149,8 +158,6 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         for line in save_to:
             any_primes_found = True
             nth_prime, prime = map(int, line.strip('\n').split(" "))
-            if start_at is not None and prime < start_at:
-                continue
 
             prime_to_start = prime
 
@@ -176,6 +183,10 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 yield nth_prime, prime
         if any_primes_found:
             nth_prime += 1
+
+        #1. Return early
+        if read_only:
+            return
 
         #YOU NEED TO START WHERE YOU LEFT OFF LAST TIME
         #Done scanning the existing file, now we figure out more.
@@ -258,7 +269,9 @@ def correct_prime_guess(upto: Optional[int] = None, *,
                         target_n: Optional[int] = None,
                         comments: Optional[dict[str, str]] = None) -> Generator[
     tuple[int, int], None, None]:
-    """If you're using a phone (SHOULD_WRITE is False), we look for primes using nothing but memory. Else, we use our "sprimelist.txt" file."""
+    """If you're using a phone (SHOULD_WRITE is False),
+    we look for primes using nothing but memory.
+    Else, we use our "sprimelist.txt" file."""
     if SHOULD_WRITE:
         yield from yield_and_write_primes(
             upto=upto,

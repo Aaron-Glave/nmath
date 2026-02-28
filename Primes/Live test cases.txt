@@ -6,7 +6,6 @@ Biggest gap between primes on phone:
 Note that when using the phone, the main.py program will print an additional line for every 100 primes it stores in its list.
 
 
-
 Test cases in either case:
     no 1 time yes 48 should print:
         2^4 * 3^1
