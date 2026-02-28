@@ -151,7 +151,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
         any_primes_found = False
 
-        guess = 101 #NOTE: 101 is the default because 101 is the first prime after 97.
+        guess = 101  #NOTE: 101 is the default because 101 is the first prime after 97.
         # ^ That's the last prime in the default list.
         #prime_to_start helps us figure out what the first guess should be.
         # We set prime_to_start to the last prime we found in the file,
@@ -289,8 +289,6 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             print_specific=print_guesses,
             first_greater=first_greater,
         )
-
-
 #pylint:enable=R0913
 
 
@@ -394,7 +392,6 @@ def percent_integers_unknown_factors():
     return probability
 
 
-#pylint:disable=R0912
 def factor(to_factor: int, method=correct_prime_guess) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
@@ -433,9 +430,6 @@ def factor(to_factor: int, method=correct_prime_guess) -> List[Tuple[int, int]]:
         warnings.warn(factor_failure, UserWarning)
         return factors
     return factors
-
-
-#pylint:enable=R0912
 
 
 def factors_as_string(factors: List[Tuple[int, int]]):
