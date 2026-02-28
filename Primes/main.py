@@ -114,7 +114,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     # You didn't specify that you're looking for a particular prime.
     # - This weird logic is because when we're looking for a specific prime,
     #   we don't know whether we already know our target until we start reading through our list.
-    read_only = list_all and upto is not None and target_n is None
+    read_only = list_all and upto is None and target_n is None
     try:
         if not SHOULD_WRITE:
             raise PhoneBanned()
