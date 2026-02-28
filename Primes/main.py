@@ -1,5 +1,4 @@
 """Program designed to talk about prime numbers."""
-#pylint: disable=C0301
 import sys
 from io import TextIOWrapper
 from pathlib import Path
@@ -96,7 +95,6 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
 #I don't care that this is a complex function.
 #pylint: disable=R0911,R0912,R0913,R0914,R0915
 def yield_and_write_primes(upto: Optional[int] = None, *,
-                           start_at: Optional[int] = None,
                            save_to: Optional[TextIOWrapper] = None,
                            list_all: bool = False,
                            print_guesses: bool = False,
@@ -153,10 +151,12 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
         any_primes_found = False
 
-        guess = 101  #NOTE: 101 is the default because 101 is the first prime after 97, the last in the default list
+        guess = 101 #NOTE: 101 is the default because 101 is the first prime after 97.
+        # ^ That's the last prime in the default list.
         #prime_to_start helps us figure out what the first guess should be.
         # We set prime_to_start to the last prime we found in the file,
-        # so if prime_to_start is 0 at the end of our loop, we shouldn't change our initial guess of 101.
+        # so if prime_to_start is 0 at the end of our loop,
+        # we shouldn't change our initial guess of 101.
         prime_to_start = 0
         for line in save_to:
             any_primes_found = True
@@ -265,7 +265,6 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
 #pylint:disable=R0913
 def correct_prime_guess(upto: Optional[int] = None, *,
-                        start_at: Optional[int] = None,
                         list_all: bool = False,
                         print_guesses: bool = False,
                         first_greater: bool = False,
@@ -278,7 +277,6 @@ def correct_prime_guess(upto: Optional[int] = None, *,
     if SHOULD_WRITE:
         yield from yield_and_write_primes(
             upto=upto,
-            start_at=start_at,
             list_all=list_all,
             print_guesses=print_guesses,
             first_greater=first_greater,
@@ -462,7 +460,10 @@ def factors_as_string(factors: List[Tuple[int, int]]):
 
 def say_gap_message(gap_to_print: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int]):
     """Prints info about the gap passed
-    Organization: ((previous_prime_tuple, next_prime_tuple), next_prime_tuple[1] - previous_prime_tuple[1])
+    Organization: (
+        (previous_prime_tuple, next_prime_tuple),
+        next_prime_tuple[1] - previous_prime_tuple[1]
+    )
         Each prime_tuple: (
             index of the prime number starting at 1 and increasing by 1 for each prime,
             the prime number itself
@@ -476,7 +477,8 @@ def say_gap_message(gap_to_print: Tuple[Tuple[Tuple[int, int], Tuple[int, int]],
 def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int]:
     """Prints and returns the largest gap between adjacent prime numbers we know,
     returning the first 2 prime numbers which are that far apart, as well as the size of the gap.
-    Note that the gap this function finds CAN appear again in my list beyond the prime numbers I return."""
+    Note that the gap this function finds CAN repeat;
+    I just return a reference to the first time I find that gap."""
     previous_prime = (1, ALL_PRIMES_UNDER_100[0])
     next_prime = previous_prime
     current_greatest_gap: Tuple[Tuple[
@@ -550,7 +552,6 @@ def print_next_prime_greater(target: int) -> None:
             first_greater=True,
             list_all=True,
             print_guesses=True,
-            start_at=target
     ):
         if prime[1] >= target:
             if prime[1] == target:
@@ -594,7 +595,8 @@ if __name__ == '__main__':
         )
         print(_S)
     elif input(
-            "Do you want to find a prime greater than a target number N?\nSay Yes if so, then I'll ask you for your target number. "
+            "Do you want to find a prime greater than a target number N?\n"
+            + "Say Yes if so, then I'll ask you for your target number. "
     ).lower() == "yes":
         print_next_prime_greater(get_int())
     else:
