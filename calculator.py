@@ -1,10 +1,10 @@
 """A very simple calculator"""
 
 
-valid_chars = set(" (0123456789)+-**/")
+valid_chars = set(" (0.123456789)+-**/")
 while True:
     print("Expressions are numbers or"
-    " operators: + - * / ^",
+    " operators: . + - * / ^",
     "Parentheses () are OK.",
     sep="\n")
     expression = input("Expression: ").replace("^", "**")
