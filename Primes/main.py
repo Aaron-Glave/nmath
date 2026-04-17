@@ -109,7 +109,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     If you do and you don't specify your target,
       only known primes will be yielded."""
     save_to: Optional[TextIOWrapper] = None
-    # You are only trying to read through the list when:
+    #You are only trying to read through the list when:
     # You want to look through your existing list
     # You didn't specify that you're looking for a particular prime.
     # - This weird logic is because when we're looking for a specific prime,
@@ -153,6 +153,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
         guess = 101  #NOTE: 101 is the default because 101 is the first prime after 97.
         # ^ That's the last prime in the default list.
+
         #prime_to_start helps us figure out what the first guess should be.
         # We set prime_to_start to the last prime we found in the file,
         # so if prime_to_start is 0 at the end of our loop,
@@ -187,7 +188,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         if any_primes_found:
             nth_prime += 1
 
-        #1. Return early
+        #Return early if the read_only flag is set.
         if read_only:
             return
 
@@ -218,7 +219,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
             save_to.seek(0)
 
-            # The Sieve of Eratosthenes:
+            #The Sieve of Eratosthenes:
             # After testing divisibility by every prime number
             # less than the SQUARE ROOT of the guess we're testing,
             # we know for sure that it's prime!
