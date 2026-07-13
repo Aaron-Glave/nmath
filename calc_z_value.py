@@ -8,7 +8,7 @@ def get_z_value(confidence_level):
       of the normal distribution
     equals the passed confidence level."""
     alpha = 1 - confidence_level
-    # inv_cdf(p) calculates the inverse cumulative distribution function;
+    # inv_cdf(p) calculates the inverse cumulative distribution function:
     # P(x < X) <= p
     return NormalDist().inv_cdf(1 - alpha / 2)
 
