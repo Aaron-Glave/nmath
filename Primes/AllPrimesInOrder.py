@@ -1,7 +1,7 @@
 import unittest
 
 import main
-from main import correct_prime_guess, get_last_prime
+from main import correct_prime_guess
 
 class AllPrimesInOrder(unittest.TestCase):
     def test_in_order(self):

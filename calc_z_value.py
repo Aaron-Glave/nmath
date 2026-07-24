@@ -17,11 +17,11 @@ if __name__ == "__main__":
     print("z-value for 0.9 confidence"
     " rounded to 3 digits:",
     round(get_z_value(0.9), 3))
-    max_confidence_level = 0.99999999999999
+    MAX_CONFIDENCE_LEVEL = 0.99999999999999
     print("Maximum confidence level this code accepts:",
-    max_confidence_level)
+          MAX_CONFIDENCE_LEVEL)
     print("Maximum computable z_value:",
-    round(get_z_value(max_confidence_level)))
+          round(get_z_value(MAX_CONFIDENCE_LEVEL)))
     yourval = get_z_value(
         float(input("Your turn. Enter a"
         " confidence level in [0.5, 1) ")))
