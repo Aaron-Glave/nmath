@@ -5,12 +5,12 @@ from main import yield_and_write_primes, correct_prime_guess
 
 class TestCorrectPrimes(unittest.TestCase):
     @staticmethod
-    def prime_ints_up_to(max_of_primes: int, print_guesses: bool = False):
-        return tuple(map(lambda result: result[1], yield_and_write_primes(max_of_primes, print_guesses=print_guesses)))
+    def prime_ints_up_to(max_of_primes: int):
+        return tuple(map(lambda result: result[1], yield_and_write_primes(max_of_primes)))
 
     @staticmethod
-    def tuple_primes_up_to(max_of_primes: int, print_guesses: bool = False):
-        return tuple(yield_and_write_primes(max_of_primes, print_guesses=print_guesses))
+    def tuple_primes_up_to(max_of_primes: int):
+        return tuple(yield_and_write_primes(max_of_primes))
 
     def test_print_last_prime(self):
         pass
@@ -33,7 +33,7 @@ class TestCorrectPrimes(unittest.TestCase):
     def test_bigger_prime(self):
         shouldnt_be_last = 5
         print("Bigger than 5?")
-        primes = tuple(yield_and_write_primes(shouldnt_be_last, print_guesses=True, first_greater=True))
+        primes = tuple(yield_and_write_primes(shouldnt_be_last, first_greater=True))
         self.assertGreater(primes[-1][1], shouldnt_be_last)
         print("Yes.")
 
