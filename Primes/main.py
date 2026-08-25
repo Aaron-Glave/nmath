@@ -386,7 +386,6 @@ def percent_integers_unknown_factors():
 
 class Factorized:
     """Factors an integer and displays the factors"""
-
     @staticmethod
     def reduce(number: int, divisor: int) -> Tuple[int, int]:
         """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
@@ -397,30 +396,26 @@ class Factorized:
             number //= divisor
         return number, n
 
-    def __init__(
-            self, to_factor: int,
-            prime_source: Generator[
-                tuple[int, int], None, None
-            ] = correct_prime_guess(list_all=True),
-    ) -> None:
+    def __init__(self, to_factor: int) -> None:
         """Factorizes the passed integer using a Callable[
             [int], Generator[tuple[int, int], None, None]
         ] to factor it. The default factorization method is """
-        self.factors: list[tuple[int, int]] = []
+        self._factors: list[tuple[int, int]] = []
         self.factor_failure = None
+        prime_source = correct_prime_guess(list_all=True)
         if to_factor < 0:
-            self.factors.append((-1, 1))
+            self._factors.append((-1, 1))
             to_factor *= -1
         elif to_factor == 0:
-            self.factors = [(0, 1)]
+            self._factors = [(0, 1)]
         elif to_factor == 1:
-            self.factors = [(1, 1)]
+            self._factors = [(1, 1)]
         done_factoring = False
         while to_factor > 1 and not done_factoring:
             for _, prime in prime_source:
                 if to_factor % prime == 0:
                     to_factor, number_of_divisions = Factorized.reduce(to_factor, prime)
-                    self.factors.append((prime, number_of_divisions))
+                    self._factors.append((prime, number_of_divisions))
                     if to_factor == 1:
                         done_factoring = True
                     break
@@ -434,34 +429,38 @@ class Factorized:
         factor_count = 0
         strs_to_list = []
         ending = " * "
-        for factor in self.factors:
+        for factor in self._factors:
             factor_count += 1
-            if strs_to_list == len(self.factors):
+            if factor_count == len(self._factors):
                 ending = ""
             strs_to_list.append(f"{factor[0]} ^ {factor[1]}{ending}")
         return "".join(strs_to_list)
+
+    @property
+    def factors(self) -> list[tuple[int, int]]:
+        return self._factors
 
 
 '''def factor(
     to_factor: int,
     method= correct_prime_guess
 ) -> List[Tuple[int, int]]:
-    """Returns a list of factors for it's input.
+    """Returns a list of _factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
     The method should be a prime generator with an argument to set the highest prime to guess."""
 
     def reduce(number: int, divisor: int) -> Tuple[int, int]:
         """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
-        Basically factors out the divisor raised to the highest possible power."""
+        Basically _factors out the divisor raised to the highest possible power."""
         n = 0
         while number % divisor == 0:
             n += 1
             number //= divisor
         return number, n
 
-    factors = []
+    _factors = []
     if to_factor < 0:
-        factors.append((-1, 1))
+        _factors.append((-1, 1))
         to_factor *= -1
     elif to_factor == 0:
         return [(0, 1)]
@@ -472,7 +471,7 @@ class Factorized:
         for _, prime in method(to_factor, list_all=True):
             if to_factor % prime == 0:
                 to_factor, number_of_divisions = reduce(to_factor, prime)
-                factors.append((prime, number_of_divisions))
+                _factors.append((prime, number_of_divisions))
                 if to_factor == 1:
                     done_factoring = True
                 break
@@ -481,18 +480,18 @@ class Factorized:
         factor_failure = "I couldn't find a factor for " + str(
             to_factor) + ".\nIt might be divisible by prime numbers I haven't discovered."
         warnings.warn(factor_failure, UserWarning)
-        return factors
-    return factors'''
+        return _factors
+    return _factors'''
 
 
-'''def factors_as_string(factors: List[Tuple[int, int]]):
-    """Given a list of factors for a number (often found with the factor(...) function),
-    nicely prints the number represented as a product of its factors."""
+'''def factors_as_string(_factors: List[Tuple[int, int]]):
+    """Given a list of _factors for a number (often found with the factor(...) function),
+    nicely prints the number represented as a product of its _factors."""
     factor_count = 0
     strs_to_return = []
-    for found_factor in factors:
+    for found_factor in _factors:
         factor_count += 1
-        if factor_count == len(factors):
+        if factor_count == len(_factors):
             ending = ""
         else:
             ending = " * "
@@ -627,15 +626,15 @@ if __name__ == '__main__':
     print(B,
           "was calculated by dividing that huge number by a slightly smaller but still huge number."
           )
-    print("It's factors are", end=" ")
+    print("It's _factors are", end=" ")
     print(Factorized(B))
-    print(-15, "'s factors are", sep="", end=" ")
+    print(-15, "'s _factors are", sep="", end=" ")
     print(Factorized(-15))
-    print(36, "'s factors are", sep="", end=" ")
+    print(36, "'s _factors are", sep="", end=" ")
     print(Factorized(36))
-    print(63, "'s factors are", sep="", end=" ")
+    print(63, "'s _factors are", sep="", end=" ")
     print(Factorized(63))
-    print(147, "'s factors are", sep="", end=" ")
+    print(147, "'s _factors are", sep="", end=" ")
     print(Factorized(147))
 
     print("I will ask you a series of questions about what you want to do.")
