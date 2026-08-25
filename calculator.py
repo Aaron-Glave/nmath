@@ -29,9 +29,9 @@ def eval_expression(exp: str):
 
 
 
-def safe_eval(exp, retry_interactive=False):
-    if not retry_interactive:
-        return eval_expression(exp)
+def safe_eval(exp: str):
+    """Evaluates the string exp,
+    looping with user input until the expression is valid."""
     while True:
         try:
             return eval_expression(exp)
