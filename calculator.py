@@ -2,15 +2,28 @@
 from numbers import Number
 
 def eval_expression(exp: str):
+    """Evaluate a mathematical expression.
+    Arguments:
+        exp: str for a mathematical expression
+    Potential exceptions:
+        AssertionError if exp is not a mathematical expression
+        SyntaxError if exp is an invalid mathematical expression"""
     safe_chars = (set('0123456789()^+-*/\\')
         .issubset(exp))
-    error_msg_chars = ("Error: Unexpected char.\n"
-    "Expressions are numbers or"
-    " operators: . + - * / ^\n"
+    error_msg_chars = (f"Error: {exp} contains invalid chars.\n"
+    "Expressions are numbers 0-9 or"
+    " operators like . + - * / \\ ^\n"
     "Parentheses () are OK.")
     assert safe_chars, error_msg_chars
-    exp = exp.replace('\\', '/')
-    output = eval(exp)
+    exp = exp.replace('\\', '/').replace('^', '**')
+    try:
+        # pylint:disable=eval-used
+        # We know exp can only be a (possibly invalid) mathematical expression.
+        output = eval(exp)
+        # pylint:enable=eval-used
+    except SyntaxError as se:
+        se.add_note(f"{exp} is an invalid mathematical expression.")
+        raise se
     assert isinstance(output, Number)
     return output
 
@@ -27,19 +40,7 @@ def safe_eval(exp, retry_interactive=False):
 
 
 if __name__ == '__main__':
-    safe_eval('x=2')
-valid_chars = set(" (0.123456789)+-**/")
-"""while True:
-    print("
-    sep="\n")
-    expression = input("Expression: ").replace("^", "**")
-    if set(expression) <= valid_chars:
-        try:
-            #pylint:disable=W0123
-            print("Result:", eval(expression))
-            #pylint:enable=W0123
-        except SyntaxError:
-            print("Invalid expression")
-    else:
-        print("Invalid characters.")"""
-
+    try:
+        safe_eval('x=2')
+    except AssertionError as ae:
+        print(ae)
