@@ -261,9 +261,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     finally:
         if save_to is not None:
             save_to.close()
-
-
 #pylint: enable=R0911,R0912,R0913,R0914,R0915
+
 
 #pylint:disable=R0913
 def correct_prime_guess(upto: Optional[int] = None, *,
@@ -291,6 +290,8 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             print_specific=print_guesses,
             first_greater=first_greater,
         )
+
+
 #pylint:enable=R0913
 
 
@@ -504,7 +505,8 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
                 current_greatest_gap = ((previous_prime, next_prime),
                                         next_prime[1] - previous_prime[1])
             previous_prime = next_prime
-    assert isinstance(current_greatest_gap, tuple) and len(current_greatest_gap) == 2 and isinstance(current_greatest_gap[1], int)
+    assert isinstance(current_greatest_gap, tuple) and len(
+        current_greatest_gap) == 2 and isinstance(current_greatest_gap[1], int)
     return current_greatest_gap
 
 
