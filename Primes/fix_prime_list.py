@@ -1,4 +1,4 @@
-""""The goal of this program is to re-write your prime list,
+"""The goal of this program is to re-write your prime list,
  to guarantee that it's in proper order."""
 import sys
 from collections import deque
@@ -11,7 +11,7 @@ import main
 FIXED_ISH_NAME = "fix_ish_sprimelist.txt"
 
 
-def write_backupfile():
+def write_backup_file():
     """Writes a copy of the prime list to FIXED_ISH_NAME, skipping prime numbers we've already seen.
     Dad recommended to use the sort() function instead."""
     input_line_number = 0
@@ -53,4 +53,4 @@ if __name__ == "__main__":
         should_rewrite = input("Do you want to rewrite that file? (y/n) ").lower()
         if should_rewrite != "y":
             sys.exit()
-    write_backupfile()
+    write_backup_file()
