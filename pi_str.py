@@ -14,5 +14,5 @@ if __name__ == '__main__':
         'of pi are good enough,',
         'according to Python on this computer!')
     else:
-        print(pi-pi_str)
+        print(pi-eval(pi_str))
 #pylint:enable=C0103
