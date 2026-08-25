@@ -106,7 +106,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     I typically call those nth_prime, prime.
     Note that unless you specify list_all to be true,
     I will only yield newly discovered primes!
-    If you do and you don't specify your target,
+    If you do but don't specify your target,
       only known primes will be yielded."""
     save_to: Optional[TextIOWrapper] = None
     #You are only trying to read through the list when:
@@ -122,6 +122,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
             save_to = open(SPRIMELIST, mode="r", encoding="ascii")
         else:
             save_to = open(SPRIMELIST, mode="a+", encoding='ascii')
+        assert save_to is not None
         print_specific = False
         if first_greater:
             print_specific = True
@@ -239,7 +240,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 isprime = True
             if isprime:
                 next_prime = (nth_prime, guess)
-                if print_guesses and nth_prime % 2500 == 0:
+                if print_guesses and nth_prime % 1000 == 0:
                     print(nth_prime, "th prime: ", guess, sep="")
                 if print_specific == nth_prime:
                     print(str(nth_prime) + " prime is", guess)
@@ -301,7 +302,8 @@ def get_last_prime() -> Tuple[int, int]:
         try:
             with open(SPRIMELIST, encoding='ascii') as sprimelist:
                 for line in sprimelist:
-                    biggest_prime = tuple(map(int, line.strip('\n').split(" ")))
+                    parsed_line = tuple(map(int, line.strip('\n').split(" ")))
+                    biggest_prime: tuple[int, int] = (parsed_line[0], parsed_line[1])
 
         except FileNotFoundError:
             pass
@@ -435,7 +437,7 @@ def factor(to_factor: int, method=correct_prime_guess) -> List[Tuple[int, int]]:
 
 def factors_as_string(factors: List[Tuple[int, int]]):
     """Given a list of factors for a number (often found with the factor(...) function),
-    nicely prints the number represented as a product of its factors)."""
+    nicely prints the number represented as a product of its factors."""
     factor_count = 0
     strs_to_return = []
     for found_factor in factors:
@@ -491,7 +493,9 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
     if SHOULD_WRITE:
         nth_prime = 2
         primelist = open(SPRIMELIST, mode="r", encoding='ascii')
-        previous_prime = tuple(map(int, primelist.readline().strip('\n').split(' ')))
+        first_line = tuple(map(int, primelist.readline().strip('\n').split(' ')))
+        previous_prime: tuple[int, int] = (first_line[0], first_line[1])
+        assert isinstance(previous_prime, tuple) and len(previous_prime) == 2
         for line in primelist:
             nth_prime, prime = map(int, line.strip('\n').split(' '))
             next_prime = (nth_prime, prime)
@@ -500,6 +504,7 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
                 current_greatest_gap = ((previous_prime, next_prime),
                                         next_prime[1] - previous_prime[1])
             previous_prime = next_prime
+    assert isinstance(current_greatest_gap, tuple) and len(current_greatest_gap) == 2 and isinstance(current_greatest_gap[1], int)
     return current_greatest_gap
 
 
@@ -512,9 +517,11 @@ def say_gap_of_100():
     if SHOULD_WRITE:
         nth_prime = -1
         primelist = open(SPRIMELIST, mode="r", encoding='ascii')
-        previous_prime = tuple(map(int, primelist.readline().strip('\n').split(' ')))
+        first_line = tuple(map(int, primelist.readline().strip('\n').split(' ')))
+        previous_prime = (first_line[0], first_line[1])
         for line in primelist:
-            nth_prime, prime = map(int, line.strip('\n').split(' '))
+            parsed_line = tuple(map(int, line.strip('\n').split(' ')))
+            nth_prime, prime = (parsed_line[0], parsed_line[1])
             next_prime = (nth_prime, prime)
             gap = next_prime[1] - previous_prime[1]
             if gap == 100:
