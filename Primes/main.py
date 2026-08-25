@@ -138,7 +138,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                     first_greater = False
             elif is_over:  #Stop when we're done listing low prime numbers.
                 return
-            yield nth_prime, prime
+            if list_all:
+                yield nth_prime, prime
             #Doing this every time we yield guarantees that we will always start with nth_prime
             # larger than the length of all_primes_under_100.
             nth_prime += 1
