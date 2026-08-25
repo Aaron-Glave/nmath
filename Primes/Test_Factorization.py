@@ -15,7 +15,6 @@ class TestFactorize(unittest.TestCase):
 
     def test_1776384(self):
         factored = Factorized(1776384)
-        print(factored)
         self.assertEqual('2 ^ 8 * 3 ^ 3 * 257 ^ 1', str(factored))
 
 
