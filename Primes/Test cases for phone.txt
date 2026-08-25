@@ -1,0 +1,5 @@
+Last known prime on phone:
+    Last known prime is the 25th prime number: 97
+Biggest gap between primes on phone:
+    Found a gap of 25th prime to 24th prime:
+    97-89: 8.

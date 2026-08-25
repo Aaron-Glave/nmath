@@ -615,6 +615,14 @@ def print_next_prime_greater(target: int) -> tuple[int, int]:
     return -1, -1
 
 
+def search_for_nth_prime(target: int) -> None:
+    for _prime in correct_prime_guess(target_n=target):
+        if _prime[0] % 1000 and _prime[1] < target:
+            print(_prime[0], _prime[1])
+        if _prime[0] == target:
+            print(_prime[0], "th prime is ", _prime[1], sep="", end=".\n")
+            break
+
 #I run EITHER yield_primes_memory OR yield_and_write_primes DEPENDING ON PHONE USAGE!
 if __name__ == '__main__':
     A = 11 ** 10000
@@ -652,10 +660,4 @@ if __name__ == '__main__':
     else:
         # Guess Nth prime
         print("Name N as the Nth prime number you want to guess")
-        TARGET = get_int()
-        for _prime in correct_prime_guess(target_n=TARGET):
-            if _prime[0] % 1000 and _prime[1] < TARGET:
-                print(_prime[0], _prime[1])
-            if _prime[0] == TARGET:
-                print(_prime[0], "th prime is ", _prime[1], sep="", end=".\n")
-                break
+        search_for_nth_prime(get_int())
