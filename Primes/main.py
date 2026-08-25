@@ -1,12 +1,12 @@
 """Program designed to talk about prime numbers."""
 import sys
 from io import TextIOWrapper
-from pathlib import Path
-from typing import Optional, Tuple, List, Generator
+
+from typing import Optional, Tuple, List, Generator, Protocol
 import warnings
 
 #pylint: disable=C0413,E0401
-sys.path.append(str(Path(__file__).parent.resolve()))
+#sys.path.append(str(Path(__file__).parent.resolve()))
 
 from phone_banned import PhoneBanned
 
@@ -149,17 +149,15 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
             nth_prime += 1
 
         save_to.seek(0)
-
         any_primes_found = False
-
         guess = 101  #NOTE: 101 is the default because 101 is the first prime after 97.
         # ^ That's the last prime in the default list.
-
         #prime_to_start helps us figure out what the first guess should be.
         # We set prime_to_start to the last prime we found in the file,
         # so if prime_to_start is 0 at the end of our loop,
         # we shouldn't change our initial guess of 101.
         prime_to_start = 0
+
         for line in save_to:
             any_primes_found = True
             nth_prime, prime = map(int, line.strip('\n').split(" "))
@@ -290,8 +288,6 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             print_specific=print_guesses,
             first_greater=first_greater,
         )
-
-
 #pylint:enable=R0913
 
 
@@ -313,17 +309,17 @@ def get_last_prime() -> Tuple[int, int]:
 
 def primes_up_to100():
     """Creates a primes.txt file with the first 100 primes."""
-    amaximum = 100
+    maximum = 100
     primes = []
     try:
-        primefile = open("primes.txt", mode="r", encoding='ascii')
+        prime_source = open("primes.txt", mode="r", encoding='ascii')
     except FileNotFoundError:
         print("Creating list...")
-        primefile = open("primes.txt", mode="x", encoding='ascii')
-        primefile.close()
-        primefile = open("primes.txt", mode="r", encoding='ascii')
+        prime_source = open("primes.txt", mode="x", encoding='ascii')
+        prime_source.close()
+        prime_source = open("primes.txt", mode="r", encoding='ascii')
         print("File listing primes was created")
-    for line in primefile:
+    for line in prime_source:
         try:
             primes.append(int(line))
         except ValueError:
@@ -334,10 +330,10 @@ def primes_up_to100():
     except ValueError:
         print("List is empty.")
         start = 2
-    primefile.close()
-    primefile = open("primes.txt", mode='a', encoding='ascii')
+    prime_source.close()
+    prime_source = open("primes.txt", mode='a', encoding='ascii')
 
-    for i in range(start, amaximum + 1):
+    for i in range(start, maximum + 1):
         isprime = True
         for prime in primes:
             if i % prime == 0:
@@ -346,9 +342,9 @@ def primes_up_to100():
         if isprime:
             primes.append(i)
             print(i, "is prime.")
-            primefile.write(str(i) + '\n')
-    primefile.close()
-    print("Calculated primes <= ", amaximum, ": ", primes, sep="")
+            prime_source.write(str(i) + '\n')
+    prime_source.close()
+    print("Calculated primes <= ", maximum, ": ", primes, sep="")
 
 
 def gen_primes_up_to(max_prime=2):
@@ -396,7 +392,49 @@ def percent_integers_unknown_factors():
     return probability
 
 
-def factor(to_factor: int, method=correct_prime_guess) -> List[Tuple[int, int]]:
+class Factorized:
+    """TODO WRITE DESCRIPTION"""
+    @staticmethod
+    def reduce(number: int, divisor: int) -> Tuple[int, int]:
+        """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
+        Basically factors out the divisor raised to the highest possible power."""
+        n = 0
+        while number % divisor == 0:
+            n += 1
+            number //= divisor
+        return number, n
+
+    def __init__(
+            self, to_factor: int,
+            prime_source: Generator[tuple[int, int], None, None] = correct_prime_guess(list_all=True),
+    ) -> None:
+        """Factorizes the passed integer using a Callable[
+            [int], Generator[tuple[int, int], None, None]
+        ] to factor it. The default factorization method is """
+        self.factors = []
+        if to_factor < 0:
+            self.factors.append((-1, 1))
+            to_factor *= -1
+        elif to_factor == 0:
+            self.factors = [(0, 1)]
+        elif to_factor == 1:
+            self.factors = [(1, 1)]
+        done_factoring = False
+        while to_factor > 1 and not done_factoring:
+            for _, prime in prime_source:
+                if to_factor % prime == 0:
+                    to_factor, number_of_divisions = Factorized.reduce(to_factor, prime)
+                    self.factors.append((prime, number_of_divisions))
+                    if to_factor == 1:
+                        done_factoring = True
+                    break
+        if to_factor > 1:
+            factor_failure = "I couldn't find a factor for " + str(
+                to_factor) + ".\nIt might be divisible by prime numbers I haven't discovered."
+            warnings.warn(factor_failure, UserWarning)
+
+
+def factor(to_factor: int, method= correct_prime_guess) -> List[Tuple[int, int]]:
     """Returns a list of factors for it's input.
     For example, passing 12 should return [(2, 2), (3, 1)].
     The method should be a prime generator with an argument to set the highest prime to guess."""
