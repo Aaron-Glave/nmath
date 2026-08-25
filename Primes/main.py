@@ -278,8 +278,6 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             upto=upto,
             first_greater=first_greater,
         )
-
-
 #pylint:enable=R0913
 
 
