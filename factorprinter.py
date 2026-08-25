@@ -1,5 +1,6 @@
-from Primes.main import factor, factors_as_string
+from Primes.main import Factorized
+from calculator import safe_eval
 
-num_to_factor = int(input("Number you want to factor? "))
+num_to_factor = safe_eval(input("Number you want to factor? "))
 print("Factors of", num_to_factor, end=":\n")
-print(factors_as_string(factor(num_to_factor)))
+print(Factorized(num_to_factor))

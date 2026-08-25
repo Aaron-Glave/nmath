@@ -8,14 +8,16 @@ def eval_expression(exp: str):
     Potential exceptions:
         AssertionError if exp is not a mathematical expression
         SyntaxError if exp is an invalid mathematical expression"""
-    safe_chars = (set('0123456789()^+-*/\\')
-        .issubset(exp))
+    exp = (exp.replace('\\', '/').replace('^', '**')
+           .replace('\t', '').replace(' ', ''))
+
+    safe_chars = set('0123456789()^+-*/\\ \t')
+    is_safe = set(exp).issubset(safe_chars)
     error_msg_chars = (f"Error: {exp} contains invalid chars.\n"
     "Expressions are numbers 0-9 or"
     " operators like . + - * / \\ ^\n"
     "Parentheses () are OK.")
-    assert safe_chars, error_msg_chars
-    exp = exp.replace('\\', '/').replace('^', '**')
+    assert is_safe, error_msg_chars
     try:
         # pylint:disable=eval-used
         # We know exp can only be a (possibly invalid) mathematical expression.
@@ -37,10 +39,13 @@ def safe_eval(exp: str):
             return eval_expression(exp)
         except AssertionError as ae:
             print(ae)
+            exp = input("Please enter a valid mathematical expression: ")
 
 
 if __name__ == '__main__':
     try:
-        safe_eval('x=2')
-    except AssertionError as ae:
-        print(ae)
+        #x = input("Please enter a valid mathematical expression: ")
+        x = '2*(300/5^3)'
+        print(safe_eval(x))
+    except AssertionError as _ae:
+        print(_ae)

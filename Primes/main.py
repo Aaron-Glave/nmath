@@ -5,7 +5,7 @@ from io import TextIOWrapper
 from typing import Optional, Tuple, Generator
 import warnings
 
-from phone_banned import PhoneBanned
+from Primes.phone_banned import PhoneBanned
 
 sys.path.pop()
 sys.set_int_max_str_digits(100000)
