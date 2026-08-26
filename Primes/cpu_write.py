@@ -1,5 +1,5 @@
-#I don't care that this is a complex function.
-#pylint: disable=R0911,R0912,R0913,R0914,R0915
+"""A separate file to contain code you only need on your PC.
+See https://www.perplexity.ai/search/2cf18bcc-25e1-4ef1-b0b2-892b6d061355 for sqlite help."""
 from io import TextIOWrapper
 from typing import Optional, Generator, Tuple
 import warnings
@@ -12,7 +12,8 @@ def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None
     if save_to is not None:
         save_to.write(str(prime_to_write[0]) + " " + str(prime_to_write[1]) + '\n')
 
-
+#I don't care that this is a complex function.
+#pylint: disable=R0911,R0912,R0913,R0914,R0915
 def yield_and_write_primes(upto: Optional[int] = None, *,
                            save_to: Optional[TextIOWrapper] = None,
                            list_all: bool = False,
@@ -31,6 +32,9 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
     Throws a PhoneBanned exception if you even try to run this on your phone.
     Returns a list of tuples [(1-based prime index, prime number)].
+    TODO RUN THROUGH YOUR DATABASE INSTEAD. That means you'll eventually run SQLITE code!
+    TCONTINUE Make sure your connection stays open during the loop to hunt for a prime number
+
     I typically call those nth_prime, prime.
     Note that unless you specify list_all to be true,
     this only yields newly discovered primes!
@@ -47,6 +51,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         if read_only:
             save_to = open(SPRIMELIST, mode="r", encoding="ascii")
         else:
+            #TODO YOU NEED TO MINIMIZE THE AMOUNT OF TIME YOU HAVE OPEN CONNECTIONS
+            #TCONTINUE USE sqlite3.connect(primes.db)
             save_to = open(SPRIMELIST, mode="a+", encoding='ascii')
         assert save_to is not None
 
