@@ -1,4 +1,5 @@
-"""Hopefully a faster storage base for your prime numbers."""
+"""Hopefully a faster storage base for your prime numbers.
+TODO: Import all the prime numbers in your sprimelist.txt file to primes.db"""
 import atexit
 import sqlite3
 
@@ -42,6 +43,14 @@ def insert_prime(nth_prime, prime, db=DATABASE):
         ON CONFLICT (nth_prime) DO NOTHING;""", (nth_prime, prime))
         conn.commit()
 
+def get_max_prime(db=DATABASE):
+    with get_connection(db) as conn:
+        return conn.execute(f"""
+            SELECT nth_prime, prime FROM primes
+            ORDER BY nth_prime DESC
+            LIMIT 1
+        """).fetchone()
+
 def test_simple():
     with get_connection(TEST_DATABASE) as conn:
         cursor = conn.cursor()
@@ -49,10 +58,12 @@ def test_simple():
         conn.commit()
 
     insert_prime(1, 2, db=TEST_DATABASE)
+    insert_prime(2, 3, db=TEST_DATABASE)
     rlist = []
     with get_connection(TEST_DATABASE) as conn:
         rlist = cursor.execute('SELECT nth_prime, prime FROM primes').fetchall()
     print(rlist)
+    print("Final prime:", get_max_prime(TEST_DATABASE))
 
 if __name__ == '__main__':
     try:
