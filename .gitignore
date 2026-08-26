@@ -11,3 +11,5 @@ Primes/fix_ish_sprimelist.txt
 Primes/primes_i_like.txt
 Primes/Backups
 */sprimelist.txt
+/Primes/primes_db/primes.db
+/Primes/primes_db/tprimes.db
