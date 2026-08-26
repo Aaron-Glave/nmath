@@ -7,7 +7,6 @@ import warnings
 from phone_banned import PhoneBanned
 from shared_ph_pc import *
 
-
 sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
     try:
@@ -16,12 +15,14 @@ if SHOULD_WRITE:
         raise me
 else:
     def yield_and_write_primes(upto: Optional[int] = None, *,
-                           save_to: Optional[TextIOWrapper] = None,
-                           list_all: bool = False,
-                           first_greater: bool = False,
-                           target_n: Optional[int] = None,
-                           comments: Optional[dict[str, str]]):
+                               save_to: Optional[TextIOWrapper] = None,
+                               list_all: bool = False,
+                               first_greater: bool = False,
+                               target_n: Optional[int] = None,
+                               comments: Optional[dict[str, str]]):
         raise PhoneBanned()
+
+
     def close_db():
         pass
 
@@ -94,6 +95,8 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             upto=upto,
             first_greater=first_greater,
         )
+
+
 #pylint:enable=R0913
 
 
@@ -180,6 +183,7 @@ def percent_integers_unknown_factors():
 
 class Factorized:
     """Factors an integer and displays the factors"""
+
     @staticmethod
     def reduce(number: int, divisor: int) -> Tuple[int, int]:
         """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
@@ -355,6 +359,7 @@ def search_for_nth_prime(target: int) -> None:
             print(_prime[0], "th prime is ", _prime[1], sep="", end=".\n")
             break
 
+
 #I run EITHER yield_primes_memory OR yield_and_write_primes DEPENDING ON PHONE USAGE!
 if __name__ == '__main__':
     try:
@@ -396,4 +401,3 @@ if __name__ == '__main__':
             search_for_nth_prime(get_int())
     finally:
         close_db()
-
