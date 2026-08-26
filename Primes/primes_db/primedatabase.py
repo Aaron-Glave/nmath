@@ -29,6 +29,7 @@ def gen_db():
     with get_connection(DATABASE) as conn:
         cursor = conn.cursor()
         cursor.executescript(CREATION_COMMAND)
+        conn.commit()
 
 
 @atexit.register
