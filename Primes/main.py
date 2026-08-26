@@ -9,7 +9,12 @@ from shared_ph_pc import *
 
 
 sys.set_int_max_str_digits(100000)
-if not SHOULD_WRITE:
+if SHOULD_WRITE:
+    try:
+        from cpu_write import yield_and_write_primes, cpu_factors, close_db
+    except ModuleNotFoundError as me:
+        raise me
+else:
     def yield_and_write_primes(upto: Optional[int] = None, *,
                            save_to: Optional[TextIOWrapper] = None,
                            list_all: bool = False,
@@ -17,11 +22,8 @@ if not SHOULD_WRITE:
                            target_n: Optional[int] = None,
                            comments: Optional[dict[str, str]]):
         raise PhoneBanned()
-else:
-    try:
-        from cpu_write import yield_and_write_primes, cpu_factors
-    except ModuleNotFoundError as me:
-        raise me
+    def close_db():
+        pass
 
 
 #We don't even have a function to read the whole file into a list.
@@ -355,39 +357,43 @@ def search_for_nth_prime(target: int) -> None:
 
 #I run EITHER yield_primes_memory OR yield_and_write_primes DEPENDING ON PHONE USAGE!
 if __name__ == '__main__':
-    A = 11 ** 10000
-    SLIGHTLY_SMALLER_A = 11 ** (10000 - 6)
-    print("Huge number:", A)
-    print("Slightly smaller:", SLIGHTLY_SMALLER_A)
-    B = A // SLIGHTLY_SMALLER_A
-    print(B,
-          "was calculated by dividing that huge number by a slightly smaller but still huge number."
-          )
-    print("It's _factors are", end=" ")
-    print(Factorized(B))
-    print(-15, "'s _factors are", sep="", end=" ")
-    print(Factorized(-15))
-    print(36, "'s _factors are", sep="", end=" ")
-    print(Factorized(36))
-    print(63, "'s _factors are", sep="", end=" ")
-    print(Factorized(63))
-    print(147, "'s _factors are", sep="", end=" ")
-    print(Factorized(147))
+    try:
+        A = 11 ** 10000
+        SLIGHTLY_SMALLER_A = 11 ** (10000 - 6)
+        print("Huge number:", A)
+        print("Slightly smaller:", SLIGHTLY_SMALLER_A)
+        B = A // SLIGHTLY_SMALLER_A
+        print(B,
+              "was calculated by dividing that huge number by a slightly smaller but still huge number."
+              )
+        print("It's _factors are", end=" ")
+        print(Factorized(B))
+        print(-15, "'s _factors are", sep="", end=" ")
+        print(Factorized(-15))
+        print(36, "'s _factors are", sep="", end=" ")
+        print(Factorized(36))
+        print(63, "'s _factors are", sep="", end=" ")
+        print(Factorized(63))
+        print(147, "'s _factors are", sep="", end=" ")
+        print(Factorized(147))
 
-    print("I will ask you a series of questions about what you want to do.")
-    print("Say Yes if you want to do the thing I asked you about.")
-    if input("Want to know the last known prime I found? ").lower() == "yes":
-        last_known_prime = get_last_prime()
-        print("Last known prime is the ", last_known_prime[0], "th prime number: ",
-              last_known_prime[1], sep="")
-    elif input("Factor a number? ").lower() == "yes":
-        print(Factorized(get_int()))
-    elif input(
-            "Do you want to find a prime greater than a target number N?\n"
-            + "Say Yes if so, then I'll ask you for your target number. "
-    ).lower() == "yes":
-        print_next_prime_greater(get_int())
-    else:
-        # Guess Nth prime
-        print("Name N as the Nth prime number you want to guess")
-        search_for_nth_prime(get_int())
+        print("I will ask you a series of questions about what you want to do.")
+        print("Say Yes if you want to do the thing I asked you about.")
+        if input("Want to know the last known prime I found? ").lower() == "yes":
+            last_known_prime = get_last_prime()
+            print("Last known prime is the ", last_known_prime[0], "th prime number: ",
+                  last_known_prime[1], sep="")
+        elif input("Factor a number? ").lower() == "yes":
+            print(Factorized(get_int()))
+        elif input(
+                "Do you want to find a prime greater than a target number N?\n"
+                + "Say Yes if so, then I'll ask you for your target number. "
+        ).lower() == "yes":
+            print_next_prime_greater(get_int())
+        else:
+            # Guess Nth prime
+            print("Name N as the Nth prime number you want to guess")
+            search_for_nth_prime(get_int())
+    finally:
+        close_db()
+

@@ -5,6 +5,7 @@ from typing import Optional, Generator, Tuple
 import warnings
 
 from shared_ph_pc import SPRIMELIST, under_or_at_limit, ALL_PRIMES_UNDER_100
+import primes_db.primedatabase as primedb_code
 
 def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None:
     """Used internally to write a prime number to the open IMPORTANT_NAME file"""
@@ -193,3 +194,5 @@ def cpu_factors(to_factor):
         return True
     return False
 
+def close_db():
+    primedb_code.disconnect()

@@ -1,18 +1,61 @@
 """Hopefully a faster storage base for your prime numbers."""
+import atexit
 import sqlite3
+
+DATABASE = 'primes.db'
+TEST_DATABASE = 'tprimes.db'
+
+_connections: dict[str, sqlite3.Connection] = {}
 
 CREATION_COMMAND = (
 """CREATE TABLE IF NOT EXISTS primes (
     nth_prime INTEGER NOT NULL PRIMARY KEY,
-    prime_n INTEGER NOT NULL
-)
-CREATE INDEX IF NOT EXISTS idx_primes_value on primes (prime_n)""")
+    prime INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_primes_value on primes (prime);""")
+
+def verify_real_db(db: str):
+    assert db in (DATABASE, TEST_DATABASE)
+
+def get_connection(db: str):
+    verify_real_db(db)
+    if db not in _connections:
+        _connections[db] = sqlite3.connect(db)
+    return _connections[db]
 
 def gen_db():
-    with sqlite3.connect('primes.db') as conn:
+    with get_connection(DATABASE) as conn:
         cursor = conn.cursor()
-        cursor.execute(CREATION_COMMAND)
+        cursor.executescript(CREATION_COMMAND)
+
+@atexit.register
+def disconnect():
+    for db in _connections.values():
+        db.close()
+
+def insert_prime(nth_prime, prime, db=DATABASE):
+    verify_real_db(db)
+    with sqlite3.connect(db) as conn:
+        conn.execute(f"""
+        INSERT INTO primes (nth_prime, prime)
+        VALUES (?, ?)
+        ON CONFLICT (nth_prime) DO NOTHING;""", (nth_prime, prime))
+        conn.commit()
 
 def test_simple():
-    with sqlite3.connect('tprimes.db') as conn:
+    with get_connection(TEST_DATABASE) as conn:
         cursor = conn.cursor()
+        cursor.executescript(CREATION_COMMAND)
+        conn.commit()
+
+    insert_prime(1, 2, db=TEST_DATABASE)
+    rlist = []
+    with get_connection(TEST_DATABASE) as conn:
+        rlist = cursor.execute('SELECT nth_prime, prime FROM primes').fetchall()
+    print(rlist)
+
+if __name__ == '__main__':
+    try:
+        test_simple()
+    finally:
+        disconnect()
