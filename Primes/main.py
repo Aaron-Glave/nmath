@@ -440,69 +440,6 @@ class Factorized:
         return self._factors
 
 
-'''def factor(
-    to_factor: int,
-    method= correct_prime_guess
-) -> List[Tuple[int, int]]:
-    """Returns a list of _factors for it's input.
-    For example, passing 12 should return [(2, 2), (3, 1)].
-    The method should be a prime generator with an argument to set the highest prime to guess."""
-
-    def reduce(number: int, divisor: int) -> Tuple[int, int]:
-        """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
-        Basically _factors out the divisor raised to the highest possible power."""
-        n = 0
-        while number % divisor == 0:
-            n += 1
-            number //= divisor
-        return number, n
-
-    _factors = []
-    if to_factor < 0:
-        _factors.append((-1, 1))
-        to_factor *= -1
-    elif to_factor == 0:
-        return [(0, 1)]
-    elif to_factor == 1:
-        return [(1, 1)]
-    done_factoring = False
-    while to_factor > 1 and not done_factoring:
-        for _, prime in method(to_factor, list_all=True):
-            if to_factor % prime == 0:
-                to_factor, number_of_divisions = reduce(to_factor, prime)
-                _factors.append((prime, number_of_divisions))
-                if to_factor == 1:
-                    done_factoring = True
-                break
-
-    if to_factor > 1:
-        factor_failure = "I couldn't find a factor for " + str(
-            to_factor) + ".\nIt might be divisible by prime numbers I haven't discovered."
-        warnings.warn(factor_failure, UserWarning)
-        return _factors
-    return _factors'''
-
-
-'''def factors_as_string(_factors: List[Tuple[int, int]]):
-    """Given a list of _factors for a number (often found with the factor(...) function),
-    nicely prints the number represented as a product of its _factors."""
-    factor_count = 0
-    strs_to_return = []
-    for found_factor in _factors:
-        factor_count += 1
-        if factor_count == len(_factors):
-            ending = ""
-        else:
-            ending = " * "
-        strs_to_return.append(
-            str(found_factor[0]))
-        strs_to_return.append('^')
-        strs_to_return.append(
-            str(found_factor[1]))
-        strs_to_return.append(ending)
-    return "".join(strs_to_return)'''
-
-
 def say_gap_message(gap_to_print: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int]):
     """Prints info about the gap passed
     Organization: (
