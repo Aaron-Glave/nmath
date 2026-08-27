@@ -1,5 +1,5 @@
 """Hopefully a faster storage base for your prime numbers.
-TODO: Import all the prime numbers in your sprimelist.txt file to primes.db"""
+"""
 import atexit
 import os
 import sqlite3
@@ -39,6 +39,7 @@ def gen_db():
 def disconnect():
     for db in _connections.values():
         db.close()
+    _connections.clear()
 
 
 def insert_prime(nth_prime, prime, db=DATABASE):

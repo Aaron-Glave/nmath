@@ -1,13 +1,15 @@
 """Run this module from the nmath directory:
-    python -m Primes.primes_db.load_database"""
+    python -m Primes.primes_db.load_database
+
+TODO: Import all the prime numbers in your sprimelist.txt file to primes.db"""
 from pathlib import Path
 from Primes.primes_db import primedatabase
 from Primes import main
 
 
-#input(f"cd: {Path.cwd()} + {Path(__file__).absolute().parent.parent.parent}")
+input(f"cd: {Path.cwd()}. Should run in {Path(__file__).absolute().parent.parent.parent}"
+      f"Cancel if they don't match, hit Enter if they do.")
 assert Path.cwd() == Path(__file__).parent.parent.parent
-input("Ok.")
 
 n = 0
 try:
