@@ -1,5 +1,3 @@
-import shutil
-
 from primes_db import primedatabase
 import main
 
