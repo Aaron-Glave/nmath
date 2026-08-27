@@ -1,5 +1,5 @@
 from primes_db import primedatabase
-import main
+from Primes import main
 
 
 n = 0

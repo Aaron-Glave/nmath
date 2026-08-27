@@ -1,10 +1,11 @@
 #NOTE: Every line in this file is an integer referring to which prime number is listed,
 # followed by a space, followed by a prime number, followed by a newline character.
+import os
 from typing import Optional
 
 #Set this to False on your phone!
 SHOULD_WRITE = True
-SPRIMELIST = "sprimelist.txt"
+SPRIMELIST = f"{os.path.dirname(__file__)}/sprimelist.txt"
 ALL_PRIMES_UNDER_100 = [
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
     53, 59, 61, 67, 71, 73,
