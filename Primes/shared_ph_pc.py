@@ -5,6 +5,7 @@ from typing import Optional
 
 #Set this to False on your phone!
 SHOULD_WRITE = True
+#TODO REMOVE YOUR SPRIMELIST.TXT TEST FILE
 SPRIMELIST = f"{os.path.dirname(__file__)}/sprimelist.txt"
 ALL_PRIMES_UNDER_100 = [
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
@@ -13,7 +14,9 @@ ALL_PRIMES_UNDER_100 = [
 ]
 
 def under_or_at_limit(_current_guess: int, upto: Optional[int]) -> bool:
-    """Used internally to return True if upto is null OR _current_guess <= upto"""
+    """Used internally to return True if upto is null OR _current_guess <= upto
+    If upto is None, imagine you're looking for a number greater than ∞.
+        You'll never reach your limit"""
     if upto is None:
         return True
     return _current_guess <= upto

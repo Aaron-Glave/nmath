@@ -18,12 +18,11 @@ class AllPrimesInOrder(unittest.TestCase):
         #Used for debugging. Requires reading the whole list of prime numbers.
         #target_last_prime = get_last_prime()
         prime_iter = correct_prime_guess(list_all=True, comments=comments)
-        # TODO: Change to yield_and_write_primes when you're back to reading primes from database.
         nprime, prime = next(prime_iter)
         self.assertEqual(nprime, last_n + 1)
         self.assertEqual(prime, 2)
         last_n, last_p= nprime, prime
-        self.assertEqual(comments['prime_guess_func'], yield_primes_memory.__name__)
+        self.assertEqual(comments['prime_guess_func'], yield_and_write_primes.__name__)
         for nprime, prime in prime_iter:
             line_in_list += 1
             self.assertEqual(nprime, last_n + 1,
@@ -36,11 +35,6 @@ class AllPrimesInOrder(unittest.TestCase):
                                    f"Error: {nprime} prime located at line {line_in_list}" +
                                    f" was less than the prime located at {last_n}"
                                ))
-
-            #TODO: Remove this if block when the database is done.
-            #TCONTINUE Stop the moment you move past main.ALL_PRIMES_UNDER_100
-            if prime not in main.ALL_PRIMES_UNDER_100:
-                break
             if line_in_list % 500000 == 0 and line_in_list > 0:
                 print("Tested", line_in_list, "lines so far.")
             last_n, last_p = nprime, prime

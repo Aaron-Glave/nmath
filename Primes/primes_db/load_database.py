@@ -4,7 +4,7 @@
 This program imports all the prime numbers in your sprimelist.txt file to primes.db"""
 import sqlite3
 from pathlib import Path
-from Primes.primes_db import primedatabase
+from Primes.primes_db import prime_db_code
 from Primes import main as prime_main
 
 
@@ -12,7 +12,7 @@ assert Path.cwd() == Path(__file__).parent.parent.parent
 
 def add_list_to_db(insert_list: list[tuple[int, int]]):
     """Adds all the prime numbers in insert_list to primedatabase.DATABASE"""
-    conn = primedatabase.get_connection(primedatabase.DATABASE)
+    conn = prime_db_code.get_connection(prime_db_code.DATABASE)
     try:
         conn.executemany(
             """INSERT OR IGNORE INTO primes (nth_prime, prime) VALUES (?, ?)""",
@@ -22,14 +22,14 @@ def add_list_to_db(insert_list: list[tuple[int, int]]):
         conn.rollback()
         raise
     finally:
-        primedatabase.disconnect_specific_db(primedatabase.DATABASE)
+        prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
 
 def main():
     try:
         n = 0
         insert_list = []
-        primedatabase.gen_db(primedatabase.DATABASE)
-        last_known_prime = primedatabase.get_max_prime()
+        prime_db_code.gen_db(prime_db_code.DATABASE)
+        last_known_prime = prime_db_code.get_max_prime()
         if last_known_prime is not None:
             print(f'Last known prime: {last_known_prime[0]}th prime number: {last_known_prime[1]}')
             input("Enter to continue")
@@ -54,7 +54,7 @@ def main():
         print("Last known prime is the ", last_known_prime[0], "th prime number: ",
               last_known_prime[1], sep="")
     finally:
-        primedatabase.disconnect_all()
+        prime_db_code.disconnect_all()
 
 if __name__ == "__main__":
     main()
