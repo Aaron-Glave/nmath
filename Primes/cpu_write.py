@@ -79,6 +79,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
         #save_to.seek(0)
         any_primes_found = False
+        # TODO Look up your highest prime number in your database
         guess = 101  #NOTE: 101 is the default because 101 is the first prime after 97.
         # ^ That's the last prime in the default list.
         #prime_to_start helps us figure out what the first guess should be.
@@ -113,6 +114,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 raise
             finally:
                 prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
+        #TCONTINUE This line and beyond reflect your old textfile-based logic.
         for line in save_to:
             any_primes_found = True
             nth_prime, prime = map(int, line.strip('\n').split(" "))
@@ -213,7 +215,6 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 #pylint: enable=R0911,R0912,R0913,R0914,R0915
 
 def cpu_factors(to_factor):
-
     yield from ALL_PRIMES_UNDER_100
     try:
         with open(SPRIMELIST, mode='r', encoding='ascii') as sprimelist:
