@@ -1,11 +1,14 @@
 """Hopefully a faster storage base for your prime numbers.
 TODO: Import all the prime numbers in your sprimelist.txt file to primes.db"""
 import atexit
+import os
 import sqlite3
 
+
+MYDIR = os.path.dirname(__file__)
 _connections: dict[str, sqlite3.Connection] = {}
-DATABASE = 'primes.db'
-TEST_DATABASE = 'tprimes.db'
+DATABASE = f'{MYDIR}/primes.db'
+TEST_DATABASE = '{MYDIR}/tprimes.db'
 CREATION_COMMAND = (
     """CREATE TABLE IF NOT EXISTS primes (
     nth_prime INTEGER NOT NULL PRIMARY KEY,
@@ -71,9 +74,13 @@ def test_simple():
     print(rlist)
     print("Final prime:", get_max_prime(TEST_DATABASE))
 
+def test_highest_main():
+    print(get_max_prime())
+
 
 if __name__ == '__main__':
     try:
         test_simple()
+        test_highest_main()
     finally:
         disconnect()
