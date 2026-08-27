@@ -27,6 +27,13 @@ def get_connection(db: str):
     return _connections[db]
 
 
+def end_connection(db: str):
+    verify_real_db(db)
+    if db in _connections:
+        _connections[db].close()
+        del _connections[db]
+
+
 def gen_db():
     with get_connection(DATABASE) as conn:
         cursor = conn.cursor()
