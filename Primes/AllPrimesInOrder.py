@@ -1,22 +1,31 @@
+"""A program to test that you correctly loop through primes in increasing order of prime numbers."""
 import unittest
 
-import main
-from main import correct_prime_guess
+from . import main
+from .main import correct_prime_guess, yield_and_write_primes, yield_primes_memory
 
 class AllPrimesInOrder(unittest.TestCase):
+    """Verifies that your list of prime numbers looks right.
+            Use https://t5k.org/nthprime/index.php to check it out."""
     def test_in_order(self):
-        """Verifies that your list of prime numbers looks right.
-        Use https://t5k.org/nthprime/index.php to check it out."""
-        main.SHOULD_WRITE = True
+        """The one test"""
         last_p = 0
         last_n = 0
-        # We have 25 lines in memory already, so after running through them line_in_list should get to 1.
+        comments: dict[str, str] = {}
+        # We have 25 lines in memory already,
+        # so after running through them line_in_list should get to 1.
         line_in_list = -1 * len(main.ALL_PRIMES_UNDER_100)
         #Used for debugging. Requires reading the whole list of prime numbers.
         #target_last_prime = get_last_prime()
-        for nprime, prime in correct_prime_guess(list_all=True):
+        prime_iter = correct_prime_guess(list_all=True, comments=comments)
+        # TODO: Change to yield_and_write_primes when you're back to reading primes from database.
+        nprime, prime = next(prime_iter)
+        self.assertEqual(nprime, last_n + 1)
+        self.assertEqual(prime, 2)
+        last_n, last_p= nprime, prime
+        self.assertEqual(comments['prime_guess_func'], yield_primes_memory.__name__)
+        for nprime, prime in prime_iter:
             line_in_list += 1
-
             self.assertEqual(nprime, last_n + 1,
                              msg=(
                                  f"Error on line {line_in_list}. "
@@ -28,12 +37,15 @@ class AllPrimesInOrder(unittest.TestCase):
                                    f" was less than the prime located at {last_n}"
                                ))
 
+            #TODO: Remove this if block when the database is done.
+            #TCONTINUE Stop the moment you move past main.ALL_PRIMES_UNDER_100
+            if prime not in main.ALL_PRIMES_UNDER_100:
+                break
             if line_in_list % 500000 == 0 and line_in_list > 0:
                 print("Tested", line_in_list, "lines so far.")
-            last_n = nprime
-            last_p = prime
+            last_n, last_p = nprime, prime
         print("Tested", line_in_list, "lines and they all looked good.")
-        print(f"Check your highest known prime:",
+        print("Check your highest known prime:",
               f"The {last_n}nth prime is: {last_p}.", sep="\n")
 
 

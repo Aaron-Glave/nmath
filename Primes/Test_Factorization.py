@@ -1,5 +1,5 @@
 import unittest
-from main import Factorized
+from .main import Factorized
 class TestFactorize(unittest.TestCase):
     def test_neg1(self):
         factored = Factorized(-1)
