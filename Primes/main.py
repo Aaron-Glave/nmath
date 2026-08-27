@@ -19,7 +19,8 @@ else:
                                list_all: bool = False,
                                first_greater: bool = False,
                                target_n: Optional[int] = None,
-                               comments: Optional[dict[str, str]]):
+                               comments: Optional[dict[str, str]])\
+    -> Generator[tuple[int, int], None, None]:
         raise PhoneBanned()
 
 
@@ -30,7 +31,9 @@ else:
 #We don't even have a function to read the whole file into a list.
 # That would use a TON of memory.
 def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int] = None,
-                        first_greater: bool = False) -> Generator[tuple[int, int], None, None]:
+                        first_greater: bool = False,
+                        comments: Optional[dict[str, str]] = None
+                        ) -> Generator[tuple[int, int], None, None]:
     """Returns list of tuples [(1-based prime index, prime number)].
         Note that all known primes are created in memory,
           so the list is r-created for every iterator you create."""
@@ -83,6 +86,8 @@ def correct_prime_guess(upto: Optional[int] = None, *,
     we look for primes using nothing but memory.
     Else, we use our "sprimelist.txt" file."""
     if SHOULD_WRITE:
+        if comments is not None:
+            comments['prime_guess_func'] = yield_and_write_primes.__name__
         yield from yield_and_write_primes(
             upto=upto,
             list_all=list_all,
@@ -91,9 +96,12 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             comments=comments
         )
     else:
+        if comments is not None:
+            comments['prime_guess_func'] = yield_primes_memory.__name__
         yield from yield_primes_memory(
             upto=upto,
             first_greater=first_greater,
+            comments=comments
         )
 
 
