@@ -1,6 +1,13 @@
-from primes_db import primedatabase
+"""Run this module from the nmath directory:
+    python -m Primes.primes_db.load_database"""
+from pathlib import Path
+from Primes.primes_db import primedatabase
 from Primes import main
 
+
+#input(f"cd: {Path.cwd()} + {Path(__file__).absolute().parent.parent.parent}")
+assert Path.cwd() == Path(__file__).parent.parent.parent
+input("Ok.")
 
 n = 0
 try:
