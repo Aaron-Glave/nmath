@@ -1,14 +1,13 @@
 """Hopefully a faster storage base for your prime numbers.
 """
 import atexit
-import os
 import sqlite3
+from pathlib import Path
 
-
-MYDIR = os.path.dirname(__file__)
+MYDIR = Path(__file__).resolve().parent
 _connections: dict[str, sqlite3.Connection] = {}
-DATABASE = f'{MYDIR}/primes.db'
-TEST_DATABASE = '{MYDIR}/tprimes.db'
+DATABASE = str((Path(MYDIR) / 'primes.db').resolve())
+TEST_DATABASE = str((Path(MYDIR) / 'tprimes.db').resolve())
 CREATION_COMMAND = (
     """CREATE TABLE IF NOT EXISTS primes (
     nth_prime INTEGER NOT NULL PRIMARY KEY,
@@ -73,10 +72,18 @@ def test_simple():
     with get_connection(TEST_DATABASE) as conn:
         rlist = cursor.execute('SELECT nth_prime, prime FROM primes').fetchall()
     print(rlist)
-    print("Final prime:", get_max_prime(TEST_DATABASE))
+    last_prime = get_max_prime(TEST_DATABASE)
+    if last_prime is not None:
+        print("Final prime:", )
+    else:
+        raise sqlite3.ProgrammingError("Empty database! Shouldn't happen!")
 
 def test_highest_main():
-    print(get_max_prime())
+    last_prime = get_max_prime()
+    if last_prime is not None:
+        print(last_prime)
+    else:
+        print("Your prime database is empty.")
 
 
 if __name__ == '__main__':
