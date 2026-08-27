@@ -200,5 +200,5 @@ def cpu_factors(to_factor):
         return True
     return False
 
-def close_db():
-    primedb_code.disconnect()
+def close_real_db():
+    primedb_code.disconnect_specific_db(primedb_code.DATABASE)

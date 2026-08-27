@@ -10,7 +10,7 @@ from .shared_ph_pc import SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit,
 sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
     try:
-        from .cpu_write import yield_and_write_primes, cpu_factors, close_db
+        from .cpu_write import yield_and_write_primes, cpu_factors, close_real_db
     except ModuleNotFoundError as me:
         raise me
 else:
@@ -19,7 +19,7 @@ else:
                                list_all: bool = False,
                                first_greater: bool = False,
                                target_n: Optional[int] = None,
-                               comments: Optional[dict[str, str]])\
+                               comments: Optional[dict[str, str]] = None)\
     -> Generator[tuple[int, int], None, None]:
         raise PhoneBanned()
 
@@ -407,7 +407,7 @@ def main():
             print("Name N as the Nth prime number you want to guess")
             search_for_nth_prime(get_int())
     finally:
-        close_db()
+        close_real_db()
 
 
 #I run EITHER yield_primes_memory OR yield_and_write_primes DEPENDING ON PHONE USAGE!

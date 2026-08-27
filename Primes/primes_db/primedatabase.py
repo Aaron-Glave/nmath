@@ -21,28 +21,26 @@ def verify_real_db(db: str):
 
 
 def get_connection(db: str):
-    verify_real_db(db)
-    if db not in _connections:
-        _connections[db] = sqlite3.connect(db)
+    if db in _connections:
+        return _connections[db]
+    _connections[db] = sqlite3.connect(db)
     return _connections[db]
 
 
-def end_connection(db: str):
-    verify_real_db(db)
-    if db in _connections:
-        _connections[db].close()
-        del _connections[db]
-
-
-def gen_db():
-    with get_connection(DATABASE) as conn:
+def gen_db(database_name: str):
+    verify_real_db(database_name)
+    with get_connection(database_name) as conn:
         cursor = conn.cursor()
         cursor.executescript(CREATION_COMMAND)
         conn.commit()
 
+def disconnect_specific_db(db: str) -> None:
+    conn = _connections.pop(db, None)
+    if conn is not None:
+        conn.close()
 
 @atexit.register
-def disconnect():
+def disconnect_all():
     for db in _connections.values():
         db.close()
     _connections.clear()
@@ -98,4 +96,4 @@ if __name__ == '__main__':
         test_simple()
         test_highest_main()
     finally:
-        disconnect()
+        disconnect_all()
