@@ -1,0 +1,3 @@
+Run tests as modules in
+C:/Users/Owner/Python_programs/nmath/
+with relative imports (.main to import from main.py for example)

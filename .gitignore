@@ -13,3 +13,5 @@ Primes/Backups
 */sprimelist.txt
 /Primes/primes_db/primes.db
 /Primes/primes_db/tprimes.db
+Primes/Pylint hints.txt
+pylint_output.txt
