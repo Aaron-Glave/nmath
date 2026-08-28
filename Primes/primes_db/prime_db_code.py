@@ -3,6 +3,7 @@
 import atexit
 import sqlite3
 from pathlib import Path
+from collections.abc import Iterable
 
 MYDIR = Path(__file__).resolve().parent
 _connections: dict[str, sqlite3.Connection] = {}
@@ -56,13 +57,20 @@ def insert_prime(nth_prime, prime, db=DATABASE):
         conn.commit()
 
 
-def get_max_prime(db=DATABASE) -> tuple[int, int] | None:
+def get_max_prime(db: str) -> tuple[int, int] | None:
     with get_connection(db) as conn:
         return conn.execute(f"""
             SELECT nth_prime, prime FROM primes
             ORDER BY nth_prime DESC
             LIMIT 1
         """).fetchone()
+
+
+def read_all_prime_records(connection: sqlite3.Connection) -> sqlite3.Cursor:
+    return connection.execute("""
+    SELECT nth_prime, prime
+    FROM primes
+    ORDER BY nth_prime ASC;""")
 
 
 def test_simple():
@@ -84,7 +92,7 @@ def test_simple():
         raise sqlite3.ProgrammingError("Empty database! Shouldn't happen!")
 
 def test_highest_main():
-    last_prime = get_max_prime()
+    last_prime = get_max_prime(DATABASE)
     if last_prime is not None:
         print(last_prime)
     else:
