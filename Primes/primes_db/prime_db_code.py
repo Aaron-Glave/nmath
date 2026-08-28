@@ -3,7 +3,6 @@
 import atexit
 import sqlite3
 from pathlib import Path
-from collections.abc import Iterable
 
 MYDIR = Path(__file__).resolve().parent
 _connections: dict[str, sqlite3.Connection] = {}

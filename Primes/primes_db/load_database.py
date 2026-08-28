@@ -29,7 +29,7 @@ def main():
         n = 0
         insert_list = []
         prime_db_code.gen_db(prime_db_code.DATABASE)
-        last_known_prime = prime_db_code.get_max_prime()
+        last_known_prime = prime_db_code.get_max_prime(prime_db_code.DATABASE)
         if last_known_prime is not None:
             print(f'Last known prime: {last_known_prime[0]}th prime number: {last_known_prime[1]}')
             input("Enter to continue")
