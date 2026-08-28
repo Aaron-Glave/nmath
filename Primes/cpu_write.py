@@ -92,15 +92,9 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
             try:
                 # TODO WRITE DB TRANSCRIPT
                 # TCONTINUE Basically loop through your database
-                cursor = our_primes_db.execute("""
-                    SELECT nth_prime, prime
-                    FROM primes
-                    ORDER BY nth_prime ASC;
-                """)
-
+                cursor = prime_db_code.read_all_prime_records(our_primes_db)
                 for nth_prime, prime in cursor:
                     # Depending on the arguments, we may or may not yield primes in our file.
-
                     if target_n is not None and nth_prime >= target_n:
                         if comments is not None:
                             comments['already_there'] = 'already there'
@@ -108,12 +102,81 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                         return
                     if first_greater:
                         # TODO yield the first prime greater than upto.
-                        if not
-
+                        if not under_or_at_limit(prime, upto):
+                            yield nth_prime, prime
+                            return
+                    # At this point we know we DON'T care about primes greater than upto
+                    # Yield the last prime if we guessed it.
+                    elif prime == upto:
+                        yield nth_prime, prime
+                        return
+                    elif not under_or_at_limit(prime, upto):
+                        return
+                    if list_all:
+                        yield nth_prime, prime
             except sqlite3.Error:
-                raise
-            finally:
                 prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
+                raise
+
+        #TCONTINUE Now we're searching for new prime numbers...
+        isprime = True
+        max_prime_known_db = prime_db_code.get_max_prime(prime_db_code.DATABASE)
+        guess = max(ALL_PRIMES_UNDER_100) + 2
+        nth_prime = len(ALL_PRIMES_UNDER_100)
+        if max_prime_known_db is not None:
+            nth_prime = max_prime_known_db[0] + 1 # We're looking for the next highest prime
+            guess = max_prime_known_db[1] + 2 # It's gotta be at least 2 higher...
+        try:
+            our_primes_db = prime_db_code.get_connection(prime_db_code.DATABASE)
+            calculate_more = True
+            divisible_by_prime_under_100 = False
+            while calculate_more:
+                isprime = True
+                divisible_by_prime_under_100 = False
+                for prime in ALL_PRIMES_UNDER_100:
+                    if guess % prime == 0:
+                        divisible_by_prime_under_100 = True
+                        break
+                if divisible_by_prime_under_100:
+                    divisible_by_prime_under_100 = False
+                    if not under_or_at_limit(guess, upto):
+                        if not first_greater:
+                            calculate_more = False
+                    guess += 2
+                    continue
+            # TCONTINUE Now hunt for a new prime...
+            # The Sieve of Eratosthenes:
+            # After testing divisibility by every prime number
+            # less than the SQUARE ROOT of the guess we're testing,
+            # we know for sure that it's prime!
+            square_is_bigger = False
+            cursor = prime_db_code.read_all_prime_records(our_primes_db)
+            try:
+                #Test if guess is divisible by any primes in our database
+                for _, prime in cursor:
+                    if guess % prime == 0:
+                        isprime = False
+                        break
+                    if prime * prime > guess:
+                        square_is_bigger = True
+                        break
+                if square_is_bigger:
+                    square_is_bigger = False
+                    isprime = True
+                if isprime:
+                    prime_db_code.insert_prime_with_connection(nth_prime, guess, our_primes_db)
+                    nth_prime += 1 #Now we're searching for the next one.
+                guess += 2
+                #TODO You just inserted a new prime number.
+                # Check to see if there is anything after that!
+                # Look at line 263 and beyond to see what's next to do.
+            finally:
+                cursor.close()
+
+        except sqlite3.Error:
+            raise
+        finally:
+            prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
         #TCONTINUE This line and beyond reflect your old textfile-based logic.
         for line in save_to:
             any_primes_found = True

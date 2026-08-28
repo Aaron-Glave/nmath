@@ -7,11 +7,11 @@ from typing import Optional
 SHOULD_WRITE = True
 #TODO REMOVE YOUR SPRIMELIST.TXT TEST FILE
 SPRIMELIST = f"{os.path.dirname(__file__)}/sprimelist.txt"
-ALL_PRIMES_UNDER_100 = [
+ALL_PRIMES_UNDER_100: tuple[int, ...] = (
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
     53, 59, 61, 67, 71, 73,
     79, 83, 89, 97
-]
+)
 
 def under_or_at_limit(_current_guess: int, upto: Optional[int]) -> bool:
     """Used internally to return True if upto is null OR _current_guess <= upto
