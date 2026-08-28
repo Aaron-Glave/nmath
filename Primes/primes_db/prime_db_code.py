@@ -21,6 +21,7 @@ def verify_real_db(db: str):
 
 
 def get_connection(db: str):
+    verify_real_db(db)
     if db in _connections:
         return _connections[db]
     _connections[db] = sqlite3.connect(db)
@@ -46,14 +47,19 @@ def disconnect_all():
     _connections.clear()
 
 
+def insert_prime_with_connection(
+        nth_prime: int, prime: int, conn: sqlite3.Connection
+):
+    conn.execute(f"""
+            INSERT INTO primes (nth_prime, prime)
+            VALUES (?, ?)
+            ON CONFLICT (nth_prime) DO NOTHING;""", (nth_prime, prime))
+    conn.commit()
+
 def insert_prime(nth_prime, prime, db=DATABASE):
     verify_real_db(db)
     with sqlite3.connect(db) as conn:
-        conn.execute(f"""
-        INSERT INTO primes (nth_prime, prime)
-        VALUES (?, ?)
-        ON CONFLICT (nth_prime) DO NOTHING;""", (nth_prime, prime))
-        conn.commit()
+        insert_prime_with_connection(nth_prime, prime, conn)
 
 
 def get_max_prime(db: str) -> tuple[int, int] | None:
