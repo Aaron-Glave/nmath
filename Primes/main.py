@@ -168,12 +168,12 @@ def percent_integers_unknown_factors():
     for prime in ALL_PRIMES_UNDER_100:
         probability *= 1 - (1 / prime)
     if SHOULD_WRITE:
-        # TODO FIX THIS AFTER DINNER. LOOP THROUGH DATABASE
-        with open(SPRIMELIST, mode='r', encoding='ascii') as sprimelist:
-            # TCONTINUE PRINT A LINE EVERY 20000 OR SO
-            for line in sprimelist:
-                prime = int(line.strip('\n').split(' ')[1])
-                probability *= 1 - (1 / prime)
+        n = 0
+        for _, prime in yield_and_write_primes(list_all=True):
+            probability *= 1 - (1 / prime)
+            n += 1
+            if n % 20000 == 0:
+                print(f"Ran through {n} primes so far...")
     return probability
 
 
@@ -298,12 +298,11 @@ def say_gap_of_100():
     if SHOULD_WRITE:
         #TODO FIX THIS AFTER DINNER
         nth_prime = -1
-        primelist = open(SPRIMELIST, mode="r", encoding='ascii')
-        first_line = tuple(map(int, primelist.readline().strip('\n').split(' ')))
+        #This might throw an exception, don't care
+        generator = yield_and_write_primes(list_all=True)
+        first_line = next(generator)
         previous_prime = (first_line[0], first_line[1])
-        for line in primelist:
-            parsed_line = tuple(map(int, line.strip('\n').split(' ')))
-            nth_prime, prime = (parsed_line[0], parsed_line[1])
+        for nth_prime, prime in generator:
             next_prime = (nth_prime, prime)
             gap = next_prime[1] - previous_prime[1]
             if gap == 100:
@@ -333,6 +332,10 @@ def print_next_prime_greater(target: int) -> tuple[int, int]:
     """Interactive. Method to determine a prime number greater than the input."""
     # This is an infinite loop of increasing numbers.
     # noinspection inconsistent-returns
+    #TODO REWRITE THIS TO TAKE ADVANTAGE OF SQL
+    if SHOULD_WRITE:
+        #TODO INSERT A NEW METHOD TO SELECT THE FIRST prime higher
+        raise NotImplementedError("I can find the higher prime a lot faster via a smart SQL query")
     for prime in correct_prime_guess(
             upto=target,
             first_greater=True,
@@ -349,6 +352,7 @@ def print_next_prime_greater(target: int) -> tuple[int, int]:
 
 
 def search_for_nth_prime(target: int) -> None:
+    # TODO WRITE A FASTER WAY TO FIND THIS
     for _prime in correct_prime_guess(target_n=target):
         if _prime[0] % 1000 and _prime[1] < target:
             print(_prime[0], _prime[1])
@@ -391,10 +395,15 @@ def main():
                 + "Say Yes if so, then I'll ask you for your target number. "
         ).lower() == "yes":
             print_next_prime_greater(get_int())
-        else:
+        elif input("Are you looking for a the Nth prime number?\n").lower() == "yes":
             # Guess Nth prime
             print("Name N as the Nth prime number you want to guess")
             search_for_nth_prime(get_int())
+        else:
+            comments: dict[str, str] = {}
+            next_prime_n, next_prime = next(correct_prime_guess(comments=comments))
+            print(f"{next_prime_n}th prime number: {next_prime}",
+                  comments['already_there'], sep='\n')
     finally:
         close_real_db()
 
