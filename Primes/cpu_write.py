@@ -32,16 +32,14 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         comments: A dictionary for additional comments, mainly used for testing.
 
     Throws a PhoneBanned exception if you even try to run this on your phone.
-    Returns a list of tuples [(1-based prime index, prime number)].
-    TODO RUN THROUGH YOUR DATABASE INSTEAD. That means you'll eventually run SQLITE code!
-    TCONTINUE Make sure your connection stays open during the loop to hunt for a prime number
-
-    I typically call those nth_prime, prime.
+    Potentially throws sqlite3.Error as well
+    Returns a list of tuples [(nth_prime, prime)].
+    where nth_prime is the prime index and prime is the prime number itself.
     Note that unless you specify list_all to be true,
     this only yields newly discovered primes!
     If you do set list_all to True and don't specify a target,
       only known primes will be yielded."""
-    #You are only trying to read through the list when:
+    #You don't want to find any new primes when:
     # You want to look through your existing list
     # You didn't specify that you're looking for a particular prime.
     read_only = list_all and upto is None and target_n is None
@@ -65,22 +63,21 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         # larger than the length of all_primes_under_100.
         nth_prime += 1
 
-    #save_to.seek(0)
     any_primes_found = False
     #Look up your highest prime number in your database
-    guess = 101  #NOTE: 101 is the default because 101 is the first prime after 97.
-    # ^ That's the last prime in the default list.
-    #prime_to_start helps us figure out what the first guess should be.
-    # We set prime_to_start to the last prime we found in the file,
-    # so if prime_to_start is 0 at the end of our loop,
-    # we shouldn't change our initial guess of 101.
-    prime_to_start = 0
+    #guess helps us figure out what the first guess should be.
+    max_prime_known_db = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
+    guess = 101  # NOTE: 101 is the default because 101 is the first prime after 97.
+    next_nth_prime = len(ALL_PRIMES_UNDER_100) + 1
+    if max_prime_known_db is not None:
+        next_nth_prime = max_prime_known_db[0] + 1 # We're looking for the next highest prime
+        guess = max_prime_known_db[1] + 2 # It's gotta be at least 2 higher...
     if list_all:
         our_primes_db = prime_db_code.get_connection(prime_db_code.DATABASE)
         try:
             # Basically loop through the database
             cursor = prime_db_code.read_all_prime_records(our_primes_db)
-            for nth_prime, prime in cursor:
+            for nth_prime, prime in cursor: #nth_prime is NOT the nth_prime you're searching for!
                 # Depending on the arguments, we may or may not yield primes in our file.
                 if target_n is not None and nth_prime >= target_n:
                     if comments is not None:
@@ -109,14 +106,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     if read_only:
         return
     isprime = True
-    max_prime_known_db = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
-    guess = max(ALL_PRIMES_UNDER_100) + 2
-    nth_prime = len(ALL_PRIMES_UNDER_100)
-    if max_prime_known_db is not None:
-        nth_prime = max_prime_known_db[0] + 1 # We're looking for the next highest prime
-        guess = max_prime_known_db[1] + 2 # It's gotta be at least 2 higher...
+    our_primes_db = prime_db_code.get_connection(prime_db_code.DATABASE)
     try:
-        our_primes_db = prime_db_code.get_connection(prime_db_code.DATABASE)
         calculate_more = True
         divisible_by_prime_under_100 = False
         while calculate_more:
@@ -133,15 +124,12 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                         calculate_more = False
                 guess += 2
                 continue
-
-        # Now hunt for a new prime...
-        # The Sieve of Eratosthenes:
-        # After testing divisibility by every prime number
-        # less than the SQUARE ROOT of the guess we're testing,
-        # we know for sure that it's prime!
-        square_is_bigger = False
-        cursor = prime_db_code.read_all_prime_records(our_primes_db)
-        try:
+            # The Sieve of Eratosthenes:
+            # After testing divisibility by every prime number
+            # less than the SQUARE ROOT of the guess we're testing,
+            # we know for sure that it's prime!
+            square_is_bigger = False
+            cursor = prime_db_code.read_all_prime_records(our_primes_db)
             #Test if guess is divisible by any primes in our database
             for _, prime in cursor:
                 if guess % prime == 0:
@@ -154,14 +142,14 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 square_is_bigger = False
                 isprime = True
             if isprime:
-                prime_db_code.insert_prime_with_connection(nth_prime, guess, our_primes_db)
+                prime_db_code.insert_prime_with_connection(next_nth_prime, guess, our_primes_db)
                 #DEBUG
-                print(f"Found {nth_prime}th prime: {guess}")
+                print(f"Found new {nth_prime}th prime: {guess}")
                 yield nth_prime, guess
                 if comments is not None:
                     if nth_prime == target_n:
                         comments['already_there'] = 'Had to be found.'
-                nth_prime += 1 #Now we're searching for the next one.
+                next_nth_prime += 1 #Now we're searching for the next one.
                 if first_greater and not under_or_at_limit(guess, upto):
                     first_greater = False
 
@@ -169,12 +157,11 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 if not first_greater:
                     calculate_more = False
             guess += 2
-        finally:
-            cursor.close()
     except sqlite3.Error:
         raise
     finally:
         prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
+
 #pylint: enable=R0911,R0912,R0913,R0914,R0915
 
 
