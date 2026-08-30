@@ -62,7 +62,7 @@ def insert_prime(nth_prime, prime, db=DATABASE):
         insert_prime_with_connection(nth_prime, prime, conn)
 
 
-def get_max_prime(db: str) -> tuple[int, int] | None:
+def get_max_prime_in_db(db: str) -> tuple[int, int] | None:
     with get_connection(db) as conn:
         return conn.execute(f"""
             SELECT nth_prime, prime FROM primes
@@ -72,6 +72,8 @@ def get_max_prime(db: str) -> tuple[int, int] | None:
 
 
 def read_all_prime_records(connection: sqlite3.Connection) -> sqlite3.Cursor:
+    """Loops through all prime numbers in the database.
+    Returns a sqlite3.Cursor object."""
     return connection.execute("""
     SELECT nth_prime, prime
     FROM primes
@@ -90,14 +92,14 @@ def test_simple():
     with get_connection(TEST_DATABASE) as conn:
         rlist = cursor.execute('SELECT nth_prime, prime FROM primes').fetchall()
     print(rlist)
-    last_prime = get_max_prime(TEST_DATABASE)
+    last_prime = get_max_prime_in_db(TEST_DATABASE)
     if last_prime is not None:
         print("Final prime:", )
     else:
         raise sqlite3.ProgrammingError("Empty database! Shouldn't happen!")
 
 def test_highest_main():
-    last_prime = get_max_prime(DATABASE)
+    last_prime = get_max_prime_in_db(DATABASE)
     if last_prime is not None:
         print(last_prime)
     else:

@@ -5,12 +5,12 @@ from typing import Tuple, Generator, Optional
 import warnings
 
 from .phone_banned import PhoneBanned
-from .shared_ph_pc import SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit, SPRIMELIST
+from .shared_ph_pc import SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit
 
 sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
     try:
-        from .cpu_write import yield_and_write_primes, cpu_factors, close_real_db
+        from .cpu_write import yield_and_write_primes, close_real_db, get_max_prime
     except ModuleNotFoundError as me:
         raise me
 else:
@@ -22,6 +22,10 @@ else:
                                comments: Optional[dict[str, str]] = None)\
     -> Generator[tuple[int, int], None, None]:
         raise PhoneBanned()
+
+
+    def get_max_prime() -> tuple[int, int]:
+        return len(ALL_PRIMES_UNDER_100), ALL_PRIMES_UNDER_100[-1]
 
 
     def close_db():
@@ -37,7 +41,7 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
     """Returns list of tuples [(1-based prime index, prime number)].
         Note that all known primes are created in memory,
           so the list is r-created for every iterator you create."""
-    memory_list = ALL_PRIMES_UNDER_100.copy()
+    memory_list = list(ALL_PRIMES_UNDER_100)
     found_first_greater = False
     nth_prime = 1
     for prime in memory_list:
@@ -103,25 +107,7 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             first_greater=first_greater,
             comments=comments
         )
-
-
 #pylint:enable=R0913
-
-
-def get_last_prime() -> Tuple[int, int]:
-    """Returns the biggest prime number in the list.
-    It's a tuple: (nth_prime, prime)"""
-    biggest_prime = (len(ALL_PRIMES_UNDER_100), ALL_PRIMES_UNDER_100[-1])
-    if SHOULD_WRITE:
-        try:
-            with open(SPRIMELIST, encoding='ascii') as sprimelist:
-                for line in sprimelist:
-                    parsed_line = tuple(map(int, line.strip('\n').split(" ")))
-                    biggest_prime: tuple[int, int] = (parsed_line[0], parsed_line[1])
-
-        except FileNotFoundError:
-            pass
-    return biggest_prime
 
 
 def primes_up_to100():
@@ -182,7 +168,9 @@ def percent_integers_unknown_factors():
     for prime in ALL_PRIMES_UNDER_100:
         probability *= 1 - (1 / prime)
     if SHOULD_WRITE:
+        # TODO FIX THIS AFTER DINNER. LOOP THROUGH DATABASE
         with open(SPRIMELIST, mode='r', encoding='ascii') as sprimelist:
+            # TCONTINUE PRINT A LINE EVERY 20000 OR SO
             for line in sprimelist:
                 prime = int(line.strip('\n').split(' ')[1])
                 probability *= 1 - (1 / prime)
@@ -283,18 +271,18 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
         previous_prime = next_prime
 
     if SHOULD_WRITE:
-        nth_prime = 2
-        primelist = open(SPRIMELIST, mode="r", encoding='ascii')
-        first_line = tuple(map(int, primelist.readline().strip('\n').split(' ')))
-        previous_prime: tuple[int, int] = (first_line[0], first_line[1])
-        assert isinstance(previous_prime, tuple) and len(previous_prime) == 2
-        for line in primelist:
-            nth_prime, prime = map(int, line.strip('\n').split(' '))
+        nread = 0
+        for nth_prime, prime in yield_and_write_primes(list_all=True):
             next_prime = (nth_prime, prime)
+            nread += 1
+            if nread % 20000 == 0:
+                print(nread, "reads so far")
             gap = next_prime[1] - previous_prime[1]
             if gap > current_greatest_gap[1]:
                 current_greatest_gap = ((previous_prime, next_prime),
                                         next_prime[1] - previous_prime[1])
+
+                print("Found new gap.", current_greatest_gap)
             previous_prime = next_prime
     assert isinstance(current_greatest_gap, tuple) and len(
         current_greatest_gap) == 2 and isinstance(current_greatest_gap[1], int)
@@ -308,6 +296,7 @@ def say_gap_of_100():
         ((-1, -1), (-1, -1)), 0)
 
     if SHOULD_WRITE:
+        #TODO FIX THIS AFTER DINNER
         nth_prime = -1
         primelist = open(SPRIMELIST, mode="r", encoding='ascii')
         first_line = tuple(map(int, primelist.readline().strip('\n').split(' ')))
@@ -392,7 +381,7 @@ def main():
         print("I will ask you a series of questions about what you want to do.")
         print("Say Yes if you want to do the thing I asked you about.")
         if input("Want to know the last known prime I found? ").lower() == "yes":
-            last_known_prime = get_last_prime()
+            last_known_prime = get_max_prime()
             print("Last known prime is the ", last_known_prime[0], "th prime number: ",
                   last_known_prime[1], sep="")
         elif input("Factor a number? ").lower() == "yes":

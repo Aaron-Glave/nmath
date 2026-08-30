@@ -43,9 +43,5 @@ def safe_eval(exp: str):
 
 
 if __name__ == '__main__':
-    try:
-        #x = input("Please enter a valid mathematical expression: ")
-        x = '2*(300/5^3)'
-        print(safe_eval(x))
-    except AssertionError as _ae:
-        print(_ae)
+    x = input("Please enter a valid mathematical expression: ")
+    print(safe_eval(x))
