@@ -11,34 +11,34 @@ class AllPrimesInOrder(unittest.TestCase):
         """The one test"""
         last_p = 0
         last_n = 0
+        record_count = 0
         comments: dict[str, str] = {}
-        # We have 25 lines in memory already,
-        # so after running through them line_in_list should get to 1.
-        line_in_list = -1 * len(main.ALL_PRIMES_UNDER_100)
-        #Used for debugging. Requires reading the whole list of prime numbers.
-        #target_last_prime = get_last_prime()
+        #TODO ERROR: I'M NOT COUNTING FOR EVERY PRIME
         prime_iter = correct_prime_guess(list_all=True, comments=comments)
         nprime, prime = next(prime_iter)
+        self.assertEqual(nprime, 1)
+        self.assertEqual(prime, 2)
+        record_count += 1
         self.assertEqual(nprime, last_n + 1)
         self.assertEqual(prime, 2)
-        last_n, last_p= nprime, prime
+        last_n, last_p = nprime, prime
         self.assertEqual(comments['prime_guess_func'], yield_and_write_primes.__name__)
         for nprime, prime in prime_iter:
-            line_in_list += 1
+            record_count += 1
             self.assertEqual(nprime, last_n + 1,
                              msg=(
-                                 f"Error on line {line_in_list}. "
-                                 "Expected {last_n + 1}, but got {nprime}."
+                                 f"Error on record {record_count}. "
+                                 f"Expected {last_n + 1}, but got {nprime}."
                              ))
             self.assertGreater(prime, last_p,
                                msg=(
-                                   f"Error: {nprime} prime located at line {line_in_list}" +
+                                   f"Error: {nprime} prime located at line {record_count}" +
                                    f" was less than the prime located at {last_n}"
                                ))
-            if line_in_list % 500000 == 0 and line_in_list > 0:
-                print("Tested", line_in_list, "lines so far.")
+            if record_count % 500000 == 0 and record_count > 0:
+                print("Tested", record_count, "records so far.")
             last_n, last_p = nprime, prime
-        print("Tested", line_in_list, "lines and they all looked good.")
+        print("Tested", record_count, "lines and they all looked good.")
         print("Check your highest known prime:",
               f"The {last_n}nth prime is: {last_p}.", sep="\n")
 

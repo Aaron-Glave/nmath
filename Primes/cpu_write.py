@@ -33,8 +33,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 
     Throws a PhoneBanned exception if you even try to run this on your phone.
     Potentially throws sqlite3.Error as well
-    Returns a list of tuples [(nth_prime, prime)].
-    where nth_prime is the prime index and prime is the prime number itself.
+    Returns a list of tuples [(next_nth_prime, prime)].
+    where next_nth_prime is the prime index and prime is the prime number itself.
     Note that unless you specify list_all to be true,
     this only yields newly discovered primes!
     If you do set list_all to True and don't specify a target,
@@ -67,6 +67,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     #Look up your highest prime number in your database
     #guess helps us figure out what the first guess should be.
     max_prime_known_db = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
+    #Handle the case where the database is empty.
     guess = 101  # NOTE: 101 is the default because 101 is the first prime after 97.
     next_nth_prime = len(ALL_PRIMES_UNDER_100) + 1
     if max_prime_known_db is not None:
@@ -144,11 +145,10 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
             if isprime:
                 prime_db_code.insert_prime_with_connection(next_nth_prime, guess, our_primes_db)
                 #DEBUG
-                print(f"Found new {nth_prime}th prime: {guess}")
-                yield nth_prime, guess
+                print(f"Found new {next_nth_prime}th prime: {guess}")
                 if comments is not None:
-                    if nth_prime == target_n:
-                        comments['already_there'] = 'Had to be found.'
+                    comments['already_there'] = 'Had to be found.'
+                yield next_nth_prime, guess
                 next_nth_prime += 1 #Now we're searching for the next one.
                 if first_greater and not under_or_at_limit(guess, upto):
                     first_greater = False

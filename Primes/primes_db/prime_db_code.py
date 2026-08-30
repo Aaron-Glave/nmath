@@ -62,6 +62,14 @@ def insert_prime(nth_prime, prime, db=DATABASE):
         insert_prime_with_connection(nth_prime, prime, conn)
 
 
+def get_min_prime_in_db(db: str) -> tuple[int, int] | None:
+    with get_connection(db) as conn:
+        return conn.execute(f"""
+            SELECT nth_prime, prime FROM primes
+            ORDER BY nth_prime ASC
+            LIMIT 1
+        """).fetchone()
+
 def get_max_prime_in_db(db: str) -> tuple[int, int] | None:
     with get_connection(db) as conn:
         return conn.execute(f"""
@@ -98,6 +106,14 @@ def test_simple():
     else:
         raise sqlite3.ProgrammingError("Empty database! Shouldn't happen!")
 
+def test_lowest_main():
+    last_prime = get_min_prime_in_db(DATABASE)
+    if last_prime is not None:
+        print(last_prime)
+    else:
+        print("Your prime database is empty.")
+
+
 def test_highest_main():
     last_prime = get_max_prime_in_db(DATABASE)
     if last_prime is not None:
@@ -110,5 +126,6 @@ if __name__ == '__main__':
     try:
         test_simple()
         test_highest_main()
+        test_lowest_main()
     finally:
         disconnect_all()
