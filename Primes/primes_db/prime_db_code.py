@@ -74,6 +74,13 @@ def get_min_prime_in_db(db: str) -> tuple[int, int] | None:
         """).fetchone()
 
 
+def get_nth_prime_in_db(nth_prime: int, db: str) -> tuple[int, int] | None:
+    with get_connection(db) as conn:
+        return conn.execute("""
+            SELECT nth_prime, prime FROM primes
+            WHERE nth_prime = ?""", (nth_prime,)).fetchone()
+
+
 def get_max_prime_in_db(db: str) -> tuple[int, int] | None:
     with get_connection(db) as conn:
         return conn.execute(f"""
@@ -102,7 +109,8 @@ def all_primes_skip_first_n(
     WHERE nth_prime > ?
     ORDER BY nth_prime ASC;""", (num_to_skip,))
 
-def first_prime_greater(lower_bound: int, db: str) -> tuple[int,int]:
+
+def first_prime_greater(lower_bound: int, db: str) -> tuple[int, int]:
     with get_connection(db) as conn:
         return conn.execute("""
         SELECT nth_prime, prime
@@ -139,27 +147,31 @@ def test_lowest_main():
         print("Your prime database is empty.")
 
 
-def test_highest_main():
+def test_highest_main() -> tuple[int, int] | None:
     last_prime = get_max_prime_in_db(DATABASE)
     if last_prime is not None:
         print(last_prime)
+        return last_prime
     else:
         print("Your prime database is empty.")
+    return None
 
 
 def test_pragma(db: str) -> None:
     """Just prints info about your database. Doesn't return anything."""
     with get_connection(db) as conn:
         print("Database indexes info:", conn.execute(f"""PRAGMA index_list(primes);""").fetchall())
-        print("idx_primes_value info:", conn.execute(f"""PRAGMA index_info(idx_primes_value);""").fetchall())
+        print("idx_primes_value info:",
+              conn.execute(f"""PRAGMA index_info(idx_primes_value);""").fetchall())
 
 
-if __name__ == '__main__':
-    try:
-        test_simple()
-        test_highest_main()
-        test_lowest_main()
-        test_pragma(db=DATABASE)
-        print(first_prime_greater(5000000, db=DATABASE))
-    finally:
-        disconnect_all()
+def all_tests():
+    test_simple()
+    test_highest_main()
+    test_lowest_main()
+    test_pragma(db=DATABASE)
+    print("This should be QUICK: Find the first prime number bigger than 5000000.")
+    print(first_prime_greater(5000000, db=DATABASE))
+
+if __name__ == "__main__":
+    all_tests()
