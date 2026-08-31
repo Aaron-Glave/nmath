@@ -6,7 +6,7 @@ from typing import Optional, Generator, Tuple
 import warnings
 
 from .primes_db import prime_db_code
-from .shared_ph_pc import under_or_at_limit, ALL_PRIMES_UNDER_100
+from .shared_ph_pc import under_or_at_limit, ALL_PRIMES_UNDER_100, desc_prime_with_index
 
 
 def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None:
@@ -159,8 +159,17 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         raise
     finally:
         prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
-
 #pylint: enable=R0911,R0912,R0913,R0914,R0915
+
+
+def get_nth_prime_in_db(nth_prime, db: str) -> tuple[int, int] | None:
+    nth_prime_in_db: tuple[int, int] | None = prime_db_code.get_nth_prime_in_db(nth_prime, db)
+    if nth_prime_in_db is not None:
+        return nth_prime_in_db[0], nth_prime_in_db[1]
+    for nth_prime_found, prime in yield_and_write_primes(target_n=nth_prime):
+        if nth_prime_found == nth_prime:
+            return nth_prime_found, prime
+    return None
 
 
 def get_max_prime(db: str = prime_db_code.DATABASE) -> tuple[int, int]:
@@ -175,3 +184,14 @@ def get_max_prime(db: str = prime_db_code.DATABASE) -> tuple[int, int]:
 
 def close_real_db():
     prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
+
+def test_db_expands():
+    target_n = None
+    max_prime_db = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
+    if max_prime_db is None:
+        target_n = 2
+    else:
+        target_n = max_prime_db[0] + 2
+
+    for nth_prime, prime in yield_and_write_primes(target_n=target_n):
+        print(desc_prime_with_index((nth_prime, prime)))

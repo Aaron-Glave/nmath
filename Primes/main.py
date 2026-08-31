@@ -5,7 +5,8 @@ from typing import Tuple, Generator, Optional
 import warnings
 
 from .phone_banned import PhoneBanned
-from .shared_ph_pc import SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit
+from .shared_ph_pc import (SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit,
+                           desc_prime_with_index)
 
 sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
@@ -327,9 +328,6 @@ def get_int() -> int:
     return target
 
 
-def desc_prime_with_index(np: tuple[int, int]) -> str:
-    return f"{np[0]}th prime: {np[1]}"
-
 def print_next_prime_greater(target: int) -> tuple[int, int]:
     """Interactive. Method to determine a prime number greater than the input."""
     # This is an infinite loop of increasing numbers.
@@ -363,7 +361,6 @@ def search_for_nth_prime(target: int) -> None:
                 print(desc_prime_with_index(_prime))
                 break
     else:
-        #TODO WRITE A SQL QUERY
         pass
 
 
