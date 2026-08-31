@@ -85,7 +85,7 @@ class DecimalRepresentationOfFrac:
         if len(self.digits) != 0:
             mystring += "."
             #Special case for repeating single digits?
-            if self.start_repeat is not None:
+            if self.start_repeat is not None and self.end_repeat is not None:
                 ##CHECK this:
                 # 1. Your second repeating digit's index is 1 after the first repeating digit's index
                 # 2. They each represent the same digit
