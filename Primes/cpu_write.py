@@ -77,7 +77,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         our_primes_db = prime_db_code.get_connection(prime_db_code.DATABASE)
         try:
             # Basically loop through the database
-            cursor = prime_db_code.read_all_prime_records(our_primes_db)
+            cursor = prime_db_code.all_primes_after_n(len(ALL_PRIMES_UNDER_100), our_primes_db)
             for nth_prime, prime in cursor: #nth_prime is NOT the nth_prime you're searching for!
                 # Depending on the arguments, we may or may not yield primes in our file.
                 if target_n is not None and nth_prime >= target_n:

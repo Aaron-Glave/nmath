@@ -87,6 +87,16 @@ def read_all_prime_records(connection: sqlite3.Connection) -> sqlite3.Cursor:
     FROM primes
     ORDER BY nth_prime ASC;""")
 
+def all_primes_after_n(
+        num_to_skip: int, connection: sqlite3.Connection
+) -> sqlite3.Cursor:
+    """Loops through all primes after the first num_to_skip"""
+    return connection.execute("""
+    SELECT nth_prime, prime
+    FROM primes
+    WHERE nth_prime > ?
+    ORDER BY nth_prime ASC;""", (num_to_skip,))
+
 
 def test_simple():
     with get_connection(TEST_DATABASE) as conn:
