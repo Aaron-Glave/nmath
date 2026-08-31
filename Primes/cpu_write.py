@@ -144,8 +144,6 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 isprime = True
             if isprime:
                 prime_db_code.insert_prime_with_connection(next_nth_prime, guess, our_primes_db)
-                #DEBUG
-                print(f"Found new {next_nth_prime}th prime: {guess}")
                 if comments is not None:
                     comments['already_there'] = 'Had to be found.'
                 yield next_nth_prime, guess
