@@ -296,7 +296,6 @@ def say_gap_of_100():
         ((-1, -1), (-1, -1)), 0)
 
     if SHOULD_WRITE:
-        #TODO FIX THIS AFTER DINNER
         nth_prime = -1
         #This might throw an exception, don't care
         generator = yield_and_write_primes(list_all=True)
@@ -328,11 +327,13 @@ def get_int() -> int:
     return target
 
 
+def desc_prime_with_index(np: tuple[int, int]) -> str:
+    return f"{np[0]}th prime: {np[1]}"
+
 def print_next_prime_greater(target: int) -> tuple[int, int]:
     """Interactive. Method to determine a prime number greater than the input."""
     # This is an infinite loop of increasing numbers.
     # noinspection inconsistent-returns
-    #TODO REWRITE THIS TO TAKE ADVANTAGE OF SQL
     if SHOULD_WRITE:
         #TODO INSERT A NEW METHOD TO SELECT THE FIRST prime higher
         raise NotImplementedError("I can find the higher prime a lot faster via a smart SQL query")
@@ -343,71 +344,27 @@ def print_next_prime_greater(target: int) -> tuple[int, int]:
     ):
         if prime[1] >= target:
             if prime[1] == target:
-                print(prime[1], " is the ", prime[0], "th prime.", sep='')
+                print(target, "is a prime number!")
+                print(desc_prime_with_index(prime))
             if prime[1] > target:
                 print("Higher prime:", end=" ")
-                print(prime[0], "th prime: ", prime[1], sep="")
+                print(desc_prime_with_index(prime))
                 return prime
     return -1, -1
 
 
 def search_for_nth_prime(target: int) -> None:
     # TODO WRITE A FASTER WAY TO FIND THIS
-    for _prime in correct_prime_guess(target_n=target):
-        if _prime[0] % 1000 and _prime[1] < target:
-            print(_prime[0], _prime[1])
-        if _prime[0] == target:
-            print(_prime[0], "th prime is ", _prime[1], sep="", end=".\n")
-            break
+    if not SHOULD_WRITE:
+        for _prime in yield_primes_memory():
+            if _prime[0] % 1000 and _prime[1] < target:
+                print(_prime[0], _prime[1])
+            if _prime[0] == target:
+                print(desc_prime_with_index(_prime))
+                break
+    else:
+        #TODO WRITE A SQL QUERY
+        pass
 
 
-def main():
-    try:
-        A = 11 ** 10000
-        SLIGHTLY_SMALLER_A = 11 ** (10000 - 6)
-        print("Huge number:", A)
-        print("Slightly smaller:", SLIGHTLY_SMALLER_A)
-        B = A // SLIGHTLY_SMALLER_A
-        print(B,
-              "was calculated by dividing that huge number by a slightly smaller but still huge number."
-              )
-        print("It's _factors are", end=" ")
-        print(Factorized(B))
-        print(-15, "'s _factors are", sep="", end=" ")
-        print(Factorized(-15))
-        print(36, "'s _factors are", sep="", end=" ")
-        print(Factorized(36))
-        print(63, "'s _factors are", sep="", end=" ")
-        print(Factorized(63))
-        print(147, "'s _factors are", sep="", end=" ")
-        print(Factorized(147))
-
-        print("I will ask you a series of questions about what you want to do.")
-        print("Say Yes if you want to do the thing I asked you about.")
-        if input("Want to know the last known prime I found? ").lower() == "yes":
-            last_known_prime = get_max_prime()
-            print("Last known prime is the ", last_known_prime[0], "th prime number: ",
-                  last_known_prime[1], sep="")
-        elif input("Factor a number? ").lower() == "yes":
-            print(Factorized(get_int()))
-        elif input(
-                "Do you want to find a prime greater than a target number N?\n"
-                + "Say Yes if so, then I'll ask you for your target number. "
-        ).lower() == "yes":
-            print_next_prime_greater(get_int())
-        elif input("Are you looking for a the Nth prime number?\n").lower() == "yes":
-            # Guess Nth prime
-            print("Name N as the Nth prime number you want to guess")
-            search_for_nth_prime(get_int())
-        else:
-            comments: dict[str, str] = {}
-            next_prime_n, next_prime = next(correct_prime_guess(comments=comments))
-            print(f"{next_prime_n}th prime number: {next_prime}",
-                  comments['already_there'], sep='\n')
-    finally:
-        close_real_db()
-
-
-#I run EITHER yield_primes_memory OR yield_and_write_primes DEPENDING ON PHONE USAGE!
-if __name__ == '__main__':
-   main()
+#See run_prime_main.py in the parent directory for user interaction.

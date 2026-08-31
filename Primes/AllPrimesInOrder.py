@@ -15,7 +15,6 @@ class AllPrimesInOrder(unittest.TestCase):
         last_n = 0
         record_count = 0
         comments: dict[str, str] = {}
-        #TODO ERROR: Error on record 26. Expected 26, but got 1.
         prime_iter = correct_prime_guess(list_all=True, comments=comments)
         nprime, prime = next(prime_iter)
         self.assertEqual(nprime, 1)
