@@ -1,5 +1,8 @@
 """Make sure to run this in the nmath directory."""
+import factorized
 from Primes import main as m
+from pathlib import Path
+import os
 
 def fun_facts():
     A = 11 ** 10000
@@ -11,15 +14,15 @@ def fun_facts():
           "was calculated by dividing that huge number by a slightly smaller but still huge number."
           )
     print("It's _factors are", end=" ")
-    print(m.Factorized(B))
+    print(factorized.Factorized(B))
     print(-15, "'s _factors are", sep="", end=" ")
-    print(m.Factorized(-15))
+    print(factorized.Factorized(-15))
     print(36, "'s _factors are", sep="", end=" ")
-    print(m.Factorized(36))
+    print(factorized.Factorized(36))
     print(63, "'s _factors are", sep="", end=" ")
-    print(m.Factorized(63))
+    print(factorized.Factorized(63))
     print(147, "'s _factors are", sep="", end=" ")
-    print(m.Factorized(147), end="\n\n")
+    print(factorized.Factorized(147), end="\n\n")
 
 def last_prime_found():
     last_known_prime = m.get_max_prime()
@@ -28,36 +31,57 @@ def last_prime_found():
 
 
 def factor_a_number():
-    print(m.Factorized(m.get_int()))
+    print(factorized.Factorized(m.get_int()))
 
 def find_greater_prime():
     m.print_next_prime_greater(m.get_int())
 
+def find_nth_prime():
+    # Guess Nth prime
+    print("Name N as the Nth prime number you want to guess")
+    m.search_for_nth_prime(m.get_int())
+
+def find_next_prime():
+    comments: dict[str, str] = {}
+    next_prime_n, next_prime = next(m.correct_prime_guess(comments=comments))
+    print(f"{next_prime_n}th prime number: {next_prime}",
+          comments['already_there'], sep='\n')
+
+
+def cd_and_generate():
+    folder = Path(__file__).resolve().parent
+    prime_dir = folder / 'Primes'
+    os.chdir(prime_dir.resolve())
+    m.primes_up_to100()
+    os.chdir(folder.resolve())
+
+def say_biggest_gap():
+    _biggest_gap = m.largest_gap_of_primes()
+    m.say_gap_message(_biggest_gap)
+
 def prime_main():
     try:
         fun_facts()
-        print("I will ask you a series of questions about what you want to do.")
-        print("Say Yes if you want to do the thing I asked you about.")
-        if input("Want to know the last known prime I found? ").lower() == "yes":
-            last_prime_found()
-        elif input("Factor a number? ").lower() == "yes":
-            factor_a_number()
-        elif input(
-                "Do you want to find a prime greater than a target number N?\n"
-                + "Say Yes if so, then I'll ask you for your target number. "
-        ).lower() == "yes":
-            find_greater_prime()
-        elif input("Are you looking for a the Nth prime number?\n").lower() == "yes":
-            # Guess Nth prime
-            print("Name N as the Nth prime number you want to guess")
-            m.search_for_nth_prime(m.get_int())
-        else:
-            comments: dict[str, str] = {}
-            next_prime_n, next_prime = next(m.correct_prime_guess(comments=comments))
-            print(f"{next_prime_n}th prime number: {next_prime}",
-                  comments['already_there'], sep='\n')
+        options = []
+        print("I will give you an indexed list of possible actions.")
+        #print("Say Yes if you want to do the thing I asked you about.")
+        options.append(("Tell me the last known prime I found", last_prime_found))
+        options.append(("Factor a number", factor_a_number))
+        options.append(("Find a prime greater than a target number N", find_greater_prime))
+        options.append(("Find the Nth prime number", find_nth_prime))
+        options.append(("Find the next highest prime number", find_next_prime))
+        options.append(("Generate text file of all primes less than 100 in the Primes folder",
+                        cd_and_generate))
+        options.append(("Find the biggest gap between prime numbers you know", say_biggest_gap))
+        i = 0
+        for option in options:
+            print(i+1, options[i][0], sep=": ")
+            i += 1
+        print()
+        i = int(input("Type the number corresponding to what you want to do. "))
+        options[i-1][1]()
     finally:
-        m.close_real_db()
+        m.close_db()
 
 if __name__ == "__main__":
     prime_main()

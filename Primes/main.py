@@ -1,8 +1,8 @@
 """Program designed to talk about prime numbers."""
 import sys
 from io import TextIOWrapper
+from time import time
 from typing import Tuple, Generator, Optional
-import warnings
 
 from .phone_banned import PhoneBanned
 from .shared_ph_pc import (SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit,
@@ -11,7 +11,8 @@ from .shared_ph_pc import (SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit
 sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
     try:
-        from .cpu_write import yield_and_write_primes, close_real_db, get_max_prime
+        from .cpu_write import (yield_and_write_primes, close_real_db as close_db, get_max_prime,
+                                get_nth_prime_in_db)
     except ModuleNotFoundError as me:
         raise me
 else:
@@ -22,6 +23,10 @@ else:
                                target_n: Optional[int] = None,
                                comments: Optional[dict[str, str]] = None)\
     -> Generator[tuple[int, int], None, None]:
+        raise PhoneBanned()
+
+
+    def get_nth_prime_in_db(nth_prime, db: str) -> tuple[int, int] | None:
         raise PhoneBanned()
 
 
@@ -178,64 +183,6 @@ def percent_integers_unknown_factors():
     return probability
 
 
-class Factorized:
-    """Factors an integer and displays the factors"""
-
-    @staticmethod
-    def reduce(number: int, divisor: int) -> Tuple[int, int]:
-        """Returns (a, n) where number == a*(divisor ^ n) and a is not divisible by the divisor.
-        Basically factors out the divisor raised to the highest possible power."""
-        n = 0
-        while number % divisor == 0:
-            n += 1
-            number //= divisor
-        return number, n
-
-    def __init__(self, to_factor: int) -> None:
-        """Factorizes the passed integer using a Callable[
-            [int], Generator[tuple[int, int], None, None]
-        ] to factor it. The default factorization method is """
-        self._factors: list[tuple[int, int]] = []
-        self.factor_failure = None
-        prime_source = correct_prime_guess(list_all=True)
-        if to_factor < 0:
-            self._factors.append((-1, 1))
-            to_factor *= -1
-        elif to_factor == 0:
-            self._factors = [(0, 1)]
-        elif to_factor == 1:
-            self._factors = [(1, 1)]
-        done_factoring = False
-        while to_factor > 1 and not done_factoring:
-            for _, prime in prime_source:
-                if to_factor % prime == 0:
-                    to_factor, number_of_divisions = Factorized.reduce(to_factor, prime)
-                    self._factors.append((prime, number_of_divisions))
-                    if to_factor == 1:
-                        done_factoring = True
-                    break
-        if to_factor > 1:
-            self.factor_failure = (f"I couldn't find a factor for ${to_factor}.\n"
-                                   "It might be divisible by prime numbers I haven't discovered.")
-            warnings.warn(self.factor_failure, UserWarning)
-
-    def __str__(self) -> str:
-        """Represents the factors of an integer nicely in a string."""
-        factor_count = 0
-        strs_to_list = []
-        ending = " * "
-        for factor in self._factors:
-            factor_count += 1
-            if factor_count == len(self._factors):
-                ending = ""
-            strs_to_list.append(f"{factor[0]} ^ {factor[1]}{ending}")
-        return "".join(strs_to_list)
-
-    @property
-    def factors(self) -> list[tuple[int, int]]:
-        return self._factors
-
-
 def say_gap_message(gap_to_print: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int]):
     """Prints info about the gap passed
     Organization: (
@@ -257,6 +204,7 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
     returning the first 2 prime numbers which are that far apart, as well as the size of the gap.
     Note that the gap this function finds CAN repeat;
     I just return a reference to the first time I find that gap."""
+    benchmark = time()
     previous_prime = (1, ALL_PRIMES_UNDER_100[0])
     next_prime = previous_prime
     current_greatest_gap: Tuple[Tuple[
@@ -274,10 +222,13 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
     if SHOULD_WRITE:
         nread = 0
         for nth_prime, prime in yield_and_write_primes(list_all=True):
+            if time() - benchmark >= 15:
+                print("Currently looking at", desc_prime_with_index((nth_prime, prime)))
+                benchmark = time()
             next_prime = (nth_prime, prime)
             nread += 1
-            if nread % 20000 == 0:
-                print(nread, "reads so far")
+            #if nread % 20000 == 0:
+            #    print(nread, "reads so far")
             gap = next_prime[1] - previous_prime[1]
             if gap > current_greatest_gap[1]:
                 current_greatest_gap = ((previous_prime, next_prime),
@@ -353,15 +304,14 @@ def print_next_prime_greater(target: int) -> tuple[int, int]:
 
 def search_for_nth_prime(target: int) -> None:
     # TODO WRITE A FASTER WAY TO FIND THIS
-    if not SHOULD_WRITE:
+    if SHOULD_WRITE:
+        result = get_nth_prime_in_db(TODO)
+    else:
         for _prime in yield_primes_memory():
             if _prime[0] % 1000 and _prime[1] < target:
                 print(_prime[0], _prime[1])
             if _prime[0] == target:
                 print(desc_prime_with_index(_prime))
                 break
-    else:
-        pass
-
 
 #See run_prime_main.py in the parent directory for user interaction.

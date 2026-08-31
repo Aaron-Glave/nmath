@@ -1,9 +1,11 @@
 #from Primes import main as primes
 from Primes.main import factors_as_string, factor, yield_primes_memory
+from factorized import Factorized
+
 expression1 = '6*9*10'
 expression2 = '6*9*10-3'
 expression3 = '3*(6*3*10-1)'
-print(factors_as_string(factor(537, method = yield_primes_memory)))
+print(Factorized(537, method = yield_primes_memory)))
 print(factors_as_string(factor(540, method = yield_primes_memory)))
 assert 540 == eval(expression1)
 assert 537 == eval(expression2)

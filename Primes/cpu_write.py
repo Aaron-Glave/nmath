@@ -162,8 +162,10 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
 #pylint: enable=R0911,R0912,R0913,R0914,R0915
 
 
-def get_nth_prime_in_db(nth_prime, db: str) -> tuple[int, int] | None:
-    nth_prime_in_db: tuple[int, int] | None = prime_db_code.get_nth_prime_in_db(nth_prime, db)
+def get_nth_prime_in_db(nth_prime) -> tuple[int, int] | None:
+    nth_prime_in_db: tuple[int, int] | None = (
+        prime_db_code.get_nth_prime_in_db(nth_prime, prime_db_code.DATABASE)
+    )
     if nth_prime_in_db is not None:
         return nth_prime_in_db[0], nth_prime_in_db[1]
     for nth_prime_found, prime in yield_and_write_primes(target_n=nth_prime):
