@@ -58,3 +58,6 @@ def prime_main():
                   comments['already_there'], sep='\n')
     finally:
         m.close_real_db()
+
+if __name__ == "__main__":
+    prime_main()
