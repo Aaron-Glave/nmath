@@ -8,7 +8,9 @@ class AllPrimesInOrder(unittest.TestCase):
     """Verifies that your list of prime numbers looks right.
             Use https://t5k.org/nthprime/index.php to check it out."""
     def test_in_order(self):
-        """The one test"""
+        """The one test checks every prime we know,
+        checking that we yield primes in increasing order
+        and that we don't skip any."""
         last_p = 0
         last_n = 0
         record_count = 0
