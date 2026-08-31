@@ -1,4 +1,4 @@
-from factorized import Factorized
+from Primes.factorized import Factorized
 from calculator import safe_eval
 
 num_to_factor = safe_eval(input("Number you want to factor? "))

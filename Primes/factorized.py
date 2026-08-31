@@ -1,7 +1,7 @@
 import warnings
 from typing import Tuple, Callable, Generator
 
-from main import correct_prime_guess
+from .main import correct_prime_guess
 
 
 class Factorized:
