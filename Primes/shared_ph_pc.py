@@ -17,3 +17,7 @@ def under_or_at_limit(_current_guess: int, upto: Optional[int]) -> bool:
     if upto is None:
         return True
     return _current_guess <= upto
+
+
+def desc_prime_with_index(np: tuple[int, int]) -> str:
+    return f"{np[0]}th prime: {np[1]}"
