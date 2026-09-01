@@ -1,6 +1,6 @@
-#from Primes import main as primes
-from Primes.factorized import Factorized
-from Primes.main import yield_primes_memory
+#from primes import main as primes
+from primes.factorized import Factorized
+from primes.main import yield_primes_memory
 
 expression1 = '6*9*10'
 expression2 = '6*9*10-3'

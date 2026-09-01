@@ -1,5 +1,5 @@
 """Run this module from the nmath directory:
-    python -m Primes.primes_db.load_database
+    python -m primes.primes_db.load_database
 
 This program imports all the prime numbers in your sprimelist.txt file to primes.db"""
 import sqlite3
