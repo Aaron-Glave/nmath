@@ -106,7 +106,7 @@ class TestCorrectPrimes(unittest.TestCase):
         print(primes[26 - 1])
         self.assertEqual((26, 101), primes[26 - 1])
         self.assertIn('already_there', comments)
-        self.assertEqual(comments['already_there'], 'already there')
+        self.assertEqual( 'Already there.', comments['already_there'])
 
 
 if __name__ == '__main__':
