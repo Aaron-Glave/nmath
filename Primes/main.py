@@ -161,13 +161,6 @@ def gen_primes_up_to(max_prime=2):
     return list(correct_prime_guess(max_prime, list_all=True))
 
 
-def memory_factor_list(to_factor: int) -> Generator[int, None, None]:
-    """Returns a correct list of factors of the number to_factor,
-    using memory only."""
-    for mprime in yield_primes_memory(to_factor):
-        yield mprime[1]
-
-
 def percent_integers_unknown_factors():
     """Returns the percentage chance that a number isn't divisible by any of our known primes."""
     probability = 1
@@ -193,12 +186,9 @@ def say_gap_message(gap_to_print: Tuple[Tuple[Tuple[int, int], Tuple[int, int]],
             index of the prime number starting at 1 and increasing by 1 for each prime,
             the prime number itself
         )."""
-    print("Found a gap of 100 between the", end=" ")
-    print(gap_to_print[0][1][0], "th prime and the ", gap_to_print[0][0][0], "th prime.")
-    print(f"Subtracting the {gap_to_print[0][0][0]}th prime from"
-          f"the {gap_to_print[0][1][0]}th prime yields exactly 100.\n",
-          gap_to_print[0][1][1], "-", gap_to_print[0][0][1], "=", gap_to_print[1],
-          sep='', end=".\n")
+    print(f"Found a gap of {gap_to_print[1]} between the", end=" ")
+    print(f"{gap_to_print[0][1][0]}th prime ({gap_to_print[0][1][1]})\n"
+          f"and the {gap_to_print[0][0][0]}th prime ({gap_to_print[0][0][1]}).")
 
 
 def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int]:
@@ -265,6 +255,14 @@ def say_gap_of_100():
                 return found_gap_100
             previous_prime = next_prime
     print("Either you're using your phone or you don't know enough primes.")
+    previous_prime = (-1, -1)
+    found_gap_100 = ((previous_prime, previous_prime), 0)
+    for prime_tuple in yield_primes_memory(): #(nth_prime, prime)
+        found_gap_100 = ((previous_prime, prime_tuple), prime_tuple[1] - previous_prime[1])
+        if found_gap_100[1] == 100:
+            break
+        previous_prime = prime_tuple
+    say_gap_message(found_gap_100)
     return found_gap_100
 
 

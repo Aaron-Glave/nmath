@@ -58,6 +58,10 @@ def cd_and_generate():
 def say_biggest_gap():
     _biggest_gap = m.largest_gap_of_primes()
     m.say_gap_message(_biggest_gap)
+    print(f"Subtracting the {_biggest_gap[0][0][0]}th prime from"
+          f"the {_biggest_gap[0][1][0]}th prime yields exactly 100.\n",
+          f"{_biggest_gap[0][1][1]} - {_biggest_gap[0][0][1]} = {_biggest_gap[1]}",
+          sep='', end=".\n")
 
 def probability_to_factor():
     print(m.percent_integers_unknown_factors() * 100,
