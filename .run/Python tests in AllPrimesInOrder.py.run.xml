@@ -1,17 +1,19 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Python tests for Primes.ExpectedPrimeLists.TestCorrectPrimes" type="tests" factoryName="Autodetect" nameIsGenerated="true">
+  <configuration default="false" name="Python tests in AllPrimesInOrder.py" type="tests" factoryName="Autodetect" nameIsGenerated="true">
     <module name="nmath" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Primes" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
+    <option name="DEBUG_JUST_MY_CODE" value="false" />
+    <option name="RUN_TOOL" value="" />
     <option name="_new_additionalArguments" value="&quot;&quot;" />
-    <option name="_new_target" value="&quot;Primes.ExpectedPrimeLists.TestCorrectPrimes&quot;" />
-    <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+    <option name="_new_target" value="&quot;C:\\Users\\Owner\\Python_programs\\nmath\\Primes\\AllPrimesInOrder.py&quot;" />
+    <option name="_new_targetType" value="&quot;PATH&quot;" />
     <method v="2" />
   </configuration>
 </component>

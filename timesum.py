@@ -18,7 +18,7 @@ def calculate_earthly_time(entered_ms: MinutesAndSeconds) -> HoursMinutesSeconds
 
 
 def earthly_time_to_time_frac(hms: HoursMinutesSeconds) -> MinutesAndSeconds:
-    return hms[0] * 60 + hms[1] + Fraction(hms[2], 60)
+    return MinutesAndSeconds(hms[0] * 60 + hms[1] + Fraction(hms[2], 60))
 
 
 def time_frac(minutes: int, seconds: int) -> MinutesAndSeconds:
@@ -28,12 +28,12 @@ def time_frac(minutes: int, seconds: int) -> MinutesAndSeconds:
 
 if __name__ == '__main__':
     _done = False
-    _end_sum = time_frac(0, 0)
+    _end_sum: MinutesAndSeconds = time_frac(0, 0)
     while not _done:
         _minutes = int(input("Enter the number of minutes: "))
         _seconds = int(input("Enter the number of seconds: "))
-        _turn_time = time_frac(_minutes, _seconds)
-        _end_sum += _turn_time
+        _turn_time: MinutesAndSeconds = time_frac(_minutes, _seconds)
+        _end_sum = MinutesAndSeconds(_turn_time + _end_sum)
         #test_input = input("Any more periods of time [Y|N]? ")
         #print("You entered\n", test_input, sep='')
         _done = (input("Any more periods of time [Y|N]? ").upper() != 'Y')

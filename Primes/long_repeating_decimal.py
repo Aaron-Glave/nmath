@@ -85,7 +85,7 @@ class DecimalRepresentationOfFrac:
         if len(self.digits) != 0:
             mystring += "."
             #Special case for repeating single digits?
-            if self.start_repeat is not None:
+            if self.start_repeat is not None and self.end_repeat is not None:
                 ##CHECK this:
                 # 1. Your second repeating digit's index is 1 after the first repeating digit's index
                 # 2. They each represent the same digit
@@ -93,15 +93,15 @@ class DecimalRepresentationOfFrac:
                     if self.digits[self.end_repeat].digit == self.digits[self.start_repeat].digit:
                         #We already know we're repeating!
                         repeating = True
-            dindex: int = 0
+            digit_index: int = 0
             for digit in self.digits:
-                if dindex == self.start_repeat and not self.finite:
+                if digit_index == self.start_repeat and not self.finite:
                     mystring += "_"
                     if repeating:
                         mystring += digit.__str__() + "_"
                         return mystring
                 mystring += digit.__str__()
-                dindex += 1
+                digit_index += 1
             if not self.finite:
                 mystring += "_"
         return mystring
@@ -141,19 +141,19 @@ class DecimalRepresentationOfFrac:
             while myname[namechar] != "_":
                 namechar += 1
             namechar += 1
-            realstart = namechar
+            real_start = namechar
             namechar += 1
             while myname[namechar] != "_":
                 namechar += 1
-            return realstart, namechar
+            return real_start, namechar
         return -1, -1
 
     def repeating_string(self) -> str:
         """Returns a string containing only the repeating digits, in order."""
         result = self.repeating_string_start_and_end()
         myname = str(self)
-        #Remember, repeating_string_start_and_end() returns (-1, -1)...
-        # ..iff the digit string is finite.
+        #Remember, repeating_string_start_and_end() returns (-1, -1)
+        # iff the digit string is finite.
         if result[0] == -1:
             return ""
         return myname[result[0]:result[1]]
@@ -163,10 +163,10 @@ class DecimalRepresentationOfFrac:
         than the argument passed, and False otherwise."""
         assert isinstance(other, DecimalRepresentationOfFrac)
         mystring = self.repeating_string()
-        theirstring = other.repeating_string()
-        if len(mystring) < len(theirstring):
+        their_string = other.repeating_string()
+        if len(mystring) < len(their_string):
             return False
-        if len(mystring) > len(theirstring):
+        if len(mystring) > len(their_string):
             return True
         return (self.upper / self.lower) < (other.upper / self.lower)
 
@@ -193,7 +193,7 @@ class DecimalRepresentationOfFrac:
         index: int = 0
         remainders = {}  #Maps remainders to indexes.
         while not done:
-            #Check whether or not I've already seen this divisor BEFORE I find out what's next.
+            #Check whether I've already seen this divisor BEFORE I find out what's next.
             starting_remainder = remainder
             if starting_remainder in remainders:
                 self.start_repeat = remainders[remainder]
@@ -234,12 +234,12 @@ if __name__ == "__main__":
     _FRACTEST = DecimalRepresentationOfFrac(_HEADFRAC, _TAILFRAC)
     print(_HEADFRAC, " / ", _TAILFRAC, ": ", _FRACTEST, sep='')
     print("Repeating chars:", _FRACTEST.repeating_string())
-    inttest = DecimalRepresentationOfFrac(9, 3)
-    print("9 / 3:", inttest)
-    finitedecimal: DecimalRepresentationOfFrac = (
+    int_test = DecimalRepresentationOfFrac(9, 3)
+    print("9 / 3:", int_test)
+    finite_decimal: DecimalRepresentationOfFrac = (
         DecimalRepresentationOfFrac(9000 + 31 * 90, 90 * 100)
     )
-    print(finitedecimal.upper, " / ", finitedecimal.lower, ": ", finitedecimal, sep="")
+    print(finite_decimal.upper, " / ", finite_decimal.lower, ": ", finite_decimal, sep="")
     third = DecimalRepresentationOfFrac(1, 3)
     print(third.upper, " / ", third.lower, ": ", third, sep="")
 
@@ -250,9 +250,9 @@ if __name__ == "__main__":
     #pylint:disable=C0301
     #Credit: https://goodcalculators.com/repeating-decimal-to-fraction-conversion-calculator/ .1881 repeating
     #pylint:enable=C0301
-    foundfrac = DecimalRepresentationOfFrac(19, 101)
-    print("19 / 101:", foundfrac)
-    assert str(foundfrac) == "0._1881_"
+    found_frac = DecimalRepresentationOfFrac(19, 101)
+    print("19 / 101:", found_frac)
+    assert str(found_frac) == "0._1881_"
     assert (DecimalRepresentationOfFrac(1881, 9999)
             == DecimalRepresentationOfFrac(19, 101))
     proof_zero = DecimalRepresentationOfFrac(0, 13)
@@ -261,21 +261,21 @@ if __name__ == "__main__":
     print(third, "SHOULD only have 1 repeating digit.")
     twodigit_one_repeat = DecimalRepresentationOfFrac(111, 999)
     print("Big representation of 1/9th:\n", repr(twodigit_one_repeat) + ":", twodigit_one_repeat)
-    sevendy_eight = DecimalRepresentationOfFrac(78, 99)
-    assert str(sevendy_eight) == "0._78_"
-    longstring = DecimalRepresentationOfFrac(1881, 9999)
-    print(longstring.upper, "/", str(longstring.lower) + ":", longstring)
+    seventy_eight = DecimalRepresentationOfFrac(78, 99)
+    assert str(seventy_eight) == "0._78_"
+    long_string = DecimalRepresentationOfFrac(1881, 9999)
+    print(long_string.upper, "/", str(long_string.lower) + ":", long_string)
     assert (DecimalRepresentationOfFrac(9, 3) == DecimalRepresentationOfFrac(3, 1)) and (
             DecimalRepresentationOfFrac(9, 3) != DecimalRepresentationOfFrac(4, 2))
 
-    onesevenfive = DecimalRepresentationOfFrac(1, 75)
-    print(repr(onesevenfive), str(onesevenfive), sep=": ")
-    bigrepeat = DecimalRepresentationOfFrac(3133, 9999)
-    print(repr(bigrepeat), str(bigrepeat), sep=": ")
-    smallerrepeat = DecimalRepresentationOfFrac(525, 999)
-    assert smallerrepeat == DecimalRepresentationOfFrac(175, 333)
-    assert str(smallerrepeat) == "0._525_"
-    print(repr(smallerrepeat), str(smallerrepeat), sep=": ")
+    one_seven_five = DecimalRepresentationOfFrac(1, 75)
+    print(repr(one_seven_five), str(one_seven_five), sep=": ")
+    big_repeat = DecimalRepresentationOfFrac(3133, 9999)
+    print(repr(big_repeat), str(big_repeat), sep=": ")
+    smaller_repeat = DecimalRepresentationOfFrac(525, 999)
+    assert smaller_repeat == DecimalRepresentationOfFrac(175, 333)
+    assert str(smaller_repeat) == "0._525_"
+    print(repr(smaller_repeat), str(smaller_repeat), sep=": ")
 
     print("\n\nTesting changing the upper and lower parts of the fraction:")
     print("First, let's make sure that dividing by 0 is NOT allowed.")
@@ -287,21 +287,21 @@ if __name__ == "__main__":
     assert caught_error is True
     caught_error = False
     try:
-        bigrepeat.change_lower(0)
+        big_repeat.change_lower(0)
     except ZeroDivisionError:
         caught_error = True
     assert caught_error is True
     print("Yeah, it's not allowed. Good.")
     #Now we change the fraction legitimately.
     print("Changed 3133/9999 to 9999/9999:")
-    bigrepeat.change_upper(9999)
-    print(repr(bigrepeat), str(bigrepeat), sep=": ")
+    big_repeat.change_upper(9999)
+    print(repr(big_repeat), str(big_repeat), sep=": ")
     print("Changed 9999/9999 to 9999/1:")
-    bigrepeat.change_lower(1)
-    print(repr(bigrepeat), str(bigrepeat), sep=": ")
+    big_repeat.change_lower(1)
+    print(repr(big_repeat), str(big_repeat), sep=": ")
     print("Now let's try making it an infinitely repeating decimal.")
-    bigrepeat.change_lower(7)
-    print(repr(bigrepeat), str(bigrepeat), sep=": ")
+    big_repeat.change_lower(7)
+    print(repr(big_repeat), str(big_repeat), sep=": ")
     negative_frac = DecimalRepresentationOfFrac(8, -7)
     print(repr(negative_frac), str(negative_frac), sep=": ")
     print("Integer part of 8/-7:", negative_frac.head)

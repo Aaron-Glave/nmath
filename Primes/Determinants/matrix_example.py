@@ -1,5 +1,4 @@
 import numpy as np
-from typing import List
 import manual_determinant
 
 if __name__ == '__main__':
