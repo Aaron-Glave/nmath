@@ -152,17 +152,16 @@ def test_highest_main() -> tuple[int, int] | None:
     if last_prime is not None:
         print(last_prime)
         return last_prime
-    else:
-        print("Your prime database is empty.")
+    print("Your prime database is empty.")
     return None
 
 
 def test_pragma(db: str) -> None:
     """Just prints info about your database. Doesn't return anything."""
     with get_connection(db) as conn:
-        print("Database indexes info:", conn.execute(f"""PRAGMA index_list(primes);""").fetchall())
+        print("Database indexes info:", conn.execute("PRAGMA index_list(primes);").fetchall())
         print("idx_primes_value info:",
-              conn.execute(f"""PRAGMA index_info(idx_primes_value);""").fetchall())
+              conn.execute("PRAGMA index_info(idx_primes_value);").fetchall())
 
 
 def all_tests():
