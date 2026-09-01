@@ -304,16 +304,17 @@ def print_next_prime_greater(target: int) -> tuple[int, int]:
     return -1, -1
 
 
-def search_for_nth_prime(target: int) -> None:
-    # TODO WRITE A FASTER WAY TO FIND THIS
+def search_for_nth_prime(target_n: int) -> None:
     if SHOULD_WRITE:
-        result = get_nth_prime_in_db(target)
-    else:
-        for _prime in yield_primes_memory():
-            if _prime[0] % 1000 and _prime[1] < target:
-                print(_prime[0], _prime[1])
-            if _prime[0] == target:
-                print(desc_prime_with_index(_prime))
-                break
+        result = get_nth_prime_in_db(target_n)
+        if result is not None:
+            print(desc_prime_with_index(result))
+            return
+    for _prime in yield_primes_memory():
+        if _prime[0] % 1000 and _prime[1] < target_n:
+            print(desc_prime_with_index(_prime))
+        if _prime[0] == target_n:
+            print(desc_prime_with_index(_prime))
+            break
 
 #See run_prime_main.py in the parent directory for user interaction.
