@@ -13,4 +13,8 @@ disable = [
 max-line-length = 100
 
 [tool.pylint.basic]
-good-names = ["i", "j", "k", "n", "db", "conn", "x", "y"]
+module-rgx = "^(Primes|AllPrimesInOrder|ExpectedPrimeLists|[a-z_][a-z0-9_]*)$"
+good-names = [
+    "i", "j", "k", "n", "db", "conn", "x", "y",
+    "Prime", "AllPrimesInOrder"
+]

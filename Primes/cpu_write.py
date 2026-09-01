@@ -63,7 +63,6 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         # larger than the length of all_primes_under_100.
         nth_prime += 1
 
-    any_primes_found = False
     #Look up your highest prime number in your database
     #guess helps us figure out what the first guess should be.
     max_prime_known_db = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
@@ -155,8 +154,6 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 if not first_greater:
                     calculate_more = False
             guess += 2
-    except sqlite3.Error:
-        raise
     finally:
         prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
 #pylint: enable=R0911,R0912,R0913,R0914,R0915

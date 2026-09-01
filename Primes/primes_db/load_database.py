@@ -4,8 +4,8 @@
 This program imports all the prime numbers in your sprimelist.txt file to primes.db"""
 import sqlite3
 from pathlib import Path
-from Primes.primes_db import prime_db_code
-from Primes import main as prime_main
+from . import prime_db_code
+from .. import main as prime_main
 
 
 assert Path.cwd() == Path(__file__).parent.parent.parent

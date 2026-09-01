@@ -3,8 +3,8 @@ import sys
 import io
 from typing import Callable
 
-import main
-from main import yield_and_write_primes, correct_prime_guess
+from . import main
+from .main import yield_and_write_primes, correct_prime_guess
 
 
 class TestIOPrimes(unittest.TestCase):
@@ -46,19 +46,19 @@ class TestIOPrimes(unittest.TestCase):
     def test_get_27th_prime(self):
         self.run_command(
             lambda: main.search_for_nth_prime(27),
-            '27th prime is 103.\n'
+            '27th prime: 103\n'
         )
 
     def test_get_28th_prime(self):
         self.run_command(
             lambda: main.search_for_nth_prime(28),
-            '28th prime is 107.\n'
+            '28th prime: 107\n'
         )
 
     def test_get_168th_prime(self):
         self.run_command(
             lambda: main.search_for_nth_prime(168),
-            '168th prime is 997.\n'
+            '168th prime: 997\n'
         )
 
 class TestCorrectPrimes(unittest.TestCase):
