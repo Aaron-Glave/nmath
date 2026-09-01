@@ -2,17 +2,17 @@
 import sys
 from io import TextIOWrapper
 from time import time
-from typing import Tuple, Generator, Optional
+from typing import Tuple, Generator, Optional, Any
 
-from .phone_banned import PhoneBanned
-from .shared_ph_pc import (SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit,
+from primes.phone_banned import PhoneBanned
+from primes.shared_ph_pc import (SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at_limit,
                            desc_prime_with_index)
 
 sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
     try:
         from .cpu_write import (yield_and_write_primes, close_real_db as close_db, get_max_prime,
-                                get_nth_prime_in_db)
+                                get_nth_prime_in_db, primes_1_greater_or_equal)
     except ModuleNotFoundError as me:
         raise me
 else:
@@ -28,6 +28,12 @@ else:
 
     def get_nth_prime_in_db(nth_prime, db: str) -> tuple[int, int] | None:
         raise PhoneBanned()
+
+
+    def primes_1_greater_or_equal(greater_than: int) -> Generator[
+    tuple[int, int], Any, tuple[int, int] | None
+]:
+        return primes_1_greater_or_equal_memory(greater_than)
 
 
     def get_max_prime() -> tuple[int, int]:
@@ -83,6 +89,19 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
                 (not first_greater or memory_list[-1] >= guess)):
             return
         guess += 2
+
+
+def primes_1_greater_or_equal_memory(greater_than: int) -> Generator[tuple[int, int], Any, None]:
+    return_value = -1, -1
+    for _prime in yield_primes_memory():
+        if _prime[0] % 1000 and _prime[1] < greater_than:
+            print(desc_prime_with_index(_prime))
+        elif _prime[0] == greater_than:
+            yield _prime
+        elif _prime[0] > greater_than:
+            yield _prime
+            break
+    return
 
 
 #pylint:disable=R0913
@@ -279,7 +298,7 @@ def get_int() -> int:
     return target
 
 
-def print_next_prime_greater(target: int) -> tuple[int, int]:
+def print_next_prime_greater(target: int):
     """Interactive. Method to determine a prime number greater than the input."""
     # This is an infinite loop of increasing numbers.
     # noinspection inconsistent-returns
@@ -308,11 +327,6 @@ def search_for_nth_prime(target_n: int) -> None:
         if result is not None:
             print(desc_prime_with_index(result))
             return
-    for _prime in yield_primes_memory():
-        if _prime[0] % 1000 and _prime[1] < target_n:
-            print(desc_prime_with_index(_prime))
-        if _prime[0] == target_n:
-            print(desc_prime_with_index(_prime))
-            break
+    primes_1_greater_or_equal_memory(target_n)
 
 #See run_prime_main.py in the parent directory for user interaction.
