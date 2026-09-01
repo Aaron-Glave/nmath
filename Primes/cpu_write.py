@@ -174,7 +174,8 @@ def get_nth_prime_in_db(nth_prime) -> tuple[int, int] | None:
     return None
 
 
-def get_max_prime(db: str = prime_db_code.DATABASE) -> tuple[int, int]:
+def get_max_prime() -> tuple[int, int]:
+    db = prime_db_code.DATABASE
     max_memory = (len(ALL_PRIMES_UNDER_100), ALL_PRIMES_UNDER_100[-1])
     try:
         _get = prime_db_code.get_max_prime_in_db(db)

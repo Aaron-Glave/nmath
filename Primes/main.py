@@ -193,8 +193,10 @@ def say_gap_message(gap_to_print: Tuple[Tuple[Tuple[int, int], Tuple[int, int]],
             index of the prime number starting at 1 and increasing by 1 for each prime,
             the prime number itself
         )."""
-    print("Found a gap between the", end=" ")
-    print(gap_to_print[0][1][0], "th prime and the ", gap_to_print[0][0][0], "th prime:\n",
+    print("Found a gap of 100 between the", end=" ")
+    print(gap_to_print[0][1][0], "th prime and the ", gap_to_print[0][0][0], "th prime.")
+    print(f"Subtracting the {gap_to_print[0][0][0]}th prime from"
+          f"the {gap_to_print[0][1][0]}th prime yields exactly 100.\n",
           gap_to_print[0][1][1], "-", gap_to_print[0][0][1], "=", gap_to_print[1],
           sep='', end=".\n")
 
@@ -242,7 +244,7 @@ def largest_gap_of_primes() -> Tuple[Tuple[Tuple[int, int], Tuple[int, int]], in
 
 
 def say_gap_of_100():
-    """We know there's a gap of 100 primes at some point,
+    """We know there's a gap of 100 between adjacent primes at some point,
     but it's not in the strictly increasing list of gaps."""
     found_gap_100: Tuple[Tuple[Tuple[int, int], Tuple[int, int]], int] = (
         ((-1, -1), (-1, -1)), 0)
@@ -305,7 +307,7 @@ def print_next_prime_greater(target: int) -> tuple[int, int]:
 def search_for_nth_prime(target: int) -> None:
     # TODO WRITE A FASTER WAY TO FIND THIS
     if SHOULD_WRITE:
-        result = get_nth_prime_in_db(TODO)
+        result = get_nth_prime_in_db(target)
     else:
         for _prime in yield_primes_memory():
             if _prime[0] % 1000 and _prime[1] < target:

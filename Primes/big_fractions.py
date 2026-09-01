@@ -5,11 +5,13 @@ import sys
 
 import hugeNumber
 
+
 def create_fraction(upper: int = 1, lower: int = 1):
     """Create a fraction. This function requires the lowercase argument not to be 0"""
     if lower == 0:
         raise ZeroDivisionError(f'{upper} / {lower}')
     return Fraction(upper, lower)
+
 
 def mixed_fraction(unsimple_fraction: Fraction) -> str:
     """Writes a huge fraction as an integer plus a fraction whose absolute value is less than 1."""
@@ -35,10 +37,11 @@ def mixed_fraction(unsimple_fraction: Fraction) -> str:
     return str_to_return
 
 
+# noinspection unreachable-code
 def test_huge_number() -> None:
     """Verifies that hugeNumber works as expected, and that fractions work as expected."""
     hugeNumber.huge_number()
-    huge_denomitator = sys.maxsize**1000
+    huge_denomitator = sys.maxsize ** 1000
     try:
         very_close_to_1 = create_fraction(huge_denomitator - 1, huge_denomitator)
         print(very_close_to_1.numerator, "\\", very_close_to_1.denominator, "plus 1 is",
@@ -52,6 +55,7 @@ def test_huge_number() -> None:
     except AssertionError as e:
         print("Error: Addition didn't work")
         raise e
+
 
 if __name__ == '__main__':
     print("10/3:", mixed_fraction(create_fraction(10, 3)))

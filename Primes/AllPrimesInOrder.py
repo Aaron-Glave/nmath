@@ -1,8 +1,7 @@
 """A program to test that you correctly loop through primes in increasing order of prime numbers."""
 import unittest
 
-from . import main
-from .main import correct_prime_guess, yield_and_write_primes, yield_primes_memory
+from .main import correct_prime_guess, yield_and_write_primes
 
 class AllPrimesInOrder(unittest.TestCase):
     """Verifies that your list of prime numbers looks right.

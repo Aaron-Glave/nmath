@@ -1,5 +1,5 @@
 """Make sure to run this in the nmath directory."""
-import factorized
+from Primes.factorized import Factorized
 from Primes import main as m
 from pathlib import Path
 import os
@@ -14,15 +14,15 @@ def fun_facts():
           "was calculated by dividing that huge number by a slightly smaller but still huge number."
           )
     print("It's _factors are", end=" ")
-    print(factorized.Factorized(B))
+    print(Factorized(B))
     print(-15, "'s _factors are", sep="", end=" ")
-    print(factorized.Factorized(-15))
+    print(Factorized(-15))
     print(36, "'s _factors are", sep="", end=" ")
-    print(factorized.Factorized(36))
+    print(Factorized(36))
     print(63, "'s _factors are", sep="", end=" ")
-    print(factorized.Factorized(63))
+    print(Factorized(63))
     print(147, "'s _factors are", sep="", end=" ")
-    print(factorized.Factorized(147), end="\n\n")
+    print(Factorized(147), end="\n\n")
 
 def last_prime_found():
     last_known_prime = m.get_max_prime()
@@ -31,7 +31,7 @@ def last_prime_found():
 
 
 def factor_a_number():
-    print(factorized.Factorized(m.get_int()))
+    print(Factorized(m.get_int()))
 
 def find_greater_prime():
     m.print_next_prime_greater(m.get_int())
@@ -73,6 +73,7 @@ def prime_main():
         options.append(("Generate text file of all primes less than 100 in the Primes folder",
                         cd_and_generate))
         options.append(("Find the biggest gap between prime numbers you know", say_biggest_gap))
+        options.append(("Find the first gap of 100 between adjacent prime numbers", m.say_gap_of_100))
         i = 0
         for option in options:
             print(i+1, options[i][0], sep=": ")
