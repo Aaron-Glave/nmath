@@ -46,10 +46,11 @@ else:
 
 #We don't even have a function to read the whole file into a list.
 # That would use a TON of memory.
-def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int] = None,
-                        first_greater: bool = False,
-                        comments: Optional[dict[str, str]] = None
-                        ) -> Generator[tuple[int, int], None, None]:
+def yield_primes_memory(
+        upto: Optional[int] = None, print_specific: Optional[int] = None,
+        first_greater: bool = False, target_n: Optional[int ]= None,
+        comments: Optional[dict[str, str]] = None
+) -> Generator[tuple[int, int], None, None]:
     """Returns list of tuples [(1-based prime index, prime number)].
         Note that all known primes are created in memory,
           so the list is r-created for every iterator you create."""
@@ -57,6 +58,8 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
     found_first_greater = False
     nth_prime = 1
     for prime in memory_list:
+        if comments is not None:
+            comments['already_there'] = 'Already there.'
         yield nth_prime, prime
         nth_prime += 1
     guess = 101
@@ -94,11 +97,22 @@ def yield_primes_memory(upto: Optional[int] = None, print_specific: Optional[int
 def primes_1_greater_or_equal_memory(greater_than: int) -> Generator[tuple[int, int], Any, None]:
     return_value = -1, -1
     for _prime in yield_primes_memory():
-        if _prime[0] % 1000 and _prime[1] < greater_than:
+        if _prime[0] % 1000 == 0 and _prime[1] < greater_than:
             print(desc_prime_with_index(_prime))
-        elif _prime[0] == greater_than:
+        elif _prime[1] == greater_than:
             yield _prime
-        elif _prime[0] > greater_than:
+        elif _prime[1] > greater_than:
+            yield _prime
+            break
+    return
+
+
+def print_nth_prime_memory(nth_looking_for: int) -> Generator[tuple[int, int], Any, None]:
+    return_value = -1, -1
+    for _prime in yield_primes_memory():
+        if _prime[0] % 1000 == 0 and _prime[0] < nth_looking_for:
+            print(desc_prime_with_index(_prime))
+        elif _prime[0] == nth_looking_for:
             yield _prime
             break
     return
@@ -130,6 +144,7 @@ def correct_prime_guess(upto: Optional[int] = None, *,
         yield from yield_primes_memory(
             upto=upto,
             first_greater=first_greater,
+            target_n=target_n,
             comments=comments
         )
 #pylint:enable=R0913
@@ -304,13 +319,16 @@ def print_next_prime_greater(target: int):
     # noinspection inconsistent-returns
     if SHOULD_WRITE:
         results = primes_1_greater_or_equal(target)
-        for result in results:
-            if result[1] == target:
-                print(desc_prime_with_index(result))
-            elif result[1] > target:
-                print(f"Higher prime: {desc_prime_with_index(result)}")
-                return None
-    return primes_1_greater_or_equal_memory(target)
+    else:
+        results = primes_1_greater_or_equal_memory(target)
+    for result in results:
+        if result[1] == target:
+            print(desc_prime_with_index(result))
+        elif result[1] > target:
+            print(f"Higher prime: {desc_prime_with_index(result)}")
+
+    return None
+
 
 
 def search_for_nth_prime(target_n: int) -> None:
@@ -319,6 +337,7 @@ def search_for_nth_prime(target_n: int) -> None:
         if result is not None:
             print(desc_prime_with_index(result))
             return
-    primes_1_greater_or_equal_memory(target_n)
+    for p in print_nth_prime_memory(target_n):
+        print(desc_prime_with_index(p))
 
 #See run_prime_main.py in the parent directory for user interaction.

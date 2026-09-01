@@ -78,7 +78,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         )
         if nth_prime_in_db is not None:
             # noinspection unresolved-references
-            comments['already_there'] = 'already there'
+            comments['already_there'] = 'Already there.'
             yield nth_prime_in_db[0], nth_prime_in_db[1]
             return
     #Handle the case where the database is empty.
@@ -96,7 +96,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 # Depending on the arguments, we may or may not yield primes in our file.
                 if target_n is not None and nth_prime >= target_n:
                     if comments is not None:
-                        comments['already_there'] = 'already there'
+                        comments['already_there'] = 'Already there.'
                     yield nth_prime, prime
                     return
                 if first_greater:
@@ -202,6 +202,8 @@ def primes_1_greater_or_equal(greater_than: int) -> Generator[
         yield nth_prime_in_db
     if after_nth_prime_in_db is not None:
         yield after_nth_prime_in_db
+        return None
+    #You only get here if the next prime is None
     for nth_prime_found, prime in yield_and_write_primes(upto=greater_than, first_greater=True):
         yield nth_prime_found, prime
     return None
