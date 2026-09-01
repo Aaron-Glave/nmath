@@ -21,7 +21,7 @@ class TestIOPrimes(unittest.TestCase):
     def test_prime_greater_than_103(self):
         self.run_command(
             lambda: main.print_next_prime_greater(103),
-            '103 is the 27th prime.\nHigher prime: 28th prime: 107\n'
+            '27th prime: 103\nHigher prime: 28th prime: 107\n'
 
         )
 

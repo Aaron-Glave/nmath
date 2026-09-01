@@ -303,22 +303,14 @@ def print_next_prime_greater(target: int):
     # This is an infinite loop of increasing numbers.
     # noinspection inconsistent-returns
     if SHOULD_WRITE:
-        #TODO INSERT A NEW METHOD TO SELECT THE FIRST prime higher
-        raise NotImplementedError("I can find the higher prime a lot faster via a smart SQL query")
-    for prime in correct_prime_guess(
-            upto=target,
-            first_greater=True,
-            list_all=True,
-    ):
-        if prime[1] >= target:
-            if prime[1] == target:
-                print(target, "is a prime number!")
-                print(desc_prime_with_index(prime))
-            if prime[1] > target:
-                print("Higher prime:", end=" ")
-                print(desc_prime_with_index(prime))
-                return prime
-    return -1, -1
+        results = primes_1_greater_or_equal(target)
+        for result in results:
+            if result[1] == target:
+                print(desc_prime_with_index(result))
+            elif result[1] > target:
+                print(f"Higher prime: {desc_prime_with_index(result)}")
+                return None
+    return primes_1_greater_or_equal_memory(target)
 
 
 def search_for_nth_prime(target_n: int) -> None:

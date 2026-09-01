@@ -77,6 +77,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
             prime_db_code.get_nth_prime_in_db(nth_prime, prime_db_code.DATABASE)
         )
         if nth_prime_in_db is not None:
+            # noinspection unresolved-references
+            comments['already_there'] = 'already there'
             yield nth_prime_in_db[0], nth_prime_in_db[1]
             return
     #Handle the case where the database is empty.
@@ -189,13 +191,17 @@ def primes_1_greater_or_equal(greater_than: int) -> Generator[
     """greater_than may or not be prime,
         and a greater prime may or may not be in the database already.
         However, the greater prime will be generated if it's there.
-        TODO FINISH THIS AND WRITE TEST CASES FOR THIS IN test_database_growing.py
     """
     nth_prime_in_db: tuple[int, int] | None = (
+        prime_db_code.prime_that_equals(greater_than, prime_db_code.DATABASE)
+    )
+    after_nth_prime_in_db: tuple[int, int] | None = (
         prime_db_code.prime_1_after(greater_than, prime_db_code.DATABASE)
     )
     if nth_prime_in_db is not None:
-        return nth_prime_in_db
+        yield nth_prime_in_db
+    if after_nth_prime_in_db is not None:
+        yield after_nth_prime_in_db
     for nth_prime_found, prime in yield_and_write_primes(upto=greater_than, first_greater=True):
         yield nth_prime_found, prime
     return None

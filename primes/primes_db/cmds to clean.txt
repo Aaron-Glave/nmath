@@ -1,0 +1,7 @@
+To make the index on the primes(prime) column UNIQUE,
+from your nmath directory, start the Python console so Python can find the primes package.
+Then run:
+from primes.primes_db import prime_db_code
+prime_db_code.make_prime_column_unique(
+    prime_db_code.DATABASE
+)
