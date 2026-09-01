@@ -59,6 +59,10 @@ def say_biggest_gap():
     _biggest_gap = m.largest_gap_of_primes()
     m.say_gap_message(_biggest_gap)
 
+def probability_to_factor():
+    print(m.percent_integers_unknown_factors() * 100,
+          "% of numbers aren't divisible by any of the primes you know.", sep='')
+
 def prime_main():
     try:
         fun_facts()
@@ -74,6 +78,8 @@ def prime_main():
                         cd_and_generate))
         options.append(("Find the biggest gap between prime numbers you know", say_biggest_gap))
         options.append(("Find the first gap of 100 between adjacent prime numbers", m.say_gap_of_100))
+        options.append(("Find the probability that a random integer isn't fully divisible"
+                        "by the primes you know", probability_to_factor))
         i = 0
         for option in options:
             print(i+1, options[i][0], sep=": ")

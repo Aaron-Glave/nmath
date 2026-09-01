@@ -178,7 +178,7 @@ def percent_integers_unknown_factors():
         for _, prime in yield_and_write_primes(list_all=True):
             probability *= 1 - (1 / prime)
             n += 1
-            if n % 20000 == 0:
+            if n % 1000000 == 0:
                 print(f"Ran through {n} primes so far...")
     return probability
 
