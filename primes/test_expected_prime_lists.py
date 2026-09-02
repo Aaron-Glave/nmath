@@ -4,7 +4,7 @@ import io
 from typing import Callable
 
 from . import main
-from .main import yield_and_write_primes, correct_prime_guess
+from .main import correct_prime_guess
 
 
 class TestIOPrimes(unittest.TestCase):
@@ -65,11 +65,11 @@ class TestCorrectPrimes(unittest.TestCase):
     @staticmethod
     def prime_ints_up_to(max_of_primes: int):
         return tuple(map(lambda result: result[1],
-                         yield_and_write_primes(max_of_primes, list_all=True)))
+                         correct_prime_guess(max_of_primes, list_all=True)))
 
     @staticmethod
     def tuple_primes_up_to(max_of_primes: int):
-        return tuple(yield_and_write_primes(max_of_primes, list_all=True))
+        return tuple(correct_prime_guess(max_of_primes, list_all=True))
 
     def test_no_primes(self):
         self.assertEqual((), self.prime_ints_up_to(-1000))
@@ -89,12 +89,11 @@ class TestCorrectPrimes(unittest.TestCase):
     def test_bigger_prime(self):
         shouldnt_be_last = 5
         print("Bigger than 5?")
-        primes = tuple(yield_and_write_primes(shouldnt_be_last, first_greater=True))
+        primes = tuple(correct_prime_guess(shouldnt_be_last, first_greater=True))
         self.assertGreater(primes[-1][1], shouldnt_be_last)
         print("Yes.")
 
     def test_guess_already_present(self):
-        main.SHOULD_WRITE = True
         big_enough = 101
         comments = {}
         primes = tuple(correct_prime_guess(big_enough, list_all=True))
@@ -107,6 +106,15 @@ class TestCorrectPrimes(unittest.TestCase):
         self.assertEqual((26, 101), primes[26 - 1])
         self.assertIn('already_there', comments)
         self.assertEqual( 'Already there.', comments['already_there'])
+
+    def test_mem_guess_not_present(self):
+        old_should_write = main.SHOULD_WRITE
+        main.SHOULD_WRITE = False
+        big_enough = 101
+        comments = {}
+        primes = tuple(correct_prime_guess(big_enough, list_all=True))
+        self.assertEqual('Had to be found.', comments['already_there'])
+        main.SHOULD_WRITE = old_should_write
 
 
 if __name__ == '__main__':
