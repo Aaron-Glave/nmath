@@ -96,16 +96,17 @@ class TestCorrectPrimes(unittest.TestCase):
     def test_guess_already_present(self):
         if not main.SHOULD_WRITE:
             self.skipTest('Only works on PC.')
-        big_enough = 101
+        #big_enough has to be a prime number not in your in-memory list!
+        big_enough = (26, 101)
         comments = {}
-        primes = tuple(correct_prime_guess(big_enough, list_all=True))
-        self.assertEqual((26, 101), primes[26 - 1])
+        primes = tuple(correct_prime_guess(big_enough[1], list_all=True))
+        self.assertEqual(big_enough, primes[big_enough[0] - 1])
         #Re-run the search to check that our file already contains the prime we're looking for
         primes = tuple(correct_prime_guess(
-            big_enough, comments=comments, target_n=26, list_all=True)
+            big_enough[1], comments=comments, target_n=26, list_all=True)
         )
-        print(primes[26 - 1])
-        self.assertEqual((26, 101), primes[26 - 1])
+        print(primes[big_enough[0] - 1])
+        self.assertEqual(big_enough, primes[big_enough[0] - 1])
         self.assertIn('already_there', comments)
         self.assertEqual( 'Already there.', comments['already_there'])
 
