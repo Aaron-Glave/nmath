@@ -1,5 +1,5 @@
 import unittest
-from factorized import Factorized
+from .factorized import Factorized
 
 
 class TestFactorize(unittest.TestCase):

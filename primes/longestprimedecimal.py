@@ -8,8 +8,8 @@ print("Current path:", os.path.abspath(os.path.curdir))
 parentpath = os.path.dirname(os.path.dirname(__file__))
 print('Parent path:', parentpath)
 sys.path.append(parentpath)
-#PYLINT:ENABLE=C0413
-import main as primegenerator
+#pylint:enable=C0413
+from . import main as primegenerator
 import long_repeating_decimal
 
 denominators = [
@@ -56,7 +56,8 @@ for i in range(0, 5):
                   "is one of the last 5 integers in the original list and one of the top 5 longest!"
             )
 
-print("\nThe largest repeating decimal string representing an inverse of a prime number under 1000 is",
+print("\nThe largest repeating decimal string representing"
+      " an inverse of a prime number under 1000 is",
       repr(inverses[0]),
       end=":\n")
 print(inverses[0])

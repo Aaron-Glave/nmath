@@ -18,13 +18,15 @@ class Factorized:
         return number, n
 
 #
-    def __init__(self, to_factor: int, method: Callable[..., Generator[tuple[int, int], None, None]] = correct_prime_guess) -> None:
+    def __init__(self, to_factor: int,
+                 method: Callable[...,
+                 Generator[tuple[int, int], None, None]] = correct_prime_guess) -> None:
         """Factorizes the passed integer using a Callable[
             [int], Generator[tuple[int, int], None, None]
         ] to factor it. The default factorization method is """
         self._factors: list[tuple[int, int]] = []
         self.factor_failure = None
-        prime_source = correct_prime_guess(list_all=True)
+        prime_source = method(list_all=True)
         if to_factor < 0:
             self._factors.append((-1, 1))
             to_factor *= -1

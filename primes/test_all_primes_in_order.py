@@ -15,11 +15,13 @@ class AllPrimesInOrder(unittest.TestCase):
         record_count = 0
         comments: dict[str, str] = {}
         prime_iter = correct_prime_guess(list_all=True, comments=comments)
+        #Get the first prime number
         nprime, prime = next(prime_iter)
         self.assertEqual(nprime, 1)
         self.assertEqual(prime, 2)
         record_count += 1
-        self.assertEqual(nprime, last_n + 1)
+        #The first prime number is 2.
+        self.assertEqual(nprime, 1)
         self.assertEqual(prime, 2)
         last_n, last_p = nprime, prime
         self.assertEqual(comments['prime_guess_func'], yield_and_write_primes.__name__)

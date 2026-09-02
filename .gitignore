@@ -5,13 +5,14 @@
 **/PhoneComparison
 **/.venv*
 JustMe/*
-Primes/runprimemain.bat
-Primes/illegal_chars.txt
-Primes/fix_ish_sprimelist.txt
-Primes/primes_i_like.txt
-Primes/Backups
+primes/runprimemain.bat
+primes/illegal_chars.txt
+primes/fix_ish_sprimelist.txt
+primes/primes_i_like.txt
+primes/Backups
 */sprimelist.txt
-/Primes/primes_db/primes.db
-/Primes/primes_db/tprimes.db
-Primes/Pylint hints.txt
+/primes/primes_db/primes.db
+/primes/primes_db/tprimes.db
+primes/Pylint hints.txt
 pylint_output.txt
+/pylint_nmath.bat

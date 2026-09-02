@@ -1,11 +1,11 @@
 """Run this module from the nmath directory:
-    python -m Primes.primes_db.load_database
+    python -m primes.primes_db.load_database
 
 This program imports all the prime numbers in your sprimelist.txt file to primes.db"""
 import sqlite3
 from pathlib import Path
-from Primes.primes_db import prime_db_code
-from Primes import main as prime_main
+from . import prime_db_code
+from .. import main as prime_main
 
 
 assert Path.cwd() == Path(__file__).parent.parent.parent

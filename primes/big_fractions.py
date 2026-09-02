@@ -3,7 +3,7 @@
 from fractions import Fraction
 import sys
 
-import hugeNumber
+from . import hugeNumber
 
 
 def create_fraction(upper: int = 1, lower: int = 1):

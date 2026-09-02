@@ -195,3 +195,6 @@ def prime_1_after(lower_bound: int, db: str) -> tuple[int, int] | None:
         WHERE prime > ?
         ORDER BY prime ASC
         LIMIT 1;""", (lower_bound,)).fetchone()
+
+
+

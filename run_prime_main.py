@@ -1,6 +1,6 @@
 """Make sure to run this in the nmath directory."""
-from Primes.factorized import Factorized
-from Primes import main as m
+from primes.factorized import Factorized
+from primes import main as m
 from pathlib import Path
 import os
 
@@ -50,7 +50,7 @@ def find_next_prime():
 
 def cd_and_generate():
     folder = Path(__file__).resolve().parent
-    prime_dir = folder / 'Primes'
+    prime_dir = folder / 'primes'
     os.chdir(prime_dir.resolve())
     m.primes_up_to100()
     os.chdir(folder.resolve())
@@ -78,7 +78,7 @@ def prime_main():
         options.append(("Find a prime greater than a target number N", find_greater_prime))
         options.append(("Find the Nth prime number", find_nth_prime))
         options.append(("Find the next highest prime number", find_next_prime))
-        options.append(("Generate text file of all primes less than 100 in the Primes folder",
+        options.append(("Generate text file of all primes less than 100 in the primes folder",
                         cd_and_generate))
         options.append(("Find the biggest gap between prime numbers you know", say_biggest_gap))
         options.append(("Find the first gap of 100 between adjacent prime numbers", m.say_gap_of_100))

@@ -2,11 +2,11 @@
 See https://www.perplexity.ai/search/2cf18bcc-25e1-4ef1-b0b2-892b6d061355 for sqlite help."""
 from io import TextIOWrapper
 import sqlite3
-from typing import Optional, Generator, Tuple
+from typing import Optional, Generator, Tuple, Any
 import warnings
 
-from .primes_db import prime_db_code
-from .shared_ph_pc import under_or_at_limit, ALL_PRIMES_UNDER_100, desc_prime_with_index
+from primes.primes_db import prime_db_code
+from primes.shared_ph_pc import under_or_at_limit, ALL_PRIMES_UNDER_100
 
 
 def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None:
@@ -20,7 +20,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                            list_all: bool = False,
                            first_greater: bool = False,
                            target_n: Optional[int] = None,
-                           comments: Optional[dict[str, str]] = None) -> Generator[
+                           comments: Optional[dict[str, str]] = None,
+                           db_to_connect_to: str = prime_db_code.DATABASE) -> Generator[
     tuple[int, int], None, None]:
     """A function to iterate through a file instead of a list.
     Reads the database primes.db in module primes_db.
@@ -29,7 +30,10 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         list_all: bool -> Whether to write a list of primes
         first_greater: bool -> Whether to write the first prime number greater than upto
         target_n: Optional[int] -> The index of the prime you're looking for
-        comments: A dictionary for additional comments, mainly used for testing.
+        comments: Optional[dict[str, str]] -> A dictionary for additional comments, mainly used for testing.
+        db_to_connect_to: str -> The database to connect to.
+            Should be prime_db.prime_db_code.DATABASE for real usage,
+            or prime_db.prime_db_code.TEST_DATABASE for testing.
 
     Throws a PhoneBanned exception if you even try to run this on your phone.
     Potentially throws sqlite3.Error as well
@@ -48,8 +52,10 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         return
     nth_prime = 1
     for prime in ALL_PRIMES_UNDER_100:
-        is_over = not under_or_at_limit(prime, upto)
-        if first_greater:
+        is_over = not under_or_at_limit(prime, upto) or (
+            target_n is not None and nth_prime >= target_n
+        )
+        if first_greater or nth_prime == target_n:
             if prime == target_n and comments is not None:
                 comments['nth_prime'] = f"{nth_prime} is ${prime}"
             if is_over:
@@ -63,10 +69,18 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         # larger than the length of all_primes_under_100.
         nth_prime += 1
 
-    any_primes_found = False
     #Look up your highest prime number in your database
     #guess helps us figure out what the first guess should be.
-    max_prime_known_db = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
+    max_prime_known_db = prime_db_code.get_max_prime_in_db(db_to_connect_to)
+    if target_n is not None:
+        nth_prime_in_db: tuple[int, int] | None = (
+            prime_db_code.get_nth_prime_in_db(nth_prime, prime_db_code.DATABASE)
+        )
+        if nth_prime_in_db is not None:
+            # noinspection unresolved-references
+            comments['already_there'] = 'Already there.'
+            yield nth_prime_in_db[0], nth_prime_in_db[1]
+            return
     #Handle the case where the database is empty.
     guess = 101  # NOTE: 101 is the default because 101 is the first prime after 97.
     next_nth_prime = len(ALL_PRIMES_UNDER_100) + 1
@@ -74,7 +88,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         next_nth_prime = max_prime_known_db[0] + 1 # We're looking for the next highest prime
         guess = max_prime_known_db[1] + 2 # It's gotta be at least 2 higher...
     if list_all:
-        our_primes_db = prime_db_code.get_connection(prime_db_code.DATABASE)
+        our_primes_db = prime_db_code.get_connection(db_to_connect_to)
         try:
             # Basically loop through the database
             cursor = prime_db_code.all_primes_skip_first_n(len(ALL_PRIMES_UNDER_100), our_primes_db)
@@ -82,7 +96,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 # Depending on the arguments, we may or may not yield primes in our file.
                 if target_n is not None and nth_prime >= target_n:
                     if comments is not None:
-                        comments['already_there'] = 'already there'
+                        comments['already_there'] = 'Already there.'
                     yield nth_prime, prime
                     return
                 if first_greater:
@@ -107,7 +121,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     if read_only:
         return
     isprime = True
-    our_primes_db = prime_db_code.get_connection(prime_db_code.DATABASE)
+    our_primes_db = prime_db_code.get_connection(db_to_connect_to)
     try:
         calculate_more = True
         divisible_by_prime_under_100 = False
@@ -155,22 +169,43 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 if not first_greater:
                     calculate_more = False
             guess += 2
-    except sqlite3.Error:
-        raise
     finally:
-        prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
+        prime_db_code.disconnect_specific_db(db_to_connect_to)
 #pylint: enable=R0911,R0912,R0913,R0914,R0915
 
 
-def get_nth_prime_in_db(nth_prime) -> tuple[int, int] | None:
+def get_nth_prime_in_db(nth_prime) -> tuple[int, int]:
     nth_prime_in_db: tuple[int, int] | None = (
         prime_db_code.get_nth_prime_in_db(nth_prime, prime_db_code.DATABASE)
     )
     if nth_prime_in_db is not None:
-        return nth_prime_in_db[0], nth_prime_in_db[1]
+        return nth_prime_in_db
     for nth_prime_found, prime in yield_and_write_primes(target_n=nth_prime):
         if nth_prime_found == nth_prime:
             return nth_prime_found, prime
+    return -1, -1
+
+def primes_1_greater_or_equal(greater_than: int) -> Generator[
+    tuple[int, int], Any, tuple[int, int] | None
+]:
+    """greater_than may or not be prime,
+        and a greater prime may or may not be in the database already.
+        However, the greater prime will be generated if it's there.
+    """
+    nth_prime_in_db: tuple[int, int] | None = (
+        prime_db_code.prime_that_equals(greater_than, prime_db_code.DATABASE)
+    )
+    after_nth_prime_in_db: tuple[int, int] | None = (
+        prime_db_code.prime_1_after(greater_than, prime_db_code.DATABASE)
+    )
+    if nth_prime_in_db is not None:
+        yield nth_prime_in_db
+    if after_nth_prime_in_db is not None:
+        yield after_nth_prime_in_db
+        return None
+    #You only get here if the next prime is None
+    for nth_prime_found, prime in yield_and_write_primes(upto=greater_than, first_greater=True):
+        yield nth_prime_found, prime
     return None
 
 
@@ -187,14 +222,3 @@ def get_max_prime() -> tuple[int, int]:
 
 def close_real_db():
     prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
-
-def test_db_expands():
-    target_n = None
-    max_prime_db = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
-    if max_prime_db is None:
-        target_n = 2
-    else:
-        target_n = max_prime_db[0] + 2
-
-    for nth_prime, prime in yield_and_write_primes(target_n=target_n):
-        print(desc_prime_with_index((nth_prime, prime)))
