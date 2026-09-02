@@ -29,8 +29,10 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         upto: int -> The highest number you want to investigate
         list_all: bool -> Whether to write a list of primes
         first_greater: bool -> Whether to write the first prime number greater than upto
+            first_greater should only be true if upto is not None.
         target_n: Optional[int] -> The index of the prime you're looking for
-        comments: Optional[dict[str, str]] -> A dictionary for additional comments, mainly used for testing.
+        comments: Optional[dict[str, str]] -> A dictionary for additional comments,
+            mainly used for testing.
         db_to_connect_to: str -> The database to connect to.
             Should be prime_db.prime_db_code.DATABASE for real usage,
             or prime_db.prime_db_code.TEST_DATABASE for testing.
@@ -167,7 +169,8 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 next_nth_prime += 1 #Now we're searching for the next one.
                 if first_greater and not under_or_at_limit(guess, upto):
                     first_greater = False
-            if not under_or_at_limit(guess, upto) or next_nth_prime >= target_n + 1:
+            if (not under_or_at_limit(guess, upto) or
+                    (target_n is not None and next_nth_prime >= target_n + 1)):
                 if not first_greater:
                     calculate_more = False
             guess += 2
