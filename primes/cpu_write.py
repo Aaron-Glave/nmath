@@ -6,7 +6,7 @@ from typing import Optional, Generator, Tuple, Any
 import warnings
 
 from primes.primes_db import prime_db_code
-from primes.shared_ph_pc import under_or_at_limit, ALL_PRIMES_UNDER_100
+from primes.shared_ph_pc import under_or_at_limit, ALL_PRIMES_UNDER_100, desc_prime_with_index
 
 
 def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None:
@@ -49,6 +49,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     # You want to look through your existing list
     # You didn't specify that you're looking for a particular prime.
     read_only = list_all and upto is None and target_n is None
+    looking_for_first_greater = first_greater
     if not under_or_at_limit(2, upto):
         warnings.warn("Smallest prime is 2.")
         return
@@ -107,12 +108,11 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                     if not under_or_at_limit(prime, upto):
                         yield nth_prime, prime
                         return
-                # At this point we know we DON'T care about primes greater than upto
                 # Yield the last prime if we guessed it.
                 elif prime == upto:
                     yield nth_prime, prime
                     return
-                elif not under_or_at_limit(prime, upto):
+                elif not under_or_at_limit(prime, upto) and not first_greater:
                     return
                 if list_all:
                     yield nth_prime, prime
@@ -161,18 +161,19 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
             if square_is_bigger:
                 square_is_bigger = False
                 isprime = True
+
             if isprime:
+                print("Found new prime:", desc_prime_with_index((next_nth_prime, guess)))
                 prime_db_code.insert_prime_with_connection(next_nth_prime, guess, our_primes_db)
                 if comments is not None:
                     comments['already_there'] = 'Had to be found.'
                 yield next_nth_prime, guess
                 next_nth_prime += 1 #Now we're searching for the next one.
-            if (not under_or_at_limit(guess, upto) or
+                if looking_for_first_greater and guess > upto:
+                    looking_for_first_greater = False
+            if not looking_for_first_greater and (not under_or_at_limit(guess, upto) or
                     (target_n is not None and next_nth_prime >= target_n + 1)):
-                if not first_greater:
-                    calculate_more = False
-                else:
-                    first_greater = False
+                calculate_more = False
             guess += 2
     finally:
         prime_db_code.disconnect_specific_db(db_to_connect_to)

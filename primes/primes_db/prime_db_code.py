@@ -197,4 +197,9 @@ def prime_1_after(lower_bound: int, db: str) -> tuple[int, int] | None:
         LIMIT 1;""", (lower_bound,)).fetchone()
 
 
-
+def delete_all_primes_after(lower_bound: int, db: str) -> tuple[int, int] | None:
+    with get_connection(db) as conn:
+        return conn.execute("""
+        DELETE FROM primes
+        WHERE prime > ?
+        """, (lower_bound,)).fetchone()
