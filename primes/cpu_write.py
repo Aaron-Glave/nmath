@@ -167,12 +167,12 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                     comments['already_there'] = 'Had to be found.'
                 yield next_nth_prime, guess
                 next_nth_prime += 1 #Now we're searching for the next one.
-                if first_greater and not under_or_at_limit(guess, upto):
-                    first_greater = False
             if (not under_or_at_limit(guess, upto) or
                     (target_n is not None and next_nth_prime >= target_n + 1)):
                 if not first_greater:
                     calculate_more = False
+                else:
+                    first_greater = False
             guess += 2
     finally:
         prime_db_code.disconnect_specific_db(db_to_connect_to)
