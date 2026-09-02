@@ -52,7 +52,7 @@ def find_next_prime():
     last_known_prime = last_prime_found()
     for next_prime, prime in m.correct_prime_guess(comments=comments):
         if prime > last_known_prime[1]:
-            print(f"{next_prime}th prime number: {next_prime}",
+            print(f"{next_prime}th prime number: {prime}",
                   comments['already_there'], sep='\n')
             return
     return
