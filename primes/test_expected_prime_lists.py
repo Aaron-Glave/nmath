@@ -94,6 +94,8 @@ class TestCorrectPrimes(unittest.TestCase):
         print("Yes.")
 
     def test_guess_already_present(self):
+        if not main.SHOULD_WRITE:
+            self.skipTest('Only works on PC.')
         big_enough = 101
         comments = {}
         primes = tuple(correct_prime_guess(big_enough, list_all=True))
@@ -108,13 +110,10 @@ class TestCorrectPrimes(unittest.TestCase):
         self.assertEqual( 'Already there.', comments['already_there'])
 
     def test_mem_guess_not_present(self):
-        old_should_write = main.SHOULD_WRITE
-        main.SHOULD_WRITE = False
         big_enough = 101
         comments = {}
-        primes = tuple(correct_prime_guess(big_enough, list_all=True))
+        primes = tuple(main.yield_primes_memory(big_enough, comments=comments))
         self.assertEqual('Had to be found.', comments['already_there'])
-        main.SHOULD_WRITE = old_should_write
 
 
 if __name__ == '__main__':

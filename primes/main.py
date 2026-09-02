@@ -57,9 +57,17 @@ def yield_primes_memory(
     memory_list = list(ALL_PRIMES_UNDER_100)
     found_first_greater = False
     nth_prime = 1
+    if comments is not None:
+        comments['already_there'] = 'Already there.'
     for prime in memory_list:
-        if comments is not None:
-            comments['already_there'] = 'Already there.'
+        is_over = not under_or_at_limit(prime, upto) or (
+                target_n is not None and nth_prime >= target_n
+        )
+        if is_over:
+            if first_greater and not found_first_greater:
+                found_first_greater = True
+            else:
+                return
         yield nth_prime, prime
         nth_prime += 1
     guess = 101
@@ -67,6 +75,8 @@ def yield_primes_memory(
     if upto is not None:
         if upto < guess:
             calculate_more = False
+    if comments is not None:
+        comments['already_there'] = 'Had to be found.'
     while calculate_more:
         isprime = True
         for prime in memory_list:

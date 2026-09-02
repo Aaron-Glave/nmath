@@ -17,22 +17,24 @@ class DBTestCases(unittest.TestCase):
             conn.executescript(prime_db_code.CREATION_COMMAND)
             conn.commit()
 
-
     def test_db_expands(self):
         self.clear_test_db()
         target_n = None
+        comments = {}
         max_prime_db = prime_db_code.get_max_prime_in_db(prime_db_code.TEST_DATABASE)
         if max_prime_db is None:
-            target_n = 2
+            target_n = 26
         else:
             target_n = max_prime_db[0] + 2
 
         for nth_prime, prime in yield_and_write_primes(
                 target_n=target_n,
-                db_to_connect_to=prime_db_code.TEST_DATABASE
+                db_to_connect_to=prime_db_code.TEST_DATABASE,
+                comments=comments
         ):
             print(desc_prime_with_index((nth_prime, prime)))
 
+        self.assertEqual('Had to be found.', comments['already_there'])
 
     def test_simple(self):
         self.clear_test_db()
@@ -72,7 +74,6 @@ class DBTestCases(unittest.TestCase):
             print("idx_primes_value info:",
                   conn.execute(f"""PRAGMA index_info(idx_primes_value);""").fetchall())
 
-
     def test_speed(self):
         print("This should be QUICK: Find the first prime number bigger than 5000000.")
         one_greater = prime_db_code.prime_1_after(5000000, db=prime_db_code.DATABASE)
@@ -80,7 +81,6 @@ class DBTestCases(unittest.TestCase):
             print("Not that many primes in the database.")
         else:
             print(f"{one_greater[0]}th prime: {one_greater[1]}")
-
 
 
 if __name__ == '__main__':

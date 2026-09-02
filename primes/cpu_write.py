@@ -58,6 +58,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
         if first_greater or nth_prime == target_n:
             if prime == target_n and comments is not None:
                 comments['nth_prime'] = f"{nth_prime} is ${prime}"
+                comments['already_there'] = 'Already there.'
             if is_over:
                 yield nth_prime, prime
                 first_greater = False
@@ -74,7 +75,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
     max_prime_known_db = prime_db_code.get_max_prime_in_db(db_to_connect_to)
     if target_n is not None:
         nth_prime_in_db: tuple[int, int] | None = (
-            prime_db_code.get_nth_prime_in_db(nth_prime, prime_db_code.DATABASE)
+            prime_db_code.get_nth_prime_in_db(nth_prime, db_to_connect_to)
         )
         if nth_prime_in_db is not None:
             # noinspection unresolved-references
@@ -114,12 +115,14 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 if list_all:
                     yield nth_prime, prime
         except sqlite3.Error:
-            prime_db_code.disconnect_specific_db(prime_db_code.DATABASE)
+            prime_db_code.disconnect_specific_db(db_to_connect_to)
             raise
 
     #Now we're searching for new prime numbers...
     if read_only:
         return
+    if comments is not None:
+        comments['already_there'] = 'Had to be found.'
     isprime = True
     our_primes_db = prime_db_code.get_connection(db_to_connect_to)
     try:
@@ -164,8 +167,7 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
                 next_nth_prime += 1 #Now we're searching for the next one.
                 if first_greater and not under_or_at_limit(guess, upto):
                     first_greater = False
-
-            if not under_or_at_limit(guess, upto):
+            if not under_or_at_limit(guess, upto) or next_nth_prime >= target_n + 1:
                 if not first_greater:
                     calculate_more = False
             guess += 2
