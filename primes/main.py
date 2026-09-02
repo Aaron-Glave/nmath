@@ -60,9 +60,8 @@ def yield_primes_memory(
     if comments is not None:
         comments['already_there'] = 'Already there.'
     for prime in memory_list:
-        is_over = not under_or_at_limit(prime, upto) or (
-                target_n is not None and nth_prime >= target_n
-        )
+        is_over = (not under_or_at_limit(prime, upto)
+                   or (target_n is not None and nth_prime >= target_n))
         if is_over:
             if first_greater and not found_first_greater:
                 found_first_greater = True
