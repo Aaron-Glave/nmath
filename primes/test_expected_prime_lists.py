@@ -7,7 +7,7 @@ from .primes_db import prime_db_code
 from . import main
 from .main import correct_prime_guess
 from .shared_ph_pc import desc_prime_with_index
-from primes_db.clear_test_db import clear_test_db
+from .primes_db.clear_test_db import clear_test_db
 
 
 class TestIOPrimes(unittest.TestCase):

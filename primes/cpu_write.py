@@ -15,7 +15,6 @@ def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None
         save_to.write(str(prime_to_write[0]) + " " + str(prime_to_write[1]) + '\n')
 
 #I don't care that this is a complex function.
-#pylint: disable=R0911,R0912,R0913,R0914,R0915
 def yield_and_write_primes(upto: Optional[int] = None, *,
                            list_all: bool = False,
                            first_greater: bool = False,
@@ -177,7 +176,6 @@ def yield_and_write_primes(upto: Optional[int] = None, *,
             guess += 2
     finally:
         prime_db_code.disconnect_specific_db(db_to_connect_to)
-#pylint: enable=R0911,R0912,R0913,R0914,R0915
 
 
 def get_nth_prime_in_db(nth_prime) -> tuple[int, int]:

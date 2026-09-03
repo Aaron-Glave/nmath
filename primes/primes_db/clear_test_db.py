@@ -1,4 +1,4 @@
-from primes_db import prime_db_code
+from . import prime_db_code
 
 
 def clear_test_db():

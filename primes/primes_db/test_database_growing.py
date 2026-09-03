@@ -28,7 +28,6 @@ class DBTestCases(unittest.TestCase):
                 comments=comments
         ):
             print(desc_prime_with_index((nth_prime, prime)))
-
         self.assertEqual('Had to be found.', comments['already_there'])
 
     def test_simple(self):
@@ -50,7 +49,7 @@ class DBTestCases(unittest.TestCase):
         if last_prime is not None:
             print(last_prime)
         else:
-            print("Your prime database is empty.")
+            self.fail("Your prime database is empty.")
 
     def test_highest_main(self) -> tuple[int, int] | None:
         last_prime = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
@@ -58,8 +57,7 @@ class DBTestCases(unittest.TestCase):
             print(last_prime)
             return last_prime
         else:
-            print("Your prime database is empty.")
-        return None
+            self.fail("Your prime database is empty.")
 
     def test_pragma(self, db: str = prime_db_code.DATABASE) -> None:
         """Just prints info about your database. Doesn't return anything."""
@@ -69,13 +67,26 @@ class DBTestCases(unittest.TestCase):
             print("idx_primes_value info:",
                   conn.execute(f"""PRAGMA index_info(idx_primes_value);""").fetchall())
 
+
+    TEST_SPEED_MIN_VALUE = 500000
     def test_speed(self):
-        print("This should be QUICK: Find the first prime number bigger than 5000000.")
-        one_greater = prime_db_code.prime_1_after(5000000, db=prime_db_code.DATABASE)
+        """Tests the speed of queries to look for large prime numbers.
+        May fail if your database isn't big enough.
+            If that happens, run the main program until
+            you discover TEST_SPEED_MIN_VALUE + 1 prime numbers"""
+        print("This should be QUICK: Find the first prime number bigger than 500000.")
+        one_greater = prime_db_code.prime_1_after(DBTestCases.TEST_SPEED_MIN_VALUE,
+                                                  db=prime_db_code.DATABASE)
         if one_greater is None:
-            print("Not that many primes in the database.")
+            self.fail(f"Not that many primes in {prime_db_code.DATABASE}.")
         else:
-            print(f"{one_greater[0]}th prime: {one_greater[1]}")
+            print(desc_prime_with_index(one_greater))
+        print("Finding the highest prime number you now should be quick too.")
+        max_prime = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
+        if max_prime is None:
+            self.fail(f"{prime_db_code.DATABASE} is empty!")
+        else:
+            print(desc_prime_with_index(max_prime))
 
 
 if __name__ == '__main__':

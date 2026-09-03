@@ -3,13 +3,15 @@ from fractions import Fraction
 from typing import Optional, List, Tuple
 import sys
 from pathlib import Path
+
 path_to_add = Path(__file__).resolve().parent
 print(path_to_add)
 sys.path.append(str(Path(__file__).parent.resolve()))
-import hugeNumber
+from primes import huge_number
+
 sys.path.pop()
 
-hugeNumber.huge_number()
+huge_number.huge_number()
 
 
 #pylint:disable=C0301
@@ -87,7 +89,8 @@ class DecimalRepresentationOfFrac:
             #Special case for repeating single digits?
             if self.start_repeat is not None and self.end_repeat is not None:
                 ##CHECK this:
-                # 1. Your second repeating digit's index is 1 after the first repeating digit's index
+                # 1. Your second repeating digit's index is 1 after
+                #       the first repeating digit's index
                 # 2. They each represent the same digit
                 if self.end_repeat - self.start_repeat == 1:
                     if self.digits[self.end_repeat].digit == self.digits[self.start_repeat].digit:
