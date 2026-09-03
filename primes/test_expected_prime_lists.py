@@ -7,7 +7,7 @@ from .primes_db import prime_db_code
 from . import main
 from .main import correct_prime_guess
 from .shared_ph_pc import desc_prime_with_index
-from .primes_db.clear_test_db import clear_test_db
+from .primes_db.clear_test_db import reset_test_database
 
 
 class TestIOPrimes(unittest.TestCase):
@@ -103,7 +103,7 @@ class TestCorrectPrimes(unittest.TestCase):
     def test_guess_already_present(self):
         if not main.SHOULD_WRITE:
             self.skipTest('Only works on PC.')
-        clear_test_db()
+        reset_test_database()
         comments = {}
         primes = tuple(
             main.yield_and_write_primes(

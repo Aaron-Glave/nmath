@@ -2,9 +2,10 @@ import sqlite3
 import unittest
 
 from primes.cpu_write import yield_and_write_primes
-from primes.primes_db import prime_db_code
+
 from primes.shared_ph_pc import desc_prime_with_index
-from primes_db.clear_test_db import clear_test_db
+from primes.primes_db import prime_db_code
+from primes.primes_db.clear_test_db import reset_test_database
 
 
 # noinspection method-may-be-static
@@ -13,7 +14,7 @@ class DBTestCases(unittest.TestCase):
     Uses TEST_DATABASE so that even if there are mistakes in the test,
         your real data isn't hurt."""
     def test_db_expands(self):
-        clear_test_db()
+        reset_test_database()
         target_n = None
         comments = {}
         max_prime_db = prime_db_code.get_max_prime_in_db(prime_db_code.TEST_DATABASE)
@@ -31,7 +32,7 @@ class DBTestCases(unittest.TestCase):
         self.assertEqual('Had to be found.', comments['already_there'])
 
     def test_simple(self):
-        clear_test_db()
+        reset_test_database()
         prime_db_code.insert_prime(1, 2, db=prime_db_code.TEST_DATABASE)
         prime_db_code.insert_prime(2, 3, db=prime_db_code.TEST_DATABASE)
         rlist = []

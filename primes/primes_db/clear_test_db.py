@@ -1,7 +1,7 @@
 from . import prime_db_code
 
 
-def clear_test_db():
+def reset_test_database():
     with prime_db_code.get_connection(prime_db_code.TEST_DATABASE) as conn:
         conn.executescript(f"""
             DROP TABLE IF EXISTS primes;
