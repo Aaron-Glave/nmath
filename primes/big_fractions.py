@@ -15,7 +15,7 @@ def create_fraction(upper: int = 1, lower: int = 1):
 
 def mixed_fraction(unsimple_fraction: Fraction) -> str:
     """Writes a huge fraction as an integer plus a fraction whose absolute value is less than 1."""
-    if unsimple_fraction == 0:
+    if unsimple_fraction == Fraction(0):
         return "0"
     numerator = abs(unsimple_fraction.numerator)
     denominator = abs(unsimple_fraction.denominator)
