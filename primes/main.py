@@ -16,7 +16,7 @@ if SHOULD_WRITE:
     except ModuleNotFoundError as me:
         raise me
 else:
-    def yield_and_write_primes(upto: Optional[int] = None, *,
+    def yield_and_write_primes(upto: Optional[int] = None, /,
                                save_to: Optional[TextIOWrapper] = None,
                                list_all: bool = False,
                                first_greater: bool = False,
@@ -104,7 +104,6 @@ def yield_primes_memory(
 
 
 def primes_1_greater_or_equal_memory(greater_than: int) -> Generator[tuple[int, int], Any, None]:
-    return_value = -1, -1
     for _prime in yield_primes_memory():
         if _prime[0] % 1000 == 0 and _prime[1] < greater_than:
             print(desc_prime_with_index(_prime))
@@ -113,18 +112,16 @@ def primes_1_greater_or_equal_memory(greater_than: int) -> Generator[tuple[int, 
         elif _prime[1] > greater_than:
             yield _prime
             break
-    return
 
 
 def print_nth_prime_memory(nth_looking_for: int) -> Generator[tuple[int, int], Any, None]:
-    return_value = -1, -1
+    """Yields the Nth prime via an in-memory search."""
     for _prime in yield_primes_memory():
         if _prime[0] % 1000 == 0 and _prime[0] < nth_looking_for:
             print(desc_prime_with_index(_prime))
         elif _prime[0] == nth_looking_for:
             yield _prime
             break
-    return
 
 
 #pylint:disable=R0913
@@ -141,7 +138,7 @@ def correct_prime_guess(upto: Optional[int] = None, *,
         if comments is not None:
             comments['prime_guess_func'] = yield_and_write_primes.__name__
         yield from yield_and_write_primes(
-            upto=upto,
+            upto,
             list_all=list_all,
             first_greater=first_greater,
             target_n=target_n,
@@ -167,36 +164,35 @@ def primes_up_to100():
         prime_source = open("primes.txt", mode="r", encoding='ascii')
     except FileNotFoundError:
         print("Creating list...")
-        prime_source = open("primes.txt", mode="x", encoding='ascii')
-        prime_source.close()
-        prime_source = open("primes.txt", mode="r", encoding='ascii')
-        print("File listing primes was created")
-    for line in prime_source:
-        try:
-            primes.append(int(line))
-        except ValueError:
+        with open("primes.txt", mode="x", encoding='ascii'):
             pass
-    try:
-        start = max(primes)
-        print("Max prime I know is", start)
-    except ValueError:
-        print("List is empty.")
-        start = 2
-    prime_source.close()
-    prime_source = open("primes.txt", mode='a', encoding='ascii')
+        with open("primes.txt", mode="r", encoding='ascii') as prime_source:
+            print("File listing primes was created.")
+            for line in prime_source:
+                try:
+                    primes.append(int(line))
+                except ValueError:
+                    pass
+            try:
+                start = max(primes)
+                print("Max prime I know is", start)
+            except ValueError:
+                print("List is empty.")
+                start = 2
+            prime_source.close()
+            prime_source = open("primes.txt", mode='a', encoding='ascii')
 
-    for i in range(start, maximum + 1):
-        isprime = True
-        for prime in primes:
-            if i % prime == 0:
-                isprime = False
-                break
-        if isprime:
-            primes.append(i)
-            print(i, "is prime.")
-            prime_source.write(str(i) + '\n')
-    prime_source.close()
-    print("Calculated primes <= ", maximum, ": ", primes, sep="")
+            for i in range(start, maximum + 1):
+                isprime = True
+                for prime in primes:
+                    if i % prime == 0:
+                        isprime = False
+                        break
+                if isprime:
+                    primes.append(i)
+                    print(i, "is prime.")
+                    prime_source.write(str(i) + '\n')
+            print("Calculated primes <= ", maximum, ": ", primes, sep="")
 
 
 def gen_primes_up_to(max_prime=2):
