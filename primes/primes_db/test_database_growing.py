@@ -4,21 +4,16 @@ import unittest
 from primes.cpu_write import yield_and_write_primes
 from primes.primes_db import prime_db_code
 from primes.shared_ph_pc import desc_prime_with_index
+from primes_db.clear_test_db import clear_test_db
 
 
+# noinspection method-may-be-static
 class DBTestCases(unittest.TestCase):
-    def clear_test_db(self):
-        with prime_db_code.get_connection(prime_db_code.TEST_DATABASE) as conn:
-            conn.executescript(f"""
-                DROP TABLE IF EXISTS primes;
-                {prime_db_code.CREATION_COMMAND};
-            """)
-            print("Database cleared.")
-            conn.executescript(prime_db_code.CREATION_COMMAND)
-            conn.commit()
-
+    """Tests that the database is working as expected.
+    Uses TEST_DATABASE so that even if there are mistakes in the test,
+        your real data isn't hurt."""
     def test_db_expands(self):
-        self.clear_test_db()
+        clear_test_db()
         target_n = None
         comments = {}
         max_prime_db = prime_db_code.get_max_prime_in_db(prime_db_code.TEST_DATABASE)
@@ -37,7 +32,7 @@ class DBTestCases(unittest.TestCase):
         self.assertEqual('Had to be found.', comments['already_there'])
 
     def test_simple(self):
-        self.clear_test_db()
+        clear_test_db()
         prime_db_code.insert_prime(1, 2, db=prime_db_code.TEST_DATABASE)
         prime_db_code.insert_prime(2, 3, db=prime_db_code.TEST_DATABASE)
         rlist = []

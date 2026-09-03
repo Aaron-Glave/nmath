@@ -3,8 +3,11 @@ import sys
 import io
 from typing import Callable
 
+from .primes_db import prime_db_code
 from . import main
 from .main import correct_prime_guess
+from .shared_ph_pc import desc_prime_with_index
+from primes_db.clear_test_db import clear_test_db
 
 
 class TestIOPrimes(unittest.TestCase):
@@ -62,6 +65,10 @@ class TestIOPrimes(unittest.TestCase):
         )
 
 class TestCorrectPrimes(unittest.TestCase):
+    """Tests comments when prime numbers are found or discovered.
+    BIG_ENOUGH has to be a prime number not in your in-memory list!"""
+    BIG_ENOUGH = (26, 101)
+
     @staticmethod
     def prime_ints_up_to(max_of_primes: int):
         return tuple(map(lambda result: result[1],
@@ -96,22 +103,29 @@ class TestCorrectPrimes(unittest.TestCase):
     def test_guess_already_present(self):
         if not main.SHOULD_WRITE:
             self.skipTest('Only works on PC.')
-        #big_enough has to be a prime number not in your in-memory list!
-        big_enough = (26, 101)
+        clear_test_db()
         comments = {}
-        primes = tuple(correct_prime_guess(big_enough[1], list_all=True))
-        self.assertEqual(big_enough, primes[big_enough[0] - 1])
+        primes = tuple(
+            main.yield_and_write_primes(
+                TestCorrectPrimes.BIG_ENOUGH[1], list_all=True,
+                comments=comments, db_to_connect_to=prime_db_code.TEST_DATABASE
+            )
+        )
+        self.assertEqual(TestCorrectPrimes.BIG_ENOUGH, primes[TestCorrectPrimes.BIG_ENOUGH[0] - 1])
+        self.assertIn('already_there', comments)
+        self.assertEqual( 'Had to be found.', comments['already_there'])
         #Re-run the search to check that our file already contains the prime we're looking for
         primes = tuple(correct_prime_guess(
-            big_enough[1], comments=comments, target_n=26, list_all=True)
-        )
-        print(primes[big_enough[0] - 1])
-        self.assertEqual(big_enough, primes[big_enough[0] - 1])
+            comments=comments, target_n=TestCorrectPrimes.BIG_ENOUGH[0], list_all=True
+        ))
+        print(desc_prime_with_index(primes[TestCorrectPrimes.BIG_ENOUGH[0] - 1]))
+        self.assertEqual(TestCorrectPrimes.BIG_ENOUGH, primes[TestCorrectPrimes.BIG_ENOUGH[0] - 1])
         self.assertIn('already_there', comments)
         self.assertEqual( 'Already there.', comments['already_there'])
+        print(comments['already_there'])
 
     def test_mem_guess_not_present(self):
-        big_enough = 101
+        big_enough = TestCorrectPrimes.BIG_ENOUGH[1]
         comments = {}
         primes = tuple(main.yield_primes_memory(big_enough, comments=comments))
         self.assertEqual('Had to be found.', comments['already_there'])
