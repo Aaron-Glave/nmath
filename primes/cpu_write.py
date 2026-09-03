@@ -25,6 +25,7 @@ def get_nth_prime_in_db(
         target_n: Optional[int] -> The index of the prime you're looking for
         db_to_connect_to: str -> The database to connect to. Defaults to prime_db_code.DATABASE
         comments: Optional[dict[str, str]] -> An optional dictionary for additional comments"""
+    # TODO Discover and return the nth prime number
     raise NotImplementedError
     """Use this in your loop through ALL_PRIMES_UNDER_100: (
             target_n is not None and nth_prime >= target_n
@@ -37,7 +38,6 @@ def get_nth_prime_in_db(
         nth_prime_in_db: tuple[int, int] | None = (
             prime_db_code.get_nth_prime_in_db(target_n, db_to_connect_to)
         )
-        #TODO PULL THIS INTO A NEW FUNCTION THAT *RETURNS* THE HUNTED PRIME
         if nth_prime_in_db is not None:
             # noinspection unresolved-references
             comments['already_there'] = 'Already there.'
