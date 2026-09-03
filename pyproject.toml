@@ -8,9 +8,6 @@ max-args = 6
 
 [tool.pylint.messages_control]
 disable = [
-    "missing-module-docstring",
-    "missing-class-docstring",
-    "missing-function-docstring",
     "too-many-branches",
     "too-many-locals",
     "too-many-return-statements",
