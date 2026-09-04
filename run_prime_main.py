@@ -93,17 +93,16 @@ def prime_main():
         options.append(("Find the next highest prime number", find_next_prime))
         options.append(("Generate text file of all primes less than 100 in the primes folder",
                         cd_and_generate))
+        options.append(("Find the first gap of 100 between adjacent prime numbers",
+                        m.say_gap_of_100))
+        #These techniques are slow on PC because they look at EVERY SINGLE PRIME IN THE DATABASE
         options.append(
             ("Find the biggest gap between prime numbers you know (warning: slow on PC)",
-             say_biggest_gap)
-        )
-        options.append(
-            ("Find the first gap of 100 between adjacent prime numbers", m.say_gap_of_100))
+             say_biggest_gap))
         options.append(
             ("Find the probability that a random integer isn't fully divisible"
                         "by the primes you know (warning: slow on PC)",
-             probability_to_factor)
-        )
+             probability_to_factor))
         i = 0
         for option in options:
             print(i + 1, options[i][0], sep=": ")

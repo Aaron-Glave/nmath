@@ -15,7 +15,7 @@ def write_prime(prime_to_write: Tuple[int, int], save_to: TextIOWrapper) -> None
         save_to.write(str(prime_to_write[0]) + " " + str(prime_to_write[1]) + '\n')
 
 
-def get_nth_prime_in_db(
+def get_nth_prime(
         target_n: int, /,
         db_to_connect_to: str = prime_db_code.DATABASE,
         comments: Optional[dict[str, str]] = None,
@@ -26,13 +26,19 @@ def get_nth_prime_in_db(
         db_to_connect_to: str -> The database to connect to. Defaults to prime_db_code.DATABASE
         comments: Optional[dict[str, str]] -> An optional dictionary for additional comments"""
     # TODO Discover and return the nth prime number
-    nth_prime = 0
-    for prime_val in ALL_PRIMES_UNDER_100:
-        nth_prime += 1
-        is_over = target_n is not None and nth_prime >= target_n
-        if is_over:
-            return nth_prime, prime_val
-    raise NotImplementedError
+    # Use our in-memory list first, to avoid unnecessary database lookups
+    if target_n <= len(ALL_PRIMES_UNDER_100):
+        return target_n, ALL_PRIMES_UNDER_100[target_n]
+    nth_prime_in_db: tuple[int, int] | None = prime_db_code.get_nth_prime_in_db(
+        target_n=target_n, db=db_to_connect_to)
+    if nth_prime_in_db is not None:
+        return nth_prime_in_db
+    for prime in find_new_primes(db_to_connect_to=db_to_connect_to,
+                                 target_n=target_n,
+                                 comments = comments):
+        if prime[0] == target_n:
+            return prime
+    return -1, -1
     """Use this in your loop through ALL_PRIMES_UNDER_100: (
             target_n is not None and nth_prime >= target_n
         )
@@ -142,15 +148,16 @@ def yield_and_write_primes(upto: Optional[int] = None, /,
 
 def find_new_primes(upto: Optional[int] = None, /,
                     first_greater: bool = False,
+                    target_n: Optional[int] = None,
                     db_to_connect_to: str = prime_db_code.DATABASE,
                     comments: Optional[dict[str, str]] = None, ):
     # Now we're searching for new prime numbers...
-    guess = 101  # NOTE: 101 is the default because 101 is the first prime after 97.
+    guess = ALL_PRIMES_UNDER_100[-1] + 2
     next_nth_prime = len(ALL_PRIMES_UNDER_100) + 1
     if comments is not None:
         comments['already_there'] = 'Had to be found.'
     isprime = True
-    looking_for_first_greater = first_greater
+    #looking_for_first_greater = first_greater
     our_primes_db = prime_db_code.get_connection(db_to_connect_to)
     max_prime_known_db = prime_db_code.get_max_prime_in_db(db_to_connect_to)
     if max_prime_known_db is not None:
@@ -193,13 +200,15 @@ def find_new_primes(upto: Optional[int] = None, /,
             if isprime:
                 print("Found new prime:", desc_prime_with_index((next_nth_prime, guess)))
                 prime_db_code.insert_prime_with_connection(next_nth_prime, guess, our_primes_db)
-                if comments is not None:
-                    comments['already_there'] = 'Had to be found.'
+                #Remember, we already declared comments['already_there'] = 'Had to be found.'
                 yield next_nth_prime, guess
-                next_nth_prime += 1  #Now we're searching for the next one.
-                if looking_for_first_greater and guess > upto:
-                    looking_for_first_greater = False
-            if not looking_for_first_greater and not under_or_at_limit(guess, upto):
+                if next_nth_prime == target_n:
+                    return
+                if first_greater and guess > upto:
+                    return
+                # Now we're searching for the next prime number.
+                next_nth_prime += 1
+            if not first_greater and not under_or_at_limit(guess, upto):
                 calculate_more = False
             guess += 2
     finally:
