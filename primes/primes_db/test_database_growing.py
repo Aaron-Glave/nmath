@@ -23,6 +23,8 @@ class DBTestCases(unittest.TestCase):
         else:
             target_n = max_prime_db[0] + 2
 
+        #TODO Use get_nth_prime_in_db with your target_database, and after finding it,
+        #TCONTINUE search for a larger prime number by VALUE, not index.
         for nth_prime, prime in yield_and_write_primes(
                 target_n=target_n,
                 db_to_connect_to=prime_db_code.TEST_DATABASE,
