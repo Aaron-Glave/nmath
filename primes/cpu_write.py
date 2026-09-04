@@ -26,6 +26,12 @@ def get_nth_prime_in_db(
         db_to_connect_to: str -> The database to connect to. Defaults to prime_db_code.DATABASE
         comments: Optional[dict[str, str]] -> An optional dictionary for additional comments"""
     # TODO Discover and return the nth prime number
+    nth_prime = 0
+    for prime_val in ALL_PRIMES_UNDER_100:
+        nth_prime += 1
+        is_over = target_n is not None and nth_prime >= target_n
+        if is_over:
+            return nth_prime, prime_val
     raise NotImplementedError
     """Use this in your loop through ALL_PRIMES_UNDER_100: (
             target_n is not None and nth_prime >= target_n
@@ -128,7 +134,10 @@ def yield_and_write_primes(upto: Optional[int] = None, /,
             raise
     if read_only:
         return
-    find_new_primes(comments=comments)
+    yield from find_new_primes(upto,
+                               first_greater=first_greater,
+                               db_to_connect_to=db_to_connect_to,
+                               comments=comments)
 
 
 def find_new_primes(upto: Optional[int] = None, /,
@@ -181,7 +190,6 @@ def find_new_primes(upto: Optional[int] = None, /,
             if square_is_bigger:
                 square_is_bigger = False
                 isprime = True
-
             if isprime:
                 print("Found new prime:", desc_prime_with_index((next_nth_prime, guess)))
                 prime_db_code.insert_prime_with_connection(next_nth_prime, guess, our_primes_db)
