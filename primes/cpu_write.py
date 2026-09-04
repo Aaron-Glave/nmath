@@ -25,7 +25,7 @@ def get_nth_prime(
         target_n: Optional[int] -> The index of the prime you're looking for
         db_to_connect_to: str -> The database to connect to. Defaults to prime_db_code.DATABASE
         comments: Optional[dict[str, str]] -> An optional dictionary for additional comments"""
-    # TODO Discover and return the nth prime number
+    # Discover and return the nth prime number
     # Use our in-memory list first, to avoid unnecessary database lookups
     if target_n <= len(ALL_PRIMES_UNDER_100):
         return target_n, ALL_PRIMES_UNDER_100[target_n]
@@ -39,26 +39,6 @@ def get_nth_prime(
         if prime[0] == target_n:
             return prime
     return -1, -1
-    """Use this in your loop through ALL_PRIMES_UNDER_100: (
-            target_n is not None and nth_prime >= target_n
-        )
-        And use this before you return:
-            if prime == target_n and comments is not None:
-                comments['nth_prime'] = f"{nth_prime} is ${prime}"
-                comments['already_there'] = 'Already there.'"""
-    if target_n is not None:
-        nth_prime_in_db: tuple[int, int] | None = (
-            prime_db_code.get_nth_prime_in_db(target_n, db_to_connect_to)
-        )
-        if nth_prime_in_db is not None:
-            # noinspection unresolved-references
-            comments['already_there'] = 'Already there.'
-            return nth_prime_in_db
-        #Now we know we need to search for the nth prime
-        for prime in find_new_primes(db_to_connect_to=db_to_connect_to):
-            if prime[0] == target_n:
-                return prime
-        return -1, -1
 
 
 #I don't care that this is a complex function.

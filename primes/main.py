@@ -12,7 +12,7 @@ sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
     try:
         from .cpu_write import (yield_and_write_primes, close_real_db as close_db, get_max_prime,
-                                get_nth_prime_in_db, primes_1_greater_or_equal)
+                                get_nth_prime, primes_1_greater_or_equal)
     except ModuleNotFoundError as me:
         raise me
 else:
@@ -337,12 +337,10 @@ def print_next_prime_greater(target: int):
 
 def search_for_nth_prime(target_n: int) -> tuple[int, int]:
     if SHOULD_WRITE:
-        result = get_nth_prime_in_db(target_n)
+        result = get_nth_prime(target_n)
         if result is not None:
             print(desc_prime_with_index(result))
             return result
-        #TODO CALL cpu_write.get_nth_prime_in_db
-        return -1, -1
     for p in print_nth_prime_memory(target_n):
         if p[0] == target_n:
             print(desc_prime_with_index(p))
