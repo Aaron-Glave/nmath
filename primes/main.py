@@ -69,7 +69,7 @@ def yield_primes_memory(
                 return
         yield nth_prime, prime
         nth_prime += 1
-    guess = 101
+    guess = ALL_PRIMES_UNDER_100[-1] + 2
     calculate_more = True
     if upto is not None:
         if upto < guess:
@@ -141,7 +141,6 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             upto,
             list_all=list_all,
             first_greater=first_greater,
-            target_n=target_n,
             comments=comments
         )
     else:
@@ -336,13 +335,18 @@ def print_next_prime_greater(target: int):
 
 
 
-def search_for_nth_prime(target_n: int) -> None:
+def search_for_nth_prime(target_n: int) -> tuple[int, int]:
     if SHOULD_WRITE:
         result = get_nth_prime_in_db(target_n)
         if result is not None:
             print(desc_prime_with_index(result))
-            return
+            return result
+        #TODO CALL cpu_write.get_nth_prime_in_db
+        return -1, -1
     for p in print_nth_prime_memory(target_n):
-        print(desc_prime_with_index(p))
+        if p[0] == target_n:
+            print(desc_prime_with_index(p))
+            return p
+    return -1, -1
 
 #See run_prime_main.py in the parent directory for user interaction.
