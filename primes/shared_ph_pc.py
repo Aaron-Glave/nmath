@@ -21,4 +21,5 @@ def under_or_at_limit(_current_guess: int, upto: Optional[int]) -> bool:
 
 
 def desc_prime_with_index(np: tuple[int, int]) -> str:
+    """Returns a string to print that nicely describes your prime number tuple."""
     return f"{np[0]}th prime: {np[1]}"
