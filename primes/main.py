@@ -10,8 +10,11 @@ from primes.shared_ph_pc import (SHOULD_WRITE, ALL_PRIMES_UNDER_100, under_or_at
 sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
     try:
-        from .cpu_write import (yield_and_write_primes, close_real_db as close_db, get_max_prime,
-                                get_nth_prime, primes_1_greater_or_equal)
+        # pylint:disable=unused-import
+        from .cpu_write import (yield_and_write_primes, close_real_db as close_db,
+                                get_max_prime, get_nth_prime,
+                                primes_1_greater_or_equal)
+        # pylint:enable=unused-import
     except ModuleNotFoundError as me:
         raise me
 else:
@@ -24,11 +27,13 @@ else:
         raise PhoneBanned()
 
 
+    # pylint:disable=W0613
     def get_nth_prime(target_n: int, /,
                             db_to_connect_to: str = '',
                             comments: Optional[dict[str, str]] = None
                             )\
     -> tuple[int, int]:
+        # pylint:enable=W0613
         n = 0
         for nth_prime, prime in yield_primes_memory(target_n=target_n):
             n += 1
@@ -74,7 +79,7 @@ def yield_primes_memory(
         is_over = (not under_or_at_limit(prime, upto)
                    or (target_n is not None and nth_prime >= target_n))
         if is_over and not first_greater:
-                return
+            return
         yield nth_prime, prime
         nth_prime += 1
     guess = ALL_PRIMES_UNDER_100[-1] + 2
@@ -170,10 +175,11 @@ def correct_prime_guess(upto: Optional[int] = None, *,
 
 def primes_up_to100():
     """Creates a primes.txt file with the first 100 primes."""
-    MAX_TO_FIND = 100
+    max_to_find = 100
     primes = []
     try:
-        prime_source = open("primes.txt", mode="r", encoding='ascii')
+        with open("primes.txt", mode="r", encoding='ascii') as prime_source:
+            pass
     except FileNotFoundError:
         print("Creating list...")
         with open("primes.txt", mode="x", encoding='ascii'):
@@ -192,7 +198,7 @@ def primes_up_to100():
             max_known = 2
 
     with open("primes.txt", mode="a", encoding='ascii') as prime_source:
-        for i in range(max_known + 1, MAX_TO_FIND + 1):
+        for i in range(max_known + 1, max_to_find + 1):
             isprime = True
             for prime in primes:
                 if i % prime == 0:
@@ -202,7 +208,7 @@ def primes_up_to100():
                 primes.append(i)
                 print(i, "is prime.")
                 prime_source.write(str(i) + '\n')
-        print("Calculated primes <= ", MAX_TO_FIND, ": ", primes, sep="")
+        print("Calculated primes <= ", max_to_find, ": ", primes, sep="")
 
 
 def gen_primes_up_to(max_prime=2):
@@ -341,8 +347,6 @@ def print_next_prime_greater(target: int):
             print(desc_prime_with_index(result))
         elif result[1] > target:
             print(f"Higher prime: {desc_prime_with_index(result)}")
-
-    return None
 
 
 
