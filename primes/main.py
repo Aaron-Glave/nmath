@@ -12,11 +12,11 @@ sys.set_int_max_str_digits(100000)
 if SHOULD_WRITE:
     try:
         from .cpu_write import (yield_and_write_primes, close_real_db as close_db, get_max_prime,
-                                get_nth_prime_in_db, primes_1_greater_or_equal)
+                                get_nth_prime, primes_1_greater_or_equal)
     except ModuleNotFoundError as me:
         raise me
 else:
-    def yield_and_write_primes(upto: Optional[int] = None, *,
+    def yield_and_write_primes(upto: Optional[int] = None, /,
                                save_to: Optional[TextIOWrapper] = None,
                                list_all: bool = False,
                                first_greater: bool = False,
@@ -57,16 +57,25 @@ def yield_primes_memory(
     memory_list = list(ALL_PRIMES_UNDER_100)
     found_first_greater = False
     nth_prime = 1
+    if comments is not None:
+        comments['already_there'] = 'Already there.'
     for prime in memory_list:
-        if comments is not None:
-            comments['already_there'] = 'Already there.'
+        is_over = (not under_or_at_limit(prime, upto)
+                   or (target_n is not None and nth_prime >= target_n))
+        if is_over:
+            if first_greater and not found_first_greater:
+                found_first_greater = True
+            else:
+                return
         yield nth_prime, prime
         nth_prime += 1
-    guess = 101
+    guess = ALL_PRIMES_UNDER_100[-1] + 2
     calculate_more = True
     if upto is not None:
         if upto < guess:
             calculate_more = False
+    if comments is not None:
+        comments['already_there'] = 'Had to be found.'
     while calculate_more:
         isprime = True
         for prime in memory_list:
@@ -95,7 +104,6 @@ def yield_primes_memory(
 
 
 def primes_1_greater_or_equal_memory(greater_than: int) -> Generator[tuple[int, int], Any, None]:
-    return_value = -1, -1
     for _prime in yield_primes_memory():
         if _prime[0] % 1000 == 0 and _prime[1] < greater_than:
             print(desc_prime_with_index(_prime))
@@ -104,18 +112,16 @@ def primes_1_greater_or_equal_memory(greater_than: int) -> Generator[tuple[int, 
         elif _prime[1] > greater_than:
             yield _prime
             break
-    return
 
 
 def print_nth_prime_memory(nth_looking_for: int) -> Generator[tuple[int, int], Any, None]:
-    return_value = -1, -1
+    """Yields the Nth prime via an in-memory search."""
     for _prime in yield_primes_memory():
         if _prime[0] % 1000 == 0 and _prime[0] < nth_looking_for:
             print(desc_prime_with_index(_prime))
         elif _prime[0] == nth_looking_for:
             yield _prime
             break
-    return
 
 
 #pylint:disable=R0913
@@ -132,10 +138,9 @@ def correct_prime_guess(upto: Optional[int] = None, *,
         if comments is not None:
             comments['prime_guess_func'] = yield_and_write_primes.__name__
         yield from yield_and_write_primes(
-            upto=upto,
+            upto,
             list_all=list_all,
             first_greater=first_greater,
-            target_n=target_n,
             comments=comments
         )
     else:
@@ -158,36 +163,35 @@ def primes_up_to100():
         prime_source = open("primes.txt", mode="r", encoding='ascii')
     except FileNotFoundError:
         print("Creating list...")
-        prime_source = open("primes.txt", mode="x", encoding='ascii')
-        prime_source.close()
-        prime_source = open("primes.txt", mode="r", encoding='ascii')
-        print("File listing primes was created")
-    for line in prime_source:
-        try:
-            primes.append(int(line))
-        except ValueError:
+        with open("primes.txt", mode="x", encoding='ascii'):
             pass
-    try:
-        start = max(primes)
-        print("Max prime I know is", start)
-    except ValueError:
-        print("List is empty.")
-        start = 2
-    prime_source.close()
-    prime_source = open("primes.txt", mode='a', encoding='ascii')
+        with open("primes.txt", mode="r", encoding='ascii') as prime_source:
+            print("File listing primes was created.")
+            for line in prime_source:
+                try:
+                    primes.append(int(line))
+                except ValueError:
+                    pass
+            try:
+                start = max(primes)
+                print("Max prime I know is", start)
+            except ValueError:
+                print("List is empty.")
+                start = 2
+            prime_source.close()
+            prime_source = open("primes.txt", mode='a', encoding='ascii')
 
-    for i in range(start, maximum + 1):
-        isprime = True
-        for prime in primes:
-            if i % prime == 0:
-                isprime = False
-                break
-        if isprime:
-            primes.append(i)
-            print(i, "is prime.")
-            prime_source.write(str(i) + '\n')
-    prime_source.close()
-    print("Calculated primes <= ", maximum, ": ", primes, sep="")
+            for i in range(start, maximum + 1):
+                isprime = True
+                for prime in primes:
+                    if i % prime == 0:
+                        isprime = False
+                        break
+                if isprime:
+                    primes.append(i)
+                    print(i, "is prime.")
+                    prime_source.write(str(i) + '\n')
+            print("Calculated primes <= ", maximum, ": ", primes, sep="")
 
 
 def gen_primes_up_to(max_prime=2):
@@ -331,13 +335,16 @@ def print_next_prime_greater(target: int):
 
 
 
-def search_for_nth_prime(target_n: int) -> None:
+def search_for_nth_prime(target_n: int) -> tuple[int, int]:
     if SHOULD_WRITE:
-        result = get_nth_prime_in_db(target_n)
+        result = get_nth_prime(target_n)
         if result is not None:
             print(desc_prime_with_index(result))
-            return
+            return result
     for p in print_nth_prime_memory(target_n):
-        print(desc_prime_with_index(p))
+        if p[0] == target_n:
+            print(desc_prime_with_index(p))
+            return p
+    return -1, -1
 
 #See run_prime_main.py in the parent directory for user interaction.

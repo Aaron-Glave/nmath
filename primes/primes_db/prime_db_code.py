@@ -139,11 +139,11 @@ def get_min_prime_in_db(db: str) -> tuple[int, int] | None:
         """).fetchone()
 
 
-def get_nth_prime_in_db(nth_prime: int, db: str) -> tuple[int, int] | None:
+def get_nth_prime_in_db(target_n: int, db: str) -> tuple[int, int] | None:
     with get_connection(db) as conn:
         return conn.execute("""
             SELECT nth_prime, prime FROM primes
-            WHERE nth_prime = ?""", (nth_prime,)).fetchone()
+            WHERE nth_prime = ?""", (target_n,)).fetchone()
 
 
 def get_max_prime_in_db(db: str) -> tuple[int, int] | None:
@@ -197,4 +197,9 @@ def prime_1_after(lower_bound: int, db: str) -> tuple[int, int] | None:
         LIMIT 1;""", (lower_bound,)).fetchone()
 
 
-
+def delete_all_primes_after(lower_bound: int, db: str) -> tuple[int, int] | None:
+    with get_connection(db) as conn:
+        return conn.execute("""
+        DELETE FROM primes
+        WHERE prime > ?
+        """, (lower_bound,)).fetchone()

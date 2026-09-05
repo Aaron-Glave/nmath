@@ -3,7 +3,7 @@
 from fractions import Fraction
 import sys
 
-from . import hugeNumber
+from . import huge_number
 
 
 def create_fraction(upper: int = 1, lower: int = 1):
@@ -15,7 +15,7 @@ def create_fraction(upper: int = 1, lower: int = 1):
 
 def mixed_fraction(unsimple_fraction: Fraction) -> str:
     """Writes a huge fraction as an integer plus a fraction whose absolute value is less than 1."""
-    if unsimple_fraction == 0:
+    if unsimple_fraction == Fraction(0):
         return "0"
     numerator = abs(unsimple_fraction.numerator)
     denominator = abs(unsimple_fraction.denominator)
@@ -40,7 +40,7 @@ def mixed_fraction(unsimple_fraction: Fraction) -> str:
 # noinspection unreachable-code
 def test_huge_number() -> None:
     """Verifies that hugeNumber works as expected, and that fractions work as expected."""
-    hugeNumber.huge_number()
+    huge_number.huge_number()
     huge_denomitator = sys.maxsize ** 1000
     try:
         very_close_to_1 = create_fraction(huge_denomitator - 1, huge_denomitator)
