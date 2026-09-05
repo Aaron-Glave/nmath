@@ -117,7 +117,7 @@ def disconnect_all():
 def insert_prime_with_connection(
         nth_prime: int, prime: int, conn: sqlite3.Connection
 ):
-    conn.execute(f"""
+    conn.execute("""
             INSERT INTO primes (nth_prime, prime)
             VALUES (?, ?)
             ON CONFLICT (nth_prime) DO NOTHING;""", (nth_prime, prime))
@@ -132,7 +132,7 @@ def insert_prime(nth_prime, prime, db: str):
 
 def get_min_prime_in_db(db: str) -> tuple[int, int] | None:
     with get_connection(db) as conn:
-        return conn.execute(f"""
+        return conn.execute("""
             SELECT nth_prime, prime FROM primes
             ORDER BY nth_prime ASC
             LIMIT 1
@@ -148,7 +148,7 @@ def get_nth_prime_in_db(target_n: int, db: str) -> tuple[int, int] | None:
 
 def get_max_prime_in_db(db: str) -> tuple[int, int] | None:
     with get_connection(db) as conn:
-        return conn.execute(f"""
+        return conn.execute("""
             SELECT nth_prime, prime FROM primes
             ORDER BY nth_prime DESC
             LIMIT 1
