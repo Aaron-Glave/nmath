@@ -28,15 +28,21 @@ def get_nth_prime(
     # Discover and return the nth prime number
     # Use our in-memory list first, to avoid unnecessary database lookups
     if target_n <= len(ALL_PRIMES_UNDER_100):
+        if comments is not None:
+            comments['already_there'] = 'Already there.'
         return target_n, ALL_PRIMES_UNDER_100[target_n]
     nth_prime_in_db: tuple[int, int] | None = prime_db_code.get_nth_prime_in_db(
         target_n=target_n, db=db_to_connect_to)
     if nth_prime_in_db is not None:
+        if comments is not None:
+            comments['already_there'] = 'Already there.'
         return nth_prime_in_db
     for prime in find_new_primes(db_to_connect_to=db_to_connect_to,
                                  target_n=target_n,
                                  comments = comments):
         if prime[0] == target_n:
+            if comments is not None:
+                comments['already_there'] = 'Had to be found.'
             return prime
     return -1, -1
 
@@ -73,7 +79,6 @@ def yield_and_write_primes(upto: Optional[int] = None, /,
     # You want to look through your existing list
     # You didn't specify that you're looking for a particular prime.
     read_only = list_all and upto is None
-    looking_for_first_greater = first_greater
     if not under_or_at_limit(2, upto):
         warnings.warn("Smallest prime is 2.")
         return
@@ -92,9 +97,6 @@ def yield_and_write_primes(upto: Optional[int] = None, /,
         # larger than the length of all_primes_under_100.
         nth_prime += 1
 
-    #Look up your highest prime number in your database
-    #guess helps us figure out what the first guess should be.
-    max_prime_known_db = prime_db_code.get_max_prime_in_db(db_to_connect_to)
     #Handle the case where the database is empty.
     if list_all:
         our_primes_db = prime_db_code.get_connection(db_to_connect_to)
@@ -131,7 +133,8 @@ def find_new_primes(upto: Optional[int] = None, /,
                     target_n: Optional[int] = None,
                     db_to_connect_to: str = prime_db_code.DATABASE,
                     comments: Optional[dict[str, str]] = None, ):
-    # Now we're searching for new prime numbers...
+    """Use this function to search for new prime numbers.
+        It will automatically add them to the database db_to_connect_to."""
     guess = ALL_PRIMES_UNDER_100[-1] + 2
     next_nth_prime = len(ALL_PRIMES_UNDER_100) + 1
     if comments is not None:
