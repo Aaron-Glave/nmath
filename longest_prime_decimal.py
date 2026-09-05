@@ -1,12 +1,4 @@
 """Prints out the longest decimal representation of a prime number under 1000."""
-
-#TODO DELETE THESE COMMENTS WHEN YOU KNOW THIS WORKS ON YOUR PHONE
-#import os
-#import sys
-#pylint:disable=C0413
-#print("Current path:", os.path.abspath(os.path.curdir))
-#parentpath = os.path.dirname(os.path.dirname(__file__))
-#print('Parent path:', parentpath)
 from primes import main as primegenerator
 import long_repeating_decimal
 
