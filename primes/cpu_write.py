@@ -184,7 +184,7 @@ def find_new_primes(upto: Optional[int] = None, /,
                 yield next_nth_prime, guess
                 if next_nth_prime == target_n:
                     return
-                if first_greater and guess > upto:
+                if first_greater and (upto is None or guess > upto):
                     return
                 # Now we're searching for the next prime number.
                 next_nth_prime += 1

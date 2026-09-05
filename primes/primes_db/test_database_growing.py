@@ -1,6 +1,7 @@
 import sqlite3
 import unittest
 
+from cpu_write import get_nth_prime
 from primes.cpu_write import yield_and_write_primes
 
 from primes.shared_ph_pc import desc_prime_with_index
@@ -25,13 +26,20 @@ class DBTestCases(unittest.TestCase):
 
         #TODO Use get_nth_prime_in_db with your target_database, and after finding it,
         #TCONTINUE search for a larger prime number by VALUE, not index.
-        for nth_prime, prime in yield_and_write_primes(
-                target_n=target_n,
+        nth_prime, prime = get_nth_prime(
+                target_n,
                 db_to_connect_to=prime_db_code.TEST_DATABASE,
                 comments=comments
-        ):
-            print(desc_prime_with_index((nth_prime, prime)))
+        )
+        print(desc_prime_with_index((nth_prime, prime)))
         self.assertEqual('Had to be found.', comments['already_there'])
+        for nth_prime, new_prime in yield_and_write_primes():
+            self.assertGreater(new_prime, prime)
+            prime = new_prime
+            break
+        for nth_prime, new_prime in yield_and_write_primes(first_greater=True):
+            self.assertGreaterEqual(new_prime, prime)
+            prime = new_prime
 
     def test_simple(self):
         reset_test_database()
@@ -43,7 +51,7 @@ class DBTestCases(unittest.TestCase):
         print(rlist)
         last_prime = prime_db_code.get_max_prime_in_db(prime_db_code.TEST_DATABASE)
         if last_prime is not None:
-            print("Final prime:", )
+            print("Final prime:", desc_prime_with_index(last_prime))
         else:
             raise sqlite3.ProgrammingError("Empty database! Shouldn't happen!")
 
@@ -58,7 +66,6 @@ class DBTestCases(unittest.TestCase):
         last_prime = prime_db_code.get_max_prime_in_db(prime_db_code.DATABASE)
         if last_prime is not None:
             print(last_prime)
-            return last_prime
         else:
             self.fail("Your prime database is empty.")
 
@@ -77,7 +84,8 @@ class DBTestCases(unittest.TestCase):
         May fail if your database isn't big enough.
             If that happens, run the main program until
             you discover TEST_SPEED_MIN_VALUE + 1 prime numbers"""
-        print("This should be QUICK: Find the first prime number bigger than 500000.")
+        print("This should be QUICK: Find the first prime number bigger than "
+              f"${DBTestCases.TEST_SPEED_MIN_VALUE}.")
         one_greater = prime_db_code.prime_1_after(DBTestCases.TEST_SPEED_MIN_VALUE,
                                                   db=prime_db_code.DATABASE)
         if one_greater is None:
