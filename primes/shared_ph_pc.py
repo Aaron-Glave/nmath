@@ -4,6 +4,7 @@ from typing import Optional
 
 #Set this to False on your phone!
 SHOULD_WRITE = True
+#This tuple has to be in strictly increasing order.
 ALL_PRIMES_UNDER_100: tuple[int, ...] = (
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
     53, 59, 61, 67, 71, 73,
@@ -20,4 +21,5 @@ def under_or_at_limit(_current_guess: int, upto: Optional[int]) -> bool:
 
 
 def desc_prime_with_index(np: tuple[int, int]) -> str:
+    """Returns a string to print that nicely describes your prime number tuple."""
     return f"{np[0]}th prime: {np[1]}"

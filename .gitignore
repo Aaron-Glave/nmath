@@ -16,3 +16,4 @@ primes/Backups
 primes/Pylint hints.txt
 pylint_output.txt
 /pylint_nmath.bat
+pylint_nmath.txt
