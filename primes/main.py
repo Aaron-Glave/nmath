@@ -192,19 +192,19 @@ def primes_up_to100():
                 print("List is empty.")
                 start = 2
             prime_source.close()
-            prime_source = open("primes.txt", mode='a', encoding='ascii')
 
-            for i in range(start, maximum + 1):
-                isprime = True
-                for prime in primes:
-                    if i % prime == 0:
-                        isprime = False
-                        break
-                if isprime:
-                    primes.append(i)
-                    print(i, "is prime.")
-                    prime_source.write(str(i) + '\n')
-            print("Calculated primes <= ", maximum, ": ", primes, sep="")
+            with open("primes.txt", mode="a", encoding='ascii') as prime_source:
+                for i in range(start, maximum + 1):
+                    isprime = True
+                    for prime in primes:
+                        if i % prime == 0:
+                            isprime = False
+                            break
+                    if isprime:
+                        primes.append(i)
+                        print(i, "is prime.")
+                        prime_source.write(str(i) + '\n')
+                print("Calculated primes <= ", maximum, ": ", primes, sep="")
 
 
 def gen_primes_up_to(max_prime=2):
