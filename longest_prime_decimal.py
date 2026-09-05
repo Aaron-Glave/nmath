@@ -18,13 +18,6 @@ def main():
     if original_fractions is not inverses:
         print("Made a copy before sorting.")
     inverses.sort(key=lambda f: len(f.repeating_string()), reverse=True)
-    #for fraction in inverses[:5]:
-    #    fraction_string = fraction.repeating_string()
-    #    print(repr(fraction), "has a string of", len(fraction.repeating_string()),
-    #         "characters:", fraction.repeating_string())
-    #print("\n")
-    #print(Fraction(original_fractions[-1].upper, original_fractions[-1].lower),
-    #      "has a string of", len(original_fractions[-1].repeating_string()), "characters.\n")
 
     print("\nOriginal prime list:")
     for i in range(0, 5):
