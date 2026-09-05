@@ -1,6 +1,5 @@
 """Program designed to talk about prime numbers."""
 import sys
-from io import TextIOWrapper
 from time import time
 from typing import Tuple, Generator, Optional, Any
 
@@ -17,16 +16,20 @@ if SHOULD_WRITE:
         raise me
 else:
     def yield_and_write_primes(upto: Optional[int] = None, /,
-                               save_to: Optional[TextIOWrapper] = None,
                                list_all: bool = False,
                                first_greater: bool = False,
-                               target_n: Optional[int] = None,
-                               comments: Optional[dict[str, str]] = None)\
+                                comments: Optional[dict[str, str]] = None,
+                                db_to_connect_to: str = '')\
     -> Generator[tuple[int, int], None, None]:
         raise PhoneBanned()
 
 
-    def get_nth_prime_in_db(nth_prime, db: str) -> tuple[int, int] | None:
+    def get_nth_prime(target_n: int, /,
+                            db_to_connect_to: str = '',
+                            comments: Optional[dict[str, str]] = None
+                            )\
+    -> tuple[int, int]:
+        #TODO WE CAN WRITE THIS
         raise PhoneBanned()
 
 
@@ -137,6 +140,8 @@ def correct_prime_guess(upto: Optional[int] = None, *,
     if SHOULD_WRITE:
         if comments is not None:
             comments['prime_guess_func'] = yield_and_write_primes.__name__
+        if target_n is not None:
+            yield get_nth_prime(target_n, comments=comments)
         yield from yield_and_write_primes(
             upto,
             list_all=list_all,
