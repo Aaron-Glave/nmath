@@ -29,8 +29,16 @@ else:
                             comments: Optional[dict[str, str]] = None
                             )\
     -> tuple[int, int]:
-        #TODO WE CAN WRITE THIS
-        raise PhoneBanned()
+        n = 0
+        for nth_prime, prime in yield_primes_memory(target_n=target_n):
+            n += 1
+            if nth_prime == target_n:
+                if comments is not None:
+                    comments['already_there'] = ('Already there.'
+                                                 if nth_prime <= len(ALL_PRIMES_UNDER_100)
+                                                 else 'Had to be found.')
+                return nth_prime, prime
+        return -1, -1
 
 
     def primes_1_greater_or_equal(greater_than: int) -> Generator[
@@ -50,25 +58,22 @@ else:
 #We don't even have a function to read the whole file into a list.
 # That would use a TON of memory.
 def yield_primes_memory(
-        upto: Optional[int] = None, print_specific: Optional[int] = None,
-        first_greater: bool = False, target_n: Optional[int ]= None,
+        upto: Optional[int] = None,
+        first_greater: bool = False,
+        target_n: Optional[int ]= None,
         comments: Optional[dict[str, str]] = None
 ) -> Generator[tuple[int, int], None, None]:
     """Returns list of tuples [(1-based prime index, prime number)].
         Note that all known primes are created in memory,
           so the list is r-created for every iterator you create."""
     memory_list = list(ALL_PRIMES_UNDER_100)
-    found_first_greater = False
     nth_prime = 1
     if comments is not None:
         comments['already_there'] = 'Already there.'
     for prime in memory_list:
         is_over = (not under_or_at_limit(prime, upto)
                    or (target_n is not None and nth_prime >= target_n))
-        if is_over:
-            if first_greater and not found_first_greater:
-                found_first_greater = True
-            else:
+        if is_over and not first_greater:
                 return
         yield nth_prime, prime
         nth_prime += 1
@@ -90,17 +95,19 @@ def yield_primes_memory(
                 isprime = True
                 break
         if isprime:
-            if print_specific == nth_prime:
+            if target_n == nth_prime:
                 print(str(nth_prime) + " prime is", guess)
             memory_list.append(guess)
-            if len(memory_list) % 10000 == 0 and print_specific is not None:
+            if len(memory_list) % 10000 == 0 and target_n is not None:
                 print(len(memory_list), "th prime is ", guess, sep='')
             yield nth_prime, guess
             if first_greater and not under_or_at_limit(nth_prime, upto):
-                found_first_greater = True
+                return
+            if nth_prime == target_n:
+                return
             #Only increment the nth_prime value AFTER printing the current nth_prime.
             nth_prime += 1
-        if (not under_or_at_limit(guess, upto) and not found_first_greater and
+        if (not under_or_at_limit(guess, upto) and
                 (not first_greater or memory_list[-1] >= guess)):
             return
         guess += 2
@@ -142,6 +149,7 @@ def correct_prime_guess(upto: Optional[int] = None, *,
             comments['prime_guess_func'] = yield_and_write_primes.__name__
         if target_n is not None:
             yield get_nth_prime(target_n, comments=comments)
+            return
         yield from yield_and_write_primes(
             upto,
             list_all=list_all,

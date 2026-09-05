@@ -30,7 +30,9 @@ def get_nth_prime(
     if target_n <= len(ALL_PRIMES_UNDER_100):
         if comments is not None:
             comments['already_there'] = 'Already there.'
-        return target_n, ALL_PRIMES_UNDER_100[target_n]
+            # I'm subtracting 1 here because target_n is 1-indexed
+            # while the ALL_PRIMES_UNDER_100 list is 0-indexed
+        return target_n, ALL_PRIMES_UNDER_100[target_n-1]
     nth_prime_in_db: tuple[int, int] | None = prime_db_code.get_nth_prime_in_db(
         target_n=target_n, db=db_to_connect_to)
     if nth_prime_in_db is not None:

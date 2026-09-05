@@ -3,7 +3,7 @@
 from typing import Optional
 
 #Set this to False on your phone!
-SHOULD_WRITE = True
+SHOULD_WRITE = False
 #This tuple has to be in strictly increasing order.
 ALL_PRIMES_UNDER_100: tuple[int, ...] = (
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,

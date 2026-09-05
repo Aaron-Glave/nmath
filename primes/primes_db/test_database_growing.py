@@ -1,7 +1,7 @@
 import sqlite3
 import unittest
 
-from cpu_write import get_nth_prime
+from primes.cpu_write import get_nth_prime
 from primes.cpu_write import yield_and_write_primes
 
 from primes.shared_ph_pc import desc_prime_with_index
@@ -24,8 +24,6 @@ class DBTestCases(unittest.TestCase):
         else:
             target_n = max_prime_db[0] + 2
 
-        #TODO Use get_nth_prime_in_db with your target_database, and after finding it,
-        #TCONTINUE search for a larger prime number by VALUE, not index.
         nth_prime, prime = get_nth_prime(
                 target_n,
                 db_to_connect_to=prime_db_code.TEST_DATABASE,
@@ -73,9 +71,9 @@ class DBTestCases(unittest.TestCase):
         """Just prints info about your database. Doesn't return anything."""
         with prime_db_code.get_connection(db) as conn:
             print("Database indexes info:",
-                  conn.execute(f"""PRAGMA index_list(primes);""").fetchall())
+                  conn.execute("""PRAGMA index_list(primes);""").fetchall())
             print("idx_primes_value info:",
-                  conn.execute(f"""PRAGMA index_info(idx_primes_value);""").fetchall())
+                  conn.execute("""PRAGMA index_info(idx_primes_value);""").fetchall())
 
 
     TEST_SPEED_MIN_VALUE = 500000
