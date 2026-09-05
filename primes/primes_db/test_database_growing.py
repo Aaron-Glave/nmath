@@ -17,6 +17,8 @@ class DBTestCases(unittest.TestCase):
     Uses TEST_DATABASE so that even if there are mistakes in the test,
         your real data isn't hurt."""
     def test_db_expands(self):
+        """Tests that the REAL database grows when you search for new prime numbers,
+       including searching for an nth_prime not discovered yet."""
         reset_test_database()
         target_n = None
         comments = {}
@@ -42,6 +44,7 @@ class DBTestCases(unittest.TestCase):
             prime = new_prime
 
     def test_simple(self):
+        """Tests that the database can be written to."""
         reset_test_database()
         prime_db_code.insert_prime(1, 2, db=prime_db_code.TEST_DATABASE)
         prime_db_code.insert_prime(2, 3, db=prime_db_code.TEST_DATABASE)
@@ -56,7 +59,9 @@ class DBTestCases(unittest.TestCase):
             raise sqlite3.ProgrammingError("Empty database! Shouldn't happen!")
 
     def test_lowest_main(self):
+        """Verifies that entries in ALL_PRIMES_UNDER_100 are also in the REAL database."""
         last_prime = prime_db_code.get_min_prime_in_db(prime_db_code.DATABASE)
+        self.assertEqual((1, 2), last_prime)
         if last_prime is not None:
             print(last_prime)
         else:
