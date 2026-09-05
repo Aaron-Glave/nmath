@@ -1,3 +1,5 @@
+"""Tests for your database.
+Note that TEST_DATABASE is used sometimes to avoid editing your real database"""
 import sqlite3
 import unittest
 
