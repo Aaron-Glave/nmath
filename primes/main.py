@@ -170,41 +170,39 @@ def correct_prime_guess(upto: Optional[int] = None, *,
 
 def primes_up_to100():
     """Creates a primes.txt file with the first 100 primes."""
-    maximum = 100
+    MAX_TO_FIND = 100
     primes = []
     try:
         prime_source = open("primes.txt", mode="r", encoding='ascii')
     except FileNotFoundError:
         print("Creating list...")
         with open("primes.txt", mode="x", encoding='ascii'):
-            pass
-        with open("primes.txt", mode="r", encoding='ascii') as prime_source:
             print("File listing primes was created.")
-            for line in prime_source:
-                try:
-                    primes.append(int(line))
-                except ValueError:
-                    pass
+    with open("primes.txt", mode="r", encoding='ascii') as prime_source:
+        for line in prime_source:
             try:
-                start = max(primes)
-                print("Max prime I know is", start)
+                primes.append(int(line))
             except ValueError:
-                print("List is empty.")
-                start = 2
-            prime_source.close()
+                pass
+        try:
+            max_known = max(primes)
+            print("Max prime I know is", max_known)
+        except ValueError:
+            print("List is empty.")
+            max_known = 2
 
-            with open("primes.txt", mode="a", encoding='ascii') as prime_source:
-                for i in range(start, maximum + 1):
-                    isprime = True
-                    for prime in primes:
-                        if i % prime == 0:
-                            isprime = False
-                            break
-                    if isprime:
-                        primes.append(i)
-                        print(i, "is prime.")
-                        prime_source.write(str(i) + '\n')
-                print("Calculated primes <= ", maximum, ": ", primes, sep="")
+    with open("primes.txt", mode="a", encoding='ascii') as prime_source:
+        for i in range(max_known + 1, MAX_TO_FIND + 1):
+            isprime = True
+            for prime in primes:
+                if i % prime == 0:
+                    isprime = False
+                    break
+            if isprime:
+                primes.append(i)
+                print(i, "is prime.")
+                prime_source.write(str(i) + '\n')
+        print("Calculated primes <= ", MAX_TO_FIND, ": ", primes, sep="")
 
 
 def gen_primes_up_to(max_prime=2):
