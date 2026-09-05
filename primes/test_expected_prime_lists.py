@@ -129,6 +129,7 @@ class TestCorrectPrimes(unittest.TestCase):
         big_enough = TestCorrectPrimes.VAL_OVER_ALL
         comments = {}
         primes = tuple(main.yield_primes_memory(big_enough, comments=comments))
+        desc_prime_with_index(primes[-1])
         self.assertEqual('Had to be found.', comments['already_there'])
 
 
